@@ -1,9 +1,9 @@
 authenticator: CASServer::Authenticators::ActiveDirectoryLDAP
 
 ldap:
-  server: urbacon-ad01.urbacon.net
+  server: ad.example.com
   port: 389
-  base: dc=urbacon,dc=net
+  base: dc=example,dc=com
   filter: (objectClass=person)
-  auth_user: ldapq
-  auth_password: urbacon
+  auth_user: authenticator
+  auth_password: 1234example
