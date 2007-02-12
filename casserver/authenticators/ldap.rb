@@ -1,4 +1,4 @@
-require File.dirname(File.expand_path(__FILE__))+'/base'
+require 'casserver/authenticators/base'
 
 begin
   require 'net/ldap'

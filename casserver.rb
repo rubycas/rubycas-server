@@ -15,6 +15,10 @@ Camping.goes :CASServer
 module CASServer
 end
 
+require 'casserver/util'
+require 'casserver/views'
+require 'casserver/controllers'
+
 # load configuration
 $CONF = HashWithIndifferentAccess.new(YAML.load_file(File.dirname(File.expand_path(__FILE__))+"/config.yml"))
 begin
@@ -27,9 +31,10 @@ rescue NameError
   $AUTH = $CONF[:authenticator].constantize.new
 end
 
-require 'casserver/util'
-require 'casserver/views'
-require 'casserver/controllers'
+# init the logger
+$LOG = CASServer::Util::Logger.new($CONF[:log][:file])
+$LOG.level = "CASServer::Util::Logger::#{$CONF[:log][:level]}".constantize
 
 def CASServer.create
+  $LOG.info "RubyCAS-Server initialized"
 end

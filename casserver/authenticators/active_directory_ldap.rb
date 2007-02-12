@@ -1,4 +1,4 @@
-require File.dirname(File.expand_path(__FILE__))+'/ldap'
+require 'casserver/authenticators/ldap'
 
 class CASServer::Authenticators::ActiveDirectoryLDAP < CASServer::Authenticators::LDAP
   protected

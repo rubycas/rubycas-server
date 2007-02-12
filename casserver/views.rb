@@ -25,10 +25,10 @@ module CASServer::Views
           end
         end
       end
-      if @flash
+      if @message
         tr do
           td(:colspan => 2, :id => "messagebox-container") do
-            div(:class => "messagebox #{@flash[:type]}") { @flash[:message] }
+            div(:class => "messagebox #{@message[:type]}") { @message[:message] }
           end
         end
       end
