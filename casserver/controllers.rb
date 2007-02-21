@@ -13,7 +13,10 @@ module CASServer::Controllers
       @gateway = @input['gateway']
       
       # 3.5 (login ticket)
-      @lt = "LT-" + CASServer::Util.random_string
+      @lt = LoginTicket.new
+      @lt.ticket = "LT-" + CASServer::Utils.random_string
+      @lt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+      @lt.save!
       
       $LOG.debug("Rendering login form with lt: #{@lt}, service: #{@service}, renew: #{@renew}, gateway: #{@gateway}")
       
@@ -38,12 +41,28 @@ module CASServer::Controllers
       if $AUTH.validate(:username => @username, :password => @password)
         $LOG.info("Credentials for username '#{@username}' successfully validated")
         
-        @cookies[:tgc] = "TGC-" + CASServer::Util.random_string
+        # 3.6 (ticket-granting cookie)
+        @cookies[:tgc] = "TGC-" + CASServer::Utils.random_string
         $LOG.debug("Ticket granting cookie '#{@cookies[:tgc]}' granted to '#{@username}'")
+        
+        # 3.1 (service ticket)
+        @st = ServiceTicket.new
+        @st.ticket = "ST-" + CASServer::Utils.random_string
+        @st.service = @service
+        @st.username = @username
+        @st.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+        @st.save!
+        
+        service_uri = URI.parse(@service)
+        if service_uri.query
+          service_with_ticket = @service + "&ticket=" + @st.ticket
+        else
+          service_with_ticket = @service + "?ticket=" + @st.ticket
+        end
         
         if !@service.blank?
           $LOG.info("Redirecting authenticated user '#{@username}' to service '#{@service}'")
-          return redirect(@service)
+          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
         else
           $LOG.info("Successfully authenticated user #{@username}. No service param was given so we will not redirect.")
           @message = {:type => 'confirmation', :message => "You have successfully logged in."}
@@ -106,6 +125,21 @@ module CASServer::Controllers
       # optional
       @pgt_url = @input['pgtUrl']
       @renew = @input['renew']
+      
+      @success = false
+      
+      if @service.nil? or @ticket.nil?
+        @error = Error.new("INVALID_REQUEST", "Ticket or service parameter was missing in the request.")
+      elsif st = ServiceTicket.find_by_ticket(@ticket)
+        if st.service == @service
+          @success = true
+        else
+          @error = Error.new("INVALID_SERVICE", "The ticket #{@ticket} is valid,"+
+            " but the service specified does not match the service associated with this ticket.")
+        end
+      else
+        @error = Error.new("INVALID_TICKET", "Ticket #{@ticket} not recognized.")
+      end
       
       render :proxy_validate
     end

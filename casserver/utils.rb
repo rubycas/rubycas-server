@@ -1,6 +1,6 @@
 # Misc utility function used throughout by the RubyCAS-server.
 module CASServer
-  module Util
+  module Utils
     def random_string
       "#{Time.now.to_i}r%X" % rand(99999999)
     end

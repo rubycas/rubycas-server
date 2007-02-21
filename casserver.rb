@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
 require 'camping'
 
 require 'active_support'
@@ -15,7 +18,8 @@ Camping.goes :CASServer
 module CASServer
 end
 
-require 'casserver/util'
+require 'casserver/utils'
+require 'casserver/models'
 require 'casserver/views'
 require 'casserver/controllers'
 
@@ -32,9 +36,25 @@ rescue NameError
 end
 
 # init the logger
-$LOG = CASServer::Util::Logger.new($CONF[:log][:file])
-$LOG.level = "CASServer::Util::Logger::#{$CONF[:log][:level]}".constantize
+$LOG = CASServer::Utils::Logger.new($CONF[:log][:file] || 'casserver.log')
+$LOG.level = "CASServer::Utils::Logger::#{$CONF[:log][:level] || DEBUG}".constantize
 
+# do initialization stuff
 def CASServer.create
-  $LOG.info "RubyCAS-Server initialized"
+  CASServer::Models::Base.establish_connection :adapter => 'mysql', :database => 'casserver', :user => 'root', :server => 'localhost'
+  CASServer::Models::Base.logger = Logger.new($CONF[:db_log][:file] || 'casserver_db.log')
+  CASServer::Models::Base.logger.level = Logger::DEBUG
+
+  CASServer::Models.create_schema
+  
+  $LOG.info "RubyCAS-Server initialized" 
 end
+
+
+# this gets run if we launch directly (i.e. `ruby casserver.rb` rather than `camping casserver`)
+if __FILE__ == $0
+  # set up active_record
+
+  CASServer.create
+  puts CASServer.run
+end 

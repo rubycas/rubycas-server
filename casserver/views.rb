@@ -2,17 +2,27 @@
 # under http://www.ja-sig.org/products/cas/overview/protocol/index.html
 
 module CASServer::Views
+
+  # need to turn off autovalidation to render CAS xml responses
+  #
+
   def layout
-    xhtml_strict do
-      head do 
-        title { @server }
-        link(:rel => "stylesheet", :type => "text/css", :href => "static/cas.css")
+    # wrap as XHTML only when auto_validation is on, otherwise pass right through
+    if @auto_validation
+      xhtml_strict do
+        head do 
+          title { @server }
+          link(:rel => "stylesheet", :type => "text/css", :href => "static/cas.css")
+        end
+        body(:onload => "if (document.getElementById('username')) document.getElementById('username').focus()") do
+          self << yield 
+        end
       end
-      body(:onload => "if (document.getElementById('username')) document.getElementById('username').focus()") do
-        self << yield 
-      end
+    else
+      self << yield
     end
   end
+
 
   # 2.1.3
   def login
@@ -59,7 +69,7 @@ module CASServer::Views
               tr do
                 td{}
                 td(:id => "submit-container") do
-                  input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
+                  input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt.ticket)
                   input(:type => "hidden", :id => "service", :name => "service", :value => @service)
                   input(:type => "hidden", :id => "warn", :name => "warn", :value => @warn)
                   input(:type => "submit", :class => "button", :accesskey => "l", :value => "LOGIN", :tabindex => "4", :id => "login-submit")
@@ -77,6 +87,7 @@ module CASServer::Views
   
   # 2.4.2
   def validate
+    @auto_validation = false
     if @success
       text "yes\n#{@username}\n"
     else
@@ -86,6 +97,7 @@ module CASServer::Views
   
   # 2.5.2
   def service_validate
+    @auto_validation = false
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
@@ -102,14 +114,19 @@ module CASServer::Views
   
   # 2.6.2
   def proxy_validate
+    @auto_validation = false
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username}
-          tag!("cas:proxyGrantingTicket") {@pgt}
-          tag!("cas:proxies") do
-            @proxies.each do |proxy_url|
-              tag!("cas:proxy") {proxy_url}
+          if @pgt
+            tag!("cas:proxyGrantingTicket") {@pgt}
+          end
+          if @proxies
+            tag!("cas:proxies") do
+              @proxies.each do |proxy_url|
+                tag!("cas:proxy") {proxy_url}
+              end
             end
           end
         end
@@ -123,6 +140,7 @@ module CASServer::Views
   
   # 2.7.2
   def proxy
+    @auto_validation = false
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:proxySuccess") do
