@@ -16,10 +16,13 @@ srand
 Camping.goes :CASServer
 
 module CASServer
+  LOGIN_TICKET_EXPIRY = 24.hours
+  SERVICE_TICKET_EXPIRY = 24.hours
 end
 
 require 'casserver/utils'
 require 'casserver/models'
+require 'casserver/cas'
 require 'casserver/views'
 require 'casserver/controllers'
 

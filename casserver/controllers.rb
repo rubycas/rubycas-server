@@ -5,6 +5,8 @@ module CASServer::Controllers
 
   # 2.1
   class Login < R '/', '/login'
+    include CASServer::CAS
+    
     # 2.1.1
     def get      
       # optional
@@ -12,11 +14,7 @@ module CASServer::Controllers
       @renew = @input['renew']
       @gateway = @input['gateway']
       
-      # 3.5 (login ticket)
-      @lt = LoginTicket.new
-      @lt.ticket = "LT-" + CASServer::Utils.random_string
-      @lt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
-      @lt.save!
+      @lt = generate_login_ticket
       
       $LOG.debug("Rendering login form with lt: #{@lt}, service: #{@service}, renew: #{@renew}, gateway: #{@gateway}")
       
@@ -34,6 +32,12 @@ module CASServer::Controllers
       @password = @input['password']
       @lt = @input['lt']
       
+      error = validate_login_ticket(@lt)
+      if error
+        @message = {:type => 'mistake', :message => error}
+        return render(:login)
+      end
+      
       $AUTH.configure($CONF)
       
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
@@ -45,13 +49,7 @@ module CASServer::Controllers
         @cookies[:tgc] = "TGC-" + CASServer::Utils.random_string
         $LOG.debug("Ticket granting cookie '#{@cookies[:tgc]}' granted to '#{@username}'")
         
-        # 3.1 (service ticket)
-        @st = ServiceTicket.new
-        @st.ticket = "ST-" + CASServer::Utils.random_string
-        @st.service = @service
-        @st.username = @username
-        @st.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
-        @st.save!
+        @st = generate_service_ticket(@service, @username)
         
         service_uri = URI.parse(@service)
         if service_uri.query
@@ -78,6 +76,8 @@ module CASServer::Controllers
   
   # 2.3
   class Logout < R '/logout'
+    include CASServer::CAS
+    
     # 2.3.1
     def get
       @url = @input['url']
@@ -88,6 +88,8 @@ module CASServer::Controllers
 
   # 2.4
   class Validate < R '/validate'
+    include CASServer::CAS
+  
     # 2.4.1
     def get
       # required
@@ -96,12 +98,17 @@ module CASServer::Controllers
       # optional
       @renew = @input['renew']
       
+      @error = validate_service_ticket(@service, @ticket)
+      @success = !@error
+      
       render :validate
     end
   end
   
   # 2.5
   class ServiceValidate < R '/serviceValidate'
+    include CASServer::CAS
+  
     # 2.5.1
     def get
       # required
@@ -111,12 +118,17 @@ module CASServer::Controllers
       @pgt_url = @input['pgtUrl']
       @renew = @input['renew']
       
+      @error = validate_service_ticket(@service, @ticket)
+      @success = !@error
+      
       render :service_validate
     end
   end
   
   # 2.6
   class ProxyValidate < R '/proxyValidate'
+    include CASServer::CAS
+  
     # 2.6.1
     def get
       # required
@@ -126,26 +138,16 @@ module CASServer::Controllers
       @pgt_url = @input['pgtUrl']
       @renew = @input['renew']
       
-      @success = false
-      
-      if @service.nil? or @ticket.nil?
-        @error = Error.new("INVALID_REQUEST", "Ticket or service parameter was missing in the request.")
-      elsif st = ServiceTicket.find_by_ticket(@ticket)
-        if st.service == @service
-          @success = true
-        else
-          @error = Error.new("INVALID_SERVICE", "The ticket #{@ticket} is valid,"+
-            " but the service specified does not match the service associated with this ticket.")
-        end
-      else
-        @error = Error.new("INVALID_TICKET", "Ticket #{@ticket} not recognized.")
-      end
+      @error = validate_service_ticket(@service, @ticket)
+      @success = !@error
       
       render :proxy_validate
     end
   end
   
   class Proxy < R '/proxy'
+    include CASServer::CAS
+  
     # 2.7
     def get
       # required
