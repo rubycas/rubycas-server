@@ -2,7 +2,7 @@
 module CASServer
   module Utils
     def random_string
-      "#{Time.now.to_i}r%X" % rand(99999999)
+      "#{Time.now.to_i}r%X" % rand(10**32)
     end
     module_function :random_string
     

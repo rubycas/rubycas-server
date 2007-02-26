@@ -1,3 +1,6 @@
+require 'uri'
+require 'net/https'
+
 # Encapsulates CAS functionality. This module is meant to be included in
 # the CASServer::Controllers module.
 module CASServer::CAS
@@ -13,6 +16,16 @@ module CASServer::CAS
     lt
   end
   
+  def generate_ticket_granting_ticket(username)
+    # 3.6 (ticket granting cookie/ticket)
+    tgt = TicketGrantingTicket.new
+    tgt.ticket = "TGC-" + CASServer::Utils.random_string
+    tgt.username = username
+    tgt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+    tgt.save!
+    tgt
+  end
+  
   def generate_service_ticket(service, username)
     # 3.1 (service ticket)
     st = ServiceTicket.new
@@ -24,25 +37,96 @@ module CASServer::CAS
     st
   end
   
+  def generate_proxy_ticket(target_service, st)
+    # 3.2 (proxy ticket)
+    pt = ProxyTicket.new
+    pt.ticket = "PT-" + CASServer::Utils.random_string
+    pt.service = target_service
+    pt.username = st.username
+    pt.proxy_granting_ticket_id = st.id
+    pt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+    pt.save!
+    pt
+  end
+  
+  def generate_proxy_granting_ticket(pgt_url, st)
+    uri = URI.parse(pgt_url)
+    https = Net::HTTP.new(uri.host,uri.port)
+    https.use_ssl = true
+    
+    # Here's what's going on here:
+    # 
+    #   1. We generate a ProxyGrantingTicket (but don't store it in the database just yet)
+    #   2. Deposit the PGT and it's associated IOU at the proxy callback URL.
+    #   3. If the proxy callback URL responds with HTTP code 200, store the PGT and return it;
+    #      otherwise don't save it and return nothing.
+    #      
+    https.start do |conn|
+      path = uri.path.empty? ? '/' : uri.path
+      
+      pgt = ProxyGrantingTicket.new
+      pgt.ticket = "PGT-" + CASServer::Utils.random_string
+      pgt.iou = "PGTIOU-" + CASServer::Utils.random_string
+      pgt.service_ticket_id = st.id
+      pgt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+      
+      # FIXME: The CAS protocol spec says to use 'pgt' as the parameter, but in practice
+      #         the JA-SIG and Yale server implementations use pgtId. We'll go with the
+      #         in-practice standard.
+      path += (uri.query.nil? || uri.query.empty? ? '?' : '&') + "pgtId=#{pgt.ticket}&pgtIou=#{pgt.iou}"
+      
+      response = conn.request_get(path)
+      # TODO: follow redirects... 2.5.4 says that redirects MAY be followed
+      
+      if response.code.to_i == 200
+        # 3.4 (proxy-granting ticket IOU)
+        pgt.save!
+        $LOG.debug "PGT generated for pgt_url '#{pgt_url}'. PGT is: '#{pgt.ticket}', PGT-IOU is: '#{pgt.iou}'"
+        pgt
+      else
+        $LOG.warn "PGT callback server responded with a bad result code '#{response.code}'. PGT will not be stored."
+      end
+    end
+  end
+  
+  
   def validate_login_ticket(ticket)
     success = false
     if ticket.nil?
       error = "Your login request did not include a login ticket."
-      $LOG.warn(error)
+      $LOG.warn("Missing login ticket.")
     elsif lt = LoginTicket.find_by_ticket(ticket)
-      if Time.now - lt.created_on < CASServer::LOGIN_TICKET_EXPIRY
-        $LOG.info("Login ticket #{@ticket} successfully validated.")
+      if lt.consumed?
+        error = "The login ticket you provided has already been used up."
+        $LOG.warn("Login ticket '#{ticket}' previously used up")
+      elsif Time.now - lt.created_on < CASServer::LOGIN_TICKET_EXPIRY
+        $LOG.info("Login ticket '#{ticket}' successfully validated")
       else
-        error = "Your login ticket has expired."
-        $LOG.warn(error)
+        error = "Your login ticket  has expired."
+        $LOG.warn("Expired login ticket '#{ticket}'")
       end
     else
       error = "The login ticket you provided is invalid."
+      $LOG.warn = "Invalid login ticket '#{ticket}'"
     end
     
-    lt.destroy if lt
+    lt.consume! if lt
     
     error
+  end
+  
+  def validate_ticket_granting_ticket(ticket)
+    if ticket.nil?
+      error = "No ticket granting ticket given."
+      $LOG.debug(error)
+    elsif tgt = TicketGrantingTicket.find_by_ticket(ticket)
+      $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated.")
+    else
+      error = "Invalid ticket granting ticket '#{ticket}' (no matching ticket found in the database)."
+      $LOG.warn(error)
+    end
+    
+    [tgt, error]
   end
 
   def validate_service_ticket(service, ticket)
@@ -50,21 +134,54 @@ module CASServer::CAS
       error = Error.new("INVALID_REQUEST", "Ticket or service parameter was missing in the request.")
       $LOG.warn("#{error.code} - #{error.message}")
     elsif st = ServiceTicket.find_by_ticket(ticket)
-      if st.service == service
-        $LOG.info("Ticket #{@ticket} for service #{@service} successfully validated.")
+      if st.consumed?
+        error = Error.new("INVALID_TICKET", "Ticket #{ticket} has already been used up.")
+        $LOG.warn("#{error.code} - #{error.message}")
+      elsif Time.now - st.created_on > CASServer::SERVICE_TICKET_EXPIRY
+        error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has expired.")
+        $LOG.warn("Ticket '#{ticket}' has expired.")
+      elsif st.service == service
+        $LOG.info("Ticket '#{ticket}' for service '#{service}' successfully validated.")
       else
-        error = Error.new("INVALID_SERVICE", "The ticket #{@ticket} is valid,"+
+        error = Error.new("INVALID_SERVICE", "The ticket '#{ticket}' is valid,"+
           " but the service specified does not match the service associated with this ticket.")
         $LOG.warn("#{error.code} - #{error.message}")
       end
     else
-      error = Error.new("INVALID_TICKET", "Ticket #{@ticket} not recognized.")
+      error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' not recognized.")
       $LOG.warn("#{error.code} - #{error.message}")
     end
     
-    st.destroy if st
+    if st
+      st.consume! 
+    end
     
-    error
+    
+    [st, error]
+  end
+  
+  def service_uri_with_ticket(service, st)
+    raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Models::ServiceTicket
+    
+    service_uri = URI.parse(service)
+    query_separator = service_uri.query ? "&" : "?"
+    
+    service_with_ticket = service + query_separator + "ticket=" + st.ticket
+    service_with_ticket
+  end
+  
+  def validate_proxy_granting_ticket(ticket, service)
+    if ticket.nil? or service.nil?
+      error = Error.new("INVALID_REQUEST", "pgt or targetService parameter was missing in the request.")
+      $LOG.warn("#{error.code} - #{error.message}")
+    elsif pgt = ProxyGrantingTicket.find_by_ticket(ticket)
+      $LOG.info("Proxy granting ticket '#{ticket}' successfully validated for target service '#{service}'.")
+    else
+      error = Error.new("BAD_PGT", "Invalid proxy granting ticket '#{ticket}' (no matching ticket found in the database).")
+      $LOG.warn("#{error.code} - #{error.message}")
+    end
+    
+    [pgt, error]
   end
   
 end

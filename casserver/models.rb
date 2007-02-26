@@ -2,16 +2,37 @@ require 'camping/db'
 
 module CASServer::Models
   
-  class LoginTicket < Base
+  module Consumable
+    def consume!
+      self.consumed = Time.now
+      self.save!
+    end
+  end
+  
+  class Ticket < Base
+    self.abstract_class = true
     def to_s
       ticket
     end
   end
   
-  class ServiceTicket < Base
-    def to_s
-      ticket
-    end
+  class LoginTicket < Ticket
+    include Consumable
+  end
+  
+  class ServiceTicket < Ticket
+    include Consumable
+  end
+  
+  class ProxyTicket < ServiceTicket
+    belongs_to :proxy_granting_ticket
+  end
+  
+  class TicketGrantingTicket < Ticket
+  end
+  
+  class ProxyGrantingTicket < Ticket
+    belongs_to :service_ticket
   end
   
   class Error
@@ -32,8 +53,9 @@ module CASServer::Models
       $LOG.info "Migrating database"
       
       create_table :casserver_login_tickets, :force => true do |t|
-        t.column :ticket,  :string,   :null => false
+        t.column :ticket,     :string,   :null => false
         t.column :created_on, :timestamp, :null => false
+        t.column :consumed,   :datetime, :null => true
         t.column :client_hostname, :string, :null => false
       end
     
@@ -41,8 +63,26 @@ module CASServer::Models
         t.column :ticket,     :string,    :null => false
         t.column :service,    :string,    :null => false
         t.column :created_on, :timestamp, :null => false
+        t.column :consumed,   :datetime, :null => true
         t.column :client_hostname, :string, :null => false
         t.column :username,   :string,  :null => false
+        t.column :type,       :string,   :null => false
+        t.column :proxy_granting_ticket_id, :integer, :null => true
+      end
+      
+      create_table :casserver_ticket_granting_tickets, :force => true do |t|
+        t.column :ticket,     :string,    :null => false
+        t.column :created_on, :timestamp, :null => false
+        t.column :client_hostname, :string, :null => false
+        t.column :username,   :string,    :null => false
+      end
+      
+      create_table :casserver_proxy_granting_tickets, :force => true do |t|
+        t.column :ticket,     :string,    :null => false
+        t.column :created_on, :timestamp, :null => false
+        t.column :client_hostname, :string, :null => false
+        t.column :iou,        :string,    :null => false
+        t.column :service_ticket_id, :integer, :null => false
       end
     end
     

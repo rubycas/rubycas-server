@@ -8,15 +8,33 @@ module CASServer::Controllers
     include CASServer::CAS
     
     # 2.1.1
-    def get      
-      # optional
+    def get
+      # make sure there's no caching
+      headers['Pragma'] = 'no-cache'
+      headers['Cache-Control'] = 'no-store'
+      headers['Expires'] = (Time.now - 1.year).rfc2822
+      
+      # optional params
       @service = @input['service']
       @renew = @input['renew']
       @gateway = @input['gateway']
       
-      @lt = generate_login_ticket
+      if !@renew && tgc = @cookies[:tgt]
+        tgt, error = validate_ticket_granting_ticket(tgc)
+        if tgt && !error
+          st = generate_service_ticket(@service, tgt.username)
+          service_with_ticket = service_uri_with_ticket(@service, st)
+          $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
+          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+        end
+        
+      end
       
-      $LOG.debug("Rendering login form with lt: #{@lt}, service: #{@service}, renew: #{@renew}, gateway: #{@gateway}")
+      lt = generate_login_ticket
+      
+      $LOG.debug("Rendering login form with lt: #{lt}, service: #{@service}, renew: #{@renew}, gateway: #{@gateway}")
+      
+      @lt = lt.ticket
       
       render :login
     end
@@ -32,8 +50,7 @@ module CASServer::Controllers
       @password = @input['password']
       @lt = @input['lt']
       
-      error = validate_login_ticket(@lt)
-      if error
+      if error = validate_login_ticket(@lt)
         @message = {:type => 'mistake', :message => error}
         return render(:login)
       end
@@ -46,23 +63,19 @@ module CASServer::Controllers
         $LOG.info("Credentials for username '#{@username}' successfully validated")
         
         # 3.6 (ticket-granting cookie)
-        @cookies[:tgc] = "TGC-" + CASServer::Utils.random_string
-        $LOG.debug("Ticket granting cookie '#{@cookies[:tgc]}' granted to '#{@username}'")
+        tgt = generate_ticket_granting_ticket(@username)
+        @cookies[:tgt] = tgt.to_s
+        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'")
         
-        @st = generate_service_ticket(@service, @username)
-        
-        service_uri = URI.parse(@service)
-        if service_uri.query
-          service_with_ticket = @service + "&ticket=" + @st.ticket
-        else
-          service_with_ticket = @service + "?ticket=" + @st.ticket
-        end
+        @st = generate_service_ticket(@service, @username)        
+
+        service_with_ticket = service_uri_with_ticket(@service, @st)
         
         if !@service.blank?
           $LOG.info("Redirecting authenticated user '#{@username}' to service '#{@service}'")
           return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
         else
-          $LOG.info("Successfully authenticated user #{@username}. No service param was given so we will not redirect.")
+          $LOG.info("Successfully authenticated user '#{@username}'. No service param was given so we will not redirect.")
           @message = {:type => 'confirmation', :message => "You have successfully logged in."}
           render :login
         end
@@ -98,8 +111,10 @@ module CASServer::Controllers
       # optional
       @renew = @input['renew']
       
-      @error = validate_service_ticket(@service, @ticket)
-      @success = !@error
+      st, @error = validate_service_ticket(@service, @ticket)      
+      @success = st && !@error
+      
+      @username = st.username if @success
       
       render :validate
     end
@@ -118,8 +133,16 @@ module CASServer::Controllers
       @pgt_url = @input['pgtUrl']
       @renew = @input['renew']
       
-      @error = validate_service_ticket(@service, @ticket)
-      @success = !@error
+      st, @error = validate_service_ticket(@service, @ticket)      
+      @success = st && !@error
+      
+      if @success
+        @username = st.username  
+        if @pgt_url
+          pgt = generate_proxy_granting_ticket(@pgt_url, st)
+          @pgtiou = pgt.iou if pgt
+        end
+      end
       
       render :service_validate
     end
@@ -138,9 +161,24 @@ module CASServer::Controllers
       @pgt_url = @input['pgtUrl']
       @renew = @input['renew']
       
-      @error = validate_service_ticket(@service, @ticket)
-      @success = !@error
+      @proxies = []
       
+      st, @error = validate_service_ticket(@service, @ticket)      
+      @success = st && !@error
+      
+      if @success
+        @username = st.username
+        
+        if st.kind_of? CASServer::Models::ProxyTicket
+          @proxies << st.proxy_granting_ticket.service_ticket.service
+        end
+          
+        if @pgt_url
+          pgt = generate_proxy_granting_ticket(@pgt_url, st)
+          @pgtiou = pgt.iou if pgt
+        end
+      end
+
       render :proxy_validate
     end
   end
@@ -151,8 +189,16 @@ module CASServer::Controllers
     # 2.7
     def get
       # required
-      @pgt = @input['pgt']
+      @ticket = @input['pgt']
       @target_service = @input['targetService']
+      
+      pgt, @error = validate_proxy_granting_ticket(@ticket, @target_service)
+      @success = pgt && !@error
+      
+      if @success
+        st = pgt.service_ticket
+        @pt = generate_proxy_ticket(@target_service, st)
+      end
       
       render :proxy
     end

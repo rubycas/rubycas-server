@@ -16,8 +16,8 @@ srand
 Camping.goes :CASServer
 
 module CASServer
-  LOGIN_TICKET_EXPIRY = 24.hours
-  SERVICE_TICKET_EXPIRY = 24.hours
+  LOGIN_TICKET_EXPIRY = 5.minutes
+  SERVICE_TICKET_EXPIRY = 5.minutes # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
 end
 
 require 'casserver/utils'

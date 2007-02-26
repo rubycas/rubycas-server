@@ -69,7 +69,7 @@ module CASServer::Views
               tr do
                 td{}
                 td(:id => "submit-container") do
-                  input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt.ticket)
+                  input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
                   input(:type => "hidden", :id => "service", :name => "service", :value => @service)
                   input(:type => "hidden", :id => "warn", :name => "warn", :value => @warn)
                   input(:type => "submit", :class => "button", :accesskey => "l", :value => "LOGIN", :tabindex => "4", :id => "login-submit")
@@ -102,7 +102,9 @@ module CASServer::Views
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username}
-          tag!("cas:proxyGrantingTicket") {@pgt}
+          if @pgtiou
+            tag!("cas:proxyGrantingTicket") {@pgtiou}
+          end
         end
       end
     else
@@ -119,10 +121,10 @@ module CASServer::Views
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username}
-          if @pgt
-            tag!("cas:proxyGrantingTicket") {@pgt}
+          if @pgtiou
+            tag!("cas:proxyGrantingTicket") {@pgtiou}
           end
-          if @proxies
+          if @proxies && !@proxies.empty?
             tag!("cas:proxies") do
               @proxies.each do |proxy_url|
                 tag!("cas:proxy") {proxy_url}
