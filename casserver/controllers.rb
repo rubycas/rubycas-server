@@ -163,18 +163,18 @@ module CASServer::Controllers
       
       @proxies = []
       
-      st, @error = validate_service_ticket(@service, @ticket)      
-      @success = st && !@error
+      t, @error = validate_proxy_ticket(@service, @ticket)      
+      @success = t && !@error
       
       if @success
-        @username = st.username
+        @username = t.username
         
-        if st.kind_of? CASServer::Models::ProxyTicket
-          @proxies << st.proxy_granting_ticket.service_ticket.service
+        if t.kind_of? CASServer::Models::ProxyTicket
+          @proxies << t.proxy_granting_ticket.service_ticket.service
         end
           
         if @pgt_url
-          pgt = generate_proxy_granting_ticket(@pgt_url, st)
+          pgt = generate_proxy_granting_ticket(@pgt_url, t)
           @pgtiou = pgt.iou if pgt
         end
       end
@@ -196,8 +196,7 @@ module CASServer::Controllers
       @success = pgt && !@error
       
       if @success
-        st = pgt.service_ticket
-        @pt = generate_proxy_ticket(@target_service, st)
+        @pt = generate_proxy_ticket(@target_service, pgt)
       end
       
       render :proxy

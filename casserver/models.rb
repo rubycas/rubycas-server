@@ -18,6 +18,10 @@ module CASServer::Models
   
   class LoginTicket < Ticket
     include Consumable
+    
+    def self.cleanup_expired
+      tickets = find(:all)
+    end
   end
   
   class ServiceTicket < Ticket
