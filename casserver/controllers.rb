@@ -55,7 +55,7 @@ module CASServer::Controllers
         return render(:login)
       end
       
-      $AUTH.configure($CONF)
+      $AUTH.configure(CASServer::Conf.authenticator)
       
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
       
@@ -95,7 +95,9 @@ module CASServer::Controllers
     def get
       @url = @input['url']
       
-      render :logout
+      @message = {:type => 'confirmation', :message => "You have successfully logged out."}
+      
+      render :login
     end
   end
 

@@ -31,7 +31,7 @@ $LOG.level = "CASServer::Utils::Logger::#{$CONF[:log][:level] || DEBUG}".constan
 
 # do initialization stuff
 def CASServer.create
-  CASServer::Models::Base.establish_connection :adapter => 'mysql', :database => 'casserver', :user => 'root', :server => 'localhost'
+  CASServer::Models::Base.establish_connection(CASServer::Conf.database)
   CASServer::Models::Base.logger = Logger.new($CONF[:db_log][:file] || 'casserver_db.log')
   CASServer::Models::Base.logger.level = Logger::DEBUG
 
@@ -41,13 +41,16 @@ def CASServer.create
   
   $LOG.debug("Configuration is:\n#{$CONF.to_yaml}")
   $LOG.debug("Authenticator is: #{$AUTH}")
+  
+  CASServer::Models::ServiceTicket.cleanup_expired(CASServer::Conf.service_ticket_expiry)
+  CASServer::Models::LoginTicket.cleanup_expired(CASServer::Conf.login_ticket_expiry)
+  CASServer::Models::ProxyGrantingTicket.cleanup_expired(CASServer::Conf.proxy_granting_ticket_expiry)
+  CASServer::Models::TicketGrantingTicket.cleanup_expired(CASServer::Conf.ticket_granting_ticket_expiry)
 end
 
 
 # this gets run if we launch directly (i.e. `ruby casserver.rb` rather than `camping casserver`)
 if __FILE__ == $0
-  # set up active_record
-
   CASServer.create
   puts CASServer.run
 end 

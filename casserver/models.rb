@@ -15,22 +15,17 @@ module CASServer::Models
       ticket
     end
     
-    def self.cleanup_expired(expiry_time, cleanup_interval_time = nil)
-      if cleanup_interval_time
-        unless maxiumum(:created_on) > Time.now + cleanup_interval_time
-          $LOG.debug("Skipping cleanup of expired tickets for #{self} because"+
-            " cleanup interval time has not yet been reached.")
-          return false
+    def self.cleanup_expired(expiry_time)
+      transaction do
+        expired_tickets = find(:all, 
+          :conditions => ["created_on < ?", Time.now - expiry_time])
+          
+        $LOG.debug("Destroying #{expired_tickets.size} expired #{self}"+
+          "#{'s' if expired_tickets.size > 1}.") if expired_tickets.size > 0
+      
+        expired_tickets.each do |t|
+          t.destroy
         end
-      end
-    
-      expired_tickets = find(:all, 
-        :conditions => ["created_on > ?", Time.now + expiry_time])
-        
-      $LOG.info("Destroying #{expired_tickets.count} expired #{self} tickets.")
-        
-      expired_tickets.each do |t|
-        t.destroy!
       end
     end
   end
