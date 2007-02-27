@@ -1,14 +1,19 @@
 # load configuration
-$CONF = HashWithIndifferentAccess.new(YAML.load_file(File.dirname(File.expand_path(__FILE__))+
-  "/../config.yml"))
 begin
-  # attempt to instantiate the authenticator
-  $AUTH = $CONF[:authenticator].constantize.new
-rescue NameError
-  # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
-  auth_rb = $CONF[:authenticator].underscore.gsub('cas_server/', '')
-  require 'casserver/'+auth_rb
-  $AUTH = $CONF[:authenticator].constantize.new
+  $CONF = HashWithIndifferentAccess.new(YAML.load_file(File.dirname(File.expand_path(__FILE__))+
+    "/../config.yml"))
+  begin
+    # attempt to instantiate the authenticator
+    $AUTH = $CONF[:authenticator][:class].constantize.new
+  rescue NameError
+    # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+    auth_rb = $CONF[:authenticator][:class].underscore.gsub('cas_server/', '')
+    require 'casserver/'+auth_rb
+    $AUTH = $CONF[:authenticator][:class].constantize.new
+  end
+rescue
+  raise "Your RubyCAS-Server configuration may be invalid."+
+    " Please double-check check your config.yml file.\n\nUNDERLYING PROBLEM:\n#{$!}"
 end
 
 module CASServer
