@@ -14,14 +14,29 @@ module CASServer::Models
     def to_s
       ticket
     end
+    
+    def self.cleanup_expired(expiry_time, cleanup_interval_time = nil)
+      if cleanup_interval_time
+        unless maxiumum(:created_on) > Time.now + cleanup_interval_time
+          $LOG.debug("Skipping cleanup of expired tickets for #{self} because"+
+            " cleanup interval time has not yet been reached.")
+          return false
+        end
+      end
+    
+      expired_tickets = find(:all, 
+        :conditions => ["created_on > ?", Time.now + expiry_time])
+        
+      $LOG.info("Destroying #{expired_tickets.count} expired #{self} tickets.")
+        
+      expired_tickets.each do |t|
+        t.destroy!
+      end
+    end
   end
   
   class LoginTicket < Ticket
     include Consumable
-    
-    def self.cleanup_expired
-      tickets = find(:all)
-    end
   end
   
   class ServiceTicket < Ticket
@@ -54,7 +69,7 @@ module CASServer::Models
 
   class CreateCASServer < V 0.1
     def self.up
-      $LOG.info "Migrating database"
+      $LOG.info("Migrating database")
       
       create_table :casserver_login_tickets, :force => true do |t|
         t.column :ticket,     :string,   :null => false
