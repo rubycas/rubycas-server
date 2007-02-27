@@ -37,13 +37,13 @@ module CASServer::CAS
     st
   end
   
-  def generate_proxy_ticket(target_service, st)
+  def generate_proxy_ticket(target_service, pgt)
     # 3.2 (proxy ticket)
     pt = ProxyTicket.new
     pt.ticket = "PT-" + CASServer::Utils.random_string
     pt.service = target_service
-    pt.username = st.username
-    pt.proxy_granting_ticket_id = st.id
+    pt.username = pgt.service_ticket.username
+    pt.proxy_granting_ticket_id = pgt.id
     pt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
     pt.save!
     pt
@@ -99,7 +99,7 @@ module CASServer::CAS
       if lt.consumed?
         error = "The login ticket you provided has already been used up."
         $LOG.warn("Login ticket '#{ticket}' previously used up")
-      elsif Time.now - lt.created_on < CASServer::LOGIN_TICKET_EXPIRY
+      elsif Time.now - lt.created_on < CASServer.login_ticket_expiry
         $LOG.info("Login ticket '#{ticket}' successfully validated")
       else
         error = "Your login ticket  has expired."
@@ -129,15 +129,18 @@ module CASServer::CAS
     [tgt, error]
   end
 
-  def validate_service_ticket(service, ticket)
+  def validate_service_ticket(service, ticket, allow_proxy_tickets = false)
     if service.nil? or ticket.nil?
       error = Error.new("INVALID_REQUEST", "Ticket or service parameter was missing in the request.")
       $LOG.warn("#{error.code} - #{error.message}")
     elsif st = ServiceTicket.find_by_ticket(ticket)
       if st.consumed?
-        error = Error.new("INVALID_TICKET", "Ticket #{ticket} has already been used up.")
+        error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has already been used up.")
         $LOG.warn("#{error.code} - #{error.message}")
-      elsif Time.now - st.created_on > CASServer::SERVICE_TICKET_EXPIRY
+      elsif st.kind_of?(CASServer::Models::ProxyTicket) && !allow_proxy_tickets
+        error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
+        $LOG.warn("#{error.code} - #{error.message}")
+      elsif Time.now - st.created_on > CASServer.service_ticket_expiry
         error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has expired.")
         $LOG.warn("Ticket '#{ticket}' has expired.")
       elsif st.service == service
@@ -158,6 +161,21 @@ module CASServer::CAS
     
     
     [st, error]
+  end
+  
+  def validate_proxy_ticket(service, ticket)
+    pt, error = validate_service_ticket(service, ticket, true)
+    
+    if pt.kind_of?(CASServer::Models::ProxyTicket) && !error
+      if not pt.proxy_granting_ticket
+        error = Error.new("INTERNAL_ERROR", "Proxy ticket '#{pt}' is not associated with a proxy granting ticket.")
+      elsif not pt.proxy_granting_ticket.service_ticket
+        error = Error.new("INTERNAL_ERROR", "Proxy granting ticket '#{pt.proxy_granting_ticket}'"+
+          " (associated with proxy ticket '#{pt}' is not associated with a service ticket.")
+      end
+    end
+    
+    [pt, error]
   end
   
   def service_uri_with_ticket(service, st)
