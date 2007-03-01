@@ -1,16 +1,122 @@
+# Set up the database connection. Make sure that this database is secure!
+# 
+# By default, we use sqlite3 since it works without any extra configuration.
+# You can also use MySQL, PostgreSQL, MSSQL, or anything else supported by ActiveRecord.
+#
+# For example, with MySQL, your config wold be something like:
+#
+#database:
+#  adapter: mysql
+#  database: casserver
+#  user: root
+#  password: 
+#  server: localhost
+
+database:
+  adapter: sqlite3
+  dbfile: casserver.db
+  
+
+# Configure how username/passwords are validated.
+#
+# Currently there are three built-in methods for authentication:
+# SQL, ActiveDirectory, and LDAP. If none of these work for you, it is relatively
+# easy to write your own custom Authenticator class.
+#
+# ==> SQL Authentication:
+# The simplest method is to validate against a SQL database. This assumes
+# that all of your users are stored in a table that has a 'username' column
+# and a 'password' column. When the user logs in, CAS conects to this database
+# and look for a matching username/password in the users table. If a matching
+# username and password is found, authentication is successful.
+# 
+# Example:
+#
+#authenticator:
+#  class: CASServer::Authenticators::SQL
+#  database:
+#    adapter: mysql
+#    database: some_database_with_users_table
+#    user: root
+#    password: 
+#    server: localhost
+#  user_table: user
+#  username_column: username
+#  password_column: password
+#
+#
+# ==> ActiveDirectory Authentication:
+# This method authenticates against Microsoft's ActiveDirectory using LDAP.
+# You must enter your ActiveDirectory server, and base DN. The port number
+# and LDAP filter are optional. You must also enter a username and password
+# for an "authenticator" user. The authenticator users this account to
+# log in to the ActiveDirectory server and search LDAP. This does not have
+# to be an administrative account; it only has to be able to search for other
+# users.
+#
+# Example:
+#
+#authenticator: 
+#  class: CASServer::Authenticators::ActiveDirectoryLDAP
+#  ldap:
+#    server: ad.example.net
+#    port: 389
+#    base: dc=example,dc=net
+#    filter: (objectClass=person)
+#    auth_user: authenticator
+#    auth_password: itsasecret
+#
+#
+# ==> LDAP Authentication:
+# This is a more general version of the ActiveDirectory authenticator.
+# The configuration is similar, except you don't need an authenticator
+# username or password. Note that this authenticator hasn't been widely
+# tested, so it is not guaranteed to work.
+#
+#authenticator:
+#  class: CASServer::Authenticators::ActiveDirectoryLDAP
+#  ldap:
+#    server: ad.example.net
+#    port: 389
+#    base: dc=example,dc=net
+#    filter: (objectClass=person)
+#
+#
+# ==> Custom Authentication:
+# It should be relatively easy to write your own Authenticator class. Have a look
+# at the built-in authenticators in the casserver/authenticators directory. Your
+# authenticator should extend the CASServer::Authenticators::Base class and must
+# implement a validate() method that takes a single hash argument. When the user submits
+# the login form, the username and password they entered is passed to validate()
+# as a hash under :username and :password keys. In the future, this hash
+# might also contain other data such as the domain that the user is logging in to.
+#
+# To use your custom authenticator, specify it's class name in the authenticator section
+# of the config. You will also probably have to load the class using using a `require`
+# call at the top of casserver.rb. Any other parameters you specify in the authenticator
+# configuration will be passed on to the authenticator and made availabe in the validate()
+# method as an @options hash.
+#
+# Example:
+#
+#authenticator:
+#  class: FooModule::MyCustomAuthenticator
+#  option_a: foo
+#  another_option: yeeha
+
+
+# Set up general logging. This log is where you'll want to look in case of problems.
+#
+# You may want to change the file to something like /var/log/casserver.log
+# Set the level to DEBUG if you want more detailed logging.
+
 log:
   file: casserver.log
-  level: DEBUG
-  
-db_log:
-  file: casserver_db.log
+  level: INFO
 
-authenticator: CASServer::Authenticators::ActiveDirectoryLDAP
 
-ldap:
-  server: ad.example.com
-  port: 389
-  base: dc=example,dc=com
-  filter: (objectClass=person)
-  auth_user: authenticator
-  auth_password: 1234example
+# If you want full database logging, uncomment this next section.
+# Every SQL query will be logged here. This is useful for debugging database problems.
+#
+#db_log:
+#  file: casserver_db.log

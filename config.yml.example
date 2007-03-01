@@ -1,9 +1,0 @@
-authenticator: CASServer::Authenticators::ActiveDirectoryLDAP
-
-ldap:
-  server: ad.example.com
-  port: 389
-  base: dc=example,dc=com
-  filter: (objectClass=person)
-  auth_user: authenticator
-  auth_password: 1234example
