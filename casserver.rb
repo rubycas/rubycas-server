@@ -27,13 +27,15 @@ require 'casserver/controllers'
 
 # init the logger
 $LOG = CASServer::Utils::Logger.new($CONF[:log][:file] || 'casserver.log')
-$LOG.level = "CASServer::Utils::Logger::#{$CONF[:log][:level] || DEBUG}".constantize
+$LOG.level = "CASServer::Utils::Logger::#{CASServer::Conf.log[:level] || 'DEBUG'}".constantize
 
 # do initialization stuff
 def CASServer.create
   CASServer::Models::Base.establish_connection(CASServer::Conf.database)
-  CASServer::Models::Base.logger = Logger.new($CONF[:db_log][:file] || 'casserver_db.log')
-  CASServer::Models::Base.logger.level = Logger::DEBUG
+  if CASServer::Conf.db_log
+    CASServer::Models::Base.logger = Logger.new(CASServer::Conf.db_log[:file] || 'casserver_db.log')
+    CASServer::Models::Base.logger.level = "CASServer::Utils::Logger::#{CASServer::Conf.db_log[:level] || 'DEBUG'}".constantize
+  end
 
   CASServer::Models.create_schema
   
