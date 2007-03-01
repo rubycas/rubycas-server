@@ -89,7 +89,6 @@ module CASServer::CAS
     end
   end
   
-  
   def validate_login_ticket(ticket)
     success = false
     if ticket.nil?
@@ -178,16 +177,6 @@ module CASServer::CAS
     [pt, error]
   end
   
-  def service_uri_with_ticket(service, st)
-    raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Models::ServiceTicket
-    
-    service_uri = URI.parse(service)
-    query_separator = service_uri.query ? "&" : "?"
-    
-    service_with_ticket = service + query_separator + "ticket=" + st.ticket
-    service_with_ticket
-  end
-  
   def validate_proxy_granting_ticket(ticket, service)
     if ticket.nil? or service.nil?
       error = Error.new("INVALID_REQUEST", "pgt or targetService parameter was missing in the request.")
@@ -200,6 +189,16 @@ module CASServer::CAS
     end
     
     [pgt, error]
+  end
+  
+  def service_uri_with_ticket(service, st)
+    raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Models::ServiceTicket
+    
+    service_uri = URI.parse(service)
+    query_separator = service_uri.query ? "&" : "?"
+    
+    service_with_ticket = service + query_separator + "ticket=" + st.ticket
+    service_with_ticket
   end
   
 end

@@ -19,7 +19,7 @@ module CASServer::Controllers
       @renew = @input['renew']
       @gateway = @input['gateway']
       
-      if !@renew && tgc = @cookies[:tgt]
+      if @service && !@renew && tgc = @cookies[:tgt]
         tgt, error = validate_ticket_granting_ticket(tgc)
         if tgt && !error
           st = generate_service_ticket(@service, tgt.username)
@@ -27,7 +27,6 @@ module CASServer::Controllers
           $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
           return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
         end
-        
       end
       
       lt = generate_login_ticket
@@ -66,18 +65,17 @@ module CASServer::Controllers
         tgt = generate_ticket_granting_ticket(@username)
         @cookies[:tgt] = tgt.to_s
         $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'")
-        
-        @st = generate_service_ticket(@service, @username)        
-
-        service_with_ticket = service_uri_with_ticket(@service, @st)
-        
-        if !@service.blank?
-          $LOG.info("Redirecting authenticated user '#{@username}' to service '#{@service}'")
-          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
-        else
-          $LOG.info("Successfully authenticated user '#{@username}'. No service param was given so we will not redirect.")
+                
+        if @service.blank?
+          $LOG.info("Successfully authenticated user '#{@username}'. No service param was given, so we will not redirect.")
           @message = {:type => 'confirmation', :message => "You have successfully logged in."}
           render :login
+        else
+          @st = generate_service_ticket(@service, @username)        
+          service_with_ticket = service_uri_with_ticket(@service, @st)
+        
+          $LOG.info("Redirecting authenticated user '#{@username}' to service '#{@service}'")
+          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
         end
       else
         $LOG.warn("Invalid credentials given for user '#{@username}'")
@@ -93,9 +91,34 @@ module CASServer::Controllers
     
     # 2.3.1
     def get
-      @url = @input['url']
+      # The behaviour here is somewhat non-standard. Rather than showing just a blank
+      # "logout" page, we take the user back to the login page with a "you have been logged out"
+      # message, allowing for an opportunity to immediately log back in. This makes
+      # switching users a lot smoother.
+      @service = @input['url'] || @input['service']
+      # TODO: display service name in view as per 2.3.2
+      
+      tgt = CASServer::Models::TicketGrantingTicket.find_by_ticket(@cookies[:tgt])
+      
+      @cookies.delete :tgt
+      
+      if tgt
+        pgts = CASServer::Models::ProxyGrantingTicket.find(:all, ["username = ?", tgt.username])
+        pgts.each do |pgt|
+          pgt.destroy
+          $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{tgt.username}'")
+        end
+        
+        $LOG.debug("Deleting Ticket-Granting Ticket '#{tgt}' for user '#{tgt.username}'")
+        
+        $LOG.info("User #{tgt.username} logged out.")
+      else
+        $LOG.warn("User tried to log out without a valid ticket-granting ticket.")
+      end
       
       @message = {:type => 'confirmation', :message => "You have successfully logged out."}
+      
+      @lt = generate_login_ticket
       
       render :login
     end

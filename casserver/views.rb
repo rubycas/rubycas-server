@@ -47,7 +47,7 @@ module CASServer::Views
           img(:id => "logo", :src => "https://login.urbacon.net:8181/cas/themes/default/urbacon.png", :width => "115", :height => "171")
         end
         td(:id => "login-form_container") do
-          form(:method => "post", :action => "", :id => "login-form",
+          form(:method => "post", :action => "/login", :id => "login-form",
               :onsubmit => "submit = document.getElementById('login-submit'); submit.value='Please wait...'; submit.disabled=true; return true;") do
             table(:id => "form-layout") do
               tr do

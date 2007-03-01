@@ -47,6 +47,7 @@ module CASServer::Models
   
   class ProxyGrantingTicket < Ticket
     belongs_to :service_ticket
+    has_many :proxy_tickets, :dependent => :destroy
   end
   
   class Error
