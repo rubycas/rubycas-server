@@ -31,12 +31,6 @@ $LOG.level = "CASServer::Utils::Logger::#{CASServer::Conf.log[:level] || 'DEBUG'
 
 # do initialization stuff
 def CASServer.create
-  CASServer::Models::Base.establish_connection(CASServer::Conf.database)
-  if CASServer::Conf.db_log
-    CASServer::Models::Base.logger = Logger.new(CASServer::Conf.db_log[:file] || 'casserver_db.log')
-    CASServer::Models::Base.logger.level = "CASServer::Utils::Logger::#{CASServer::Conf.db_log[:level] || 'DEBUG'}".constantize
-  end
-
   CASServer::Models.create_schema
   
   $LOG.info("RubyCAS-Server initialized.")
@@ -53,6 +47,54 @@ end
 
 # this gets run if we launch directly (i.e. `ruby casserver.rb` rather than `camping casserver`)
 if __FILE__ == $0
-  CASServer.create
-  puts CASServer.run
+  CASServer::Models::Base.establish_connection(CASServer::Conf.database)
+  if CASServer::Conf.db_log
+    CASServer::Models::Base.logger = Logger.new(CASServer::Conf.db_log[:file] || 'casserver_db.log')
+    CASServer::Models::Base.logger.level = "CASServer::Utils::Logger::#{CASServer::Conf.db_log[:level] || 'DEBUG'}".constantize
+  end
+
+  case CASServer::Conf.server
+  when "webrick", :webrick
+    require 'webrick/httpserver'
+    require 'camping/webrick'
+    
+    s = WEBrick::HTTPServer.new :BindAddress => "0.0.0.0", :Port => CASServer::Conf.port
+    CASServer.create
+    s.mount "/", WEBrick::CampingHandler, CASServer
+  
+    # This lets Ctrl+C shut down your server
+    trap(:INT) do
+      s.shutdown
+    end
+  
+    s.start
+    
+  when "mongrel", :mongrel
+    require 'rubygems'
+    require 'mongrel/camping'
+    
+    CASServer.create
+  
+    server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"/",CASServer)
+    puts "** CASServer is running at http://localhost:3000/cas"
+    server.run.join
+  
+  when "fastcgi", :fastcgi
+    require 'camping/fastcgi'
+    Dir.chdir('/var/camping/blog/')
+    
+    CASServer.create
+    Camping::FastCGI.start(Blog)
+    
+  when "cgi", :cgi
+    CASServer.create
+    puts CASServer.run
+    
+  else
+    if CASServer::Conf.server
+      raise "The server setting '#{CASServer::Conf.server}' in your config.yml file is invalid."
+    else
+      raise "You must have a 'server' setting in your config.yml file. Please see the RubyCAS-Server documentation."
+    end
+  end
 end 

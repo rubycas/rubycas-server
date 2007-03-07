@@ -1,3 +1,15 @@
+# Under what environment are  you running the CAS server? The following methods
+# are currently supported:
+#
+# webrick -- run as a stand-alone webrick server; this is the default method
+# mongrel -- run as a stand-alone mongrel server; fast, but you'll need to install mongrel first
+# cgi     -- slow, but simple to set up if you're already familliar with deploying CGI apps
+# fastcgi -- see http://www.fastcgi.com/ (for example, under Apache you can use this with mod_fastcgi)
+
+server: webrick
+# the port setting is only used for stand-alone webrick and mongrel
+port: 110011 
+
 # Set up the database connection. Make sure that this database is secure!
 # 
 # By default, we use sqlite3 since it works without any extra configuration.
@@ -11,6 +23,7 @@
 #  user: root
 #  password: 
 #  server: localhost
+#
 
 database:
   adapter: sqlite3
@@ -18,6 +31,8 @@ database:
   
 
 # Configure how username/passwords are validated.
+#
+# !!! YOU MUST CONFIGURE ONE (AND ONLY ONE) OF THESE AUTHENTICATION METHODS !!!
 #
 # Currently there are three built-in methods for authentication:
 # SQL, ActiveDirectory, and LDAP. If none of these work for you, it is relatively
