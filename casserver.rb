@@ -26,8 +26,8 @@ require 'casserver/views'
 require 'casserver/controllers'
 
 # init the logger
-$LOG = CASServer::Utils::Logger.new($CONF[:log][:file] || 'casserver.log')
-$LOG.level = "CASServer::Utils::Logger::#{CASServer::Conf.log[:level] || 'DEBUG'}".constantize
+$LOG = CASServer::Utils::Logger.new(CASServer::Conf.log[:file])
+$LOG.level = "CASServer::Utils::Logger::#{CASServer::Conf.log[:level]}".constantize
 
 # do initialization stuff
 def CASServer.create
@@ -76,7 +76,7 @@ if __FILE__ == $0
     CASServer.create
   
     server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"/",CASServer)
-    puts "** CASServer is running at http://localhost:#{CASServer::Conf.port}/"
+    puts "** CASServer is running at http://localhost:#{CASServer::Conf.port}/ and logging to '#{CASServer::Conf.log[:file]}'"
     server.run.join
   
   when "fastcgi", :fastcgi

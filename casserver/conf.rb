@@ -32,7 +32,8 @@ module CASServer
       :login_ticket_expiry => 5.minutes,
       :service_ticket_expiry => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
       :proxy_granting_ticket_expiry => 48.hours,
-      :ticket_granting_ticket_expiry => 48.hours
+      :ticket_granting_ticket_expiry => 48.hours,
+      :log => {:file => 'casserver.log', :level => 'DEBUG'}
     }
   
     def [](key)
