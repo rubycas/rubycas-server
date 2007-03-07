@@ -146,7 +146,7 @@ module CASServer::CAS
         $LOG.info("Ticket '#{ticket}' for service '#{service}' successfully validated.")
       else
         error = Error.new("INVALID_SERVICE", "The ticket '#{ticket}' is valid,"+
-          " but the service specified does not match the service associated with this ticket.")
+          " but the service '#{service}' specified does not match the service '#{st.service}' associated with this ticket.")
         $LOG.warn("#{error.code} - #{error.message}")
       end
     else
