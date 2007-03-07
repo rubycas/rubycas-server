@@ -1,5 +1,5 @@
 body {
-	background-image: url(/themes/urbacon/bg.png);
+	background-image: url(bg.png);
 }
 
 label {
@@ -8,7 +8,7 @@ label {
 
 #login-form {
 	background-repeat: no-repeat;
-	background-image: url(/themes/urbacon/login_box_bg.png);
+	background-image: url(login_box_bg.png);
 	height: 175px;
 	width: 210px;
 	padding: 20px;
