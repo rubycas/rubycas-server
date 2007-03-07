@@ -1,0 +1,28 @@
+body {
+	background-image: url(/themes/simple/bg.png);
+}
+
+#headline-container {
+	margin-bottom: 5px;
+}
+
+#login-box {
+	margin: 0 auto;
+	width: 350px;
+	top: 110px;
+	position: relative;
+}
+
+#login-form {
+	background-color: #fff;
+	border: 1px #aaa solid;
+}
+
+#logo-container {
+	vertical-align: middle;
+}
+
+#logo {
+    width: 128px;
+    height: 128px;
+}

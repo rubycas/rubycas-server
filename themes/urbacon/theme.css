@@ -1,0 +1,33 @@
+body {
+	background-image: url(/themes/urbacon/bg.png);
+}
+
+label {
+	color: #5c6156;
+}
+
+#login-form {
+	background-repeat: no-repeat;
+	background-image: url(/themes/urbacon/login_box_bg.png);
+	height: 175px;
+	width: 210px;
+	padding: 20px;
+}
+
+#logo-container {
+	vertical-align: top;
+}
+
+#logo {
+    width: 115px;
+    height: 171px;
+}
+
+#infoline {
+	color: #5c6156;
+	font-size: 8px;
+}
+
+#headline-container {
+	margin-right: 15px;
+}
