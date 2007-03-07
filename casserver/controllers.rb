@@ -191,8 +191,14 @@ module CASServer::Controllers
       
       @proxies = []
       
+      $LOG.debug("Validating proxy ticket '#{ticket}' for service '#{ticket}'")
+      
       t, @error = validate_proxy_ticket(@service, @ticket)      
       @success = t && !@error
+      
+      if @success
+        
+      end
       
       if @success
         @username = t.username
@@ -207,7 +213,7 @@ module CASServer::Controllers
         end
       end
 
-      render :proxy_validate
+      $LOG.debug(render(:proxy_validate))
     end
   end
   
