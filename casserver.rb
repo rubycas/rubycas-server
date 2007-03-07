@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+Dir.chdir(File.dirname(File.expand_path(__FILE__))) if __FILE__ == $0
+
 require 'rubygems'
 require 'camping'
 
@@ -72,6 +74,7 @@ if __FILE__ == $0
   when "mongrel", :mongrel
     require 'rubygems'
     require 'mongrel/camping'
+    
     
     CASServer.create
   
