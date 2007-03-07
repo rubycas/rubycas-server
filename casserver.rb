@@ -78,8 +78,8 @@ if __FILE__ == $0
     
     CASServer.create
   
-    server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"/",CASServer)
-    puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}/ and logging to '#{CASServer::Conf.log[:file]}'"
+    server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"/#{CASServer::Conf.uri_path}",CASServer)
+    puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}/#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
     server.run.join
   
   when "fastcgi", :fastcgi
