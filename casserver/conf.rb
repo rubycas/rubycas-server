@@ -14,7 +14,9 @@ begin
 rescue
   if File.exists? conf_file
     raise "Your RubyCAS-Server configuration may be invalid."+
-      " Please double-check check your config.yml file.\n\nUNDERLYING PROBLEM:\n#{$!}"
+      " Please double-check check your config.yml file."+
+      " Make sure that you are using spaces instead of tabs for your indentation!!" +
+      "\n\nUNDERLYING EXCEPTION:\n#{$!}"
   else
     puts "\nCAS SERVER NOT YET CONFIGURED!!!\n"
     puts "\nIt appears that you have not yet created a configuration for the CAS server." +
