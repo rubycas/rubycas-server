@@ -1,7 +1,7 @@
 # load configuration
 begin
-  $CONF = HashWithIndifferentAccess.new(YAML.load_file(File.dirname(File.expand_path(__FILE__))+
-    "/../config.yml"))
+  conf_file = File.dirname(File.expand_path(__FILE__))+"/../config.yml"
+  $CONF = HashWithIndifferentAccess.new(YAML.load_file(conf_file))
   begin
     # attempt to instantiate the authenticator
     $AUTH = $CONF[:authenticator][:class].constantize.new
@@ -12,8 +12,16 @@ begin
     $AUTH = $CONF[:authenticator][:class].constantize.new
   end
 rescue
-  raise "Your RubyCAS-Server configuration may be invalid."+
-    " Please double-check check your config.yml file.\n\nUNDERLYING PROBLEM:\n#{$!}"
+  if File.exists? conf_file
+    raise "Your RubyCAS-Server configuration may be invalid."+
+      " Please double-check check your config.yml file.\n\nUNDERLYING PROBLEM:\n#{$!}"
+  else
+    puts "\nCAS SERVER NOT YET CONFIGURED!!!\n"
+    puts "\nIt appears that you have not yet created a configuration for the CAS server." +
+      " \nYou should make a copy of the 'config.example.yml' file, name it 'config.yml'" + 
+      " and edit it to match your desired configuration.\n\n"
+    exit 1
+  end
 end
 
 module CASServer
