@@ -54,6 +54,9 @@ module CASServer::Controllers
         return render(:login)
       end
       
+      # generate another login ticket to allow for re-submitting the form after a post
+      @lt = generate_login_ticket.ticket
+      
       $AUTH.configure(CASServer::Conf.authenticator)
       
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
