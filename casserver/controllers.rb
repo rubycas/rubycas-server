@@ -228,15 +228,15 @@ module CASServer::Controllers
     end
   end
   
-  class Static < R '/static/(.+)'         
+  class Themes < R '/themes/(.+)'         
     MIME_TYPES = {'.css' => 'text/css', '.js' => 'text/javascript', 
                   '.jpg' => 'image/jpeg'}
-    PATH = File.expand_path(File.dirname(__FILE__))+'/..'
+    PATH = CASServer::Conf.themes_dir || File.expand_path(File.dirname(__FILE__))+'/../themes'
 
     def get(path)
       @headers['Content-Type'] = MIME_TYPES[path[/\.\w+$/, 0]] || "text/plain"
       unless path.include? ".." # prevent directory traversal attacks
-        @headers['X-Sendfile'] = "#{PATH}/static/#{path}"
+        @headers['X-Sendfile'] = "#{PATH}/#{path}"
       else
         @status = "403"
         "403 - Invalid path"

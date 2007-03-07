@@ -11,8 +11,9 @@ module CASServer::Views
     if @auto_validation
       xhtml_strict do
         head do 
-          title { @server }
-          link(:rel => "stylesheet", :type => "text/css", :href => "static/cas.css")
+          title { "#{organization} Central Login" }
+          link(:rel => "stylesheet", :type => "text/css", :href => "themes/cas.css")
+          link(:rel => "stylesheet", :type => "text/css", :href => "themes/#{current_theme}/theme.css")
         end
         body(:onload => "if (document.getElementById('username')) document.getElementById('username').focus()") do
           self << yield 
@@ -26,11 +27,13 @@ module CASServer::Views
 
   # 2.1.3
   def login
+    @logo = 
+  
     table(:id => "login-box") do
       tr do
         td(:colspan => 2) do
           div(:id => "headline-container") do
-            strong "URBACON"
+            strong organization
             text "Central Login"
           end
         end
@@ -44,9 +47,9 @@ module CASServer::Views
       end
       tr do
         td(:id => "logo-container") do
-          img(:id => "logo", :src => "https://login.urbacon.net:8181/cas/themes/default/urbacon.png", :width => "115", :height => "171")
+          img(:id => "logo", :src => "/themes/#{current_theme}/logo.png")
         end
-        td(:id => "login-form_container") do
+        td(:id => "login-form-container") do
           form(:method => "post", :action => "/login", :id => "login-form",
               :onsubmit => "submit = document.getElementById('login-submit'); submit.value='Please wait...'; submit.disabled=true; return true;") do
             table(:id => "form-layout") do
@@ -76,7 +79,7 @@ module CASServer::Views
                 end
               end
               tr do
-                td(:colspan => 2, :id => "infoline") { "&copy Urbacon Limited 2006, All Rights Reserved" }
+                td(:colspan => 2, :id => "infoline") { infoline }
               end
             end
           end
@@ -158,4 +161,25 @@ module CASServer::Views
   
   def configure
   end
+  
+  protected
+  def themes_dir
+    File.dirname(File.expand_path(__FILE__))+'../themes'
+  end
+  module_function :themes_dir
+  
+  def current_theme
+    CASServer::Conf.theme || "simple"
+  end
+  module_function :current_theme
+  
+  def organization
+    CASServer::Conf.organization || ""
+  end
+  module_function :organization
+  
+  def infoline
+    CASServer::Conf.infoline || ""
+  end
+  module_function :infoline
 end

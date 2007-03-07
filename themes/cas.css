@@ -3,13 +3,11 @@
 }
 
 body {
-	background-image: url(/static/bg.png);
 }
 
 label {
 	font-weight: bold;
-	font-size: 9px;	
-	color: #5c6156;
+	font-size: 9px;
 }
 
 input {
@@ -34,7 +32,7 @@ input.button {
 	border-bottom: 1px solid #899989;
 	font-family: Tahoma, Verdana, sans-serif;
 	font-size: 22px;
-	margin-right: 15px;
+	margin-right: 0px;
 	padding-right: 7px;
 	margin-left: 10px;
 	letter-spacing: -0.25px;
@@ -42,6 +40,9 @@ input.button {
 
 #logo-container {
 	vertical-align: top;
+}
+
+#logo {
 }
 
 #login-form-container {
@@ -55,10 +56,6 @@ input.button {
 }
 
 #login-form {
-	background-image: url(/static/login_box_bg.png);
-	background-repeat: no-repeat;
-	height: 175px;
-	width: 210px;
 	padding: 20px;
 }
 
@@ -80,8 +77,7 @@ input.button {
 }
 
 #infoline {
-	color: #5c6156;
-	font-size: 8px;
+	font-size: 9px;
 }
 
 #messagebox-container {
@@ -91,9 +87,7 @@ input.button {
 
 div.messagebox {
 	font-size: 12px;
-	/*border: 1px dotted #899989;*/
 	padding: 5px;
-	/*background-color: white;*/
 	padding-left: 55px;
 	text-align: center;
 	width: 70%;
@@ -103,7 +97,7 @@ div.messagebox {
 
 div.mistake {
 	color: #d00;
-	background-image: url(/static/warning.png);
+	background-image: url(/themes/warning.png);
 	background-repeat: no-repeat;
 	background-position: 10px 5px;
 	font-weight: bold;
@@ -111,7 +105,7 @@ div.mistake {
 
 div.confirmation {
 	color: #280;
-	background-image: url(/static/ok.png);
+	background-image: url(/themes/ok.png);
 	background-repeat: no-repeat;
 	background-position: 10px 5px;
 	font-weight: bold;

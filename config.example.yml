@@ -1,14 +1,24 @@
-# Under what environment are  you running the CAS server? The following methods
+##### SERVER ########################################################################
+
+# Under what environment are you running the CAS server? The following methods
 # are currently supported:
 #
 # webrick -- run as a stand-alone webrick server; this is the default method
 # mongrel -- run as a stand-alone mongrel server; fast, but you'll need to install mongrel first
-# cgi     -- slow, but simple to set up if you're already familliar with deploying CGI apps
-# fastcgi -- see http://www.fastcgi.com/ (for example, under Apache you can use this with mod_fastcgi)
+# cgi     -- slow, but simple to set up if you're already familliar with deploying CGI scripts
+# fastcgi -- see http://www.fastcgi.com (e.g. under Apache you can use this with mod_fastcgi)
+#
+# The cgi and fastcgi methods have not been thoroughly tested! Please report any problems to the authors.
+# 
+# IMPORTANT: If you use the webrick or mongrel methods, you will need to run the server behind reverse proxy 
+#            (Pound, Apache 2.2 with mod_proxy, etc.) since neither webrick nor mongrel support SSL/HTTPS.
+#            See the RubyCAS-Server install docs for more info.
 
 server: webrick
-# the port setting is only used for stand-alone webrick and mongrel
-port: 110011 
+port: 110011  # the port setting is only used when using 'webrick' or 'mongrel'
+
+
+##### DATABASE #######################################################################
 
 # Set up the database connection. Make sure that this database is secure!
 # 
@@ -29,6 +39,8 @@ database:
   adapter: sqlite3
   dbfile: casserver.db
   
+
+##### AUTHENTICATION #################################################################
 
 # Configure how username/passwords are validated.
 #
@@ -120,7 +132,30 @@ database:
 #  another_option: yeeha
 
 
-# Set up general logging. This log is where you'll want to look in case of problems.
+##### LOOK & FEEL ######################################################################
+
+# Set the path to the theme directory that determines how your CAS pages look. 
+#
+# Custom themes are not well supported yet, but will be in the near future. In the
+# meantime, if you want to create a custom theme, you can create a subdirectory
+# under the CASServer's themes dir (for example '/usr/lib/ruby/1.8/gems/casserver-xxx/lib/themes',
+# if you installed CASServer on Linux as a gem). A theme is basically just a theme.css
+# file that overrides the themes/cas.css styles along with a collection of image files
+# like logo.png and bg.png.
+#
+# By default, we use the 'simple' theme which you can find in themes/simple.
+theme: simple
+
+# The name of your company/organization. This will show up on the login page.
+organization: CAS
+
+# A short bit of text that shows up on the login page. You can make this blank if you prefer.
+infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-Server</a>
+
+
+##### LOGGING #########################################################################
+
+# Configure general logging. This log is where you'll want to look in case of problems.
 #
 # You may want to change the file to something like /var/log/casserver.log
 # Set the level to DEBUG if you want more detailed logging.
