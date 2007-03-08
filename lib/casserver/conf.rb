@@ -1,6 +1,37 @@
 # load configuration
-begin
-  conf_file = File.dirname(File.expand_path(__FILE__))+"/../../config.yml"
+#begin
+  
+  conf_file = etc_conf = "/etc/rubycas-server/config.yml"
+  unless File.exists? conf_file 
+    # can use local config.yml file in case we're running non-gem installation
+    conf_file = File.dirname(File.expand_path(__FILE__))+"/../../config.yml"
+  end
+
+  unless File.exists? conf_file  
+    require 'fileutils'
+    
+    example_conf_file = File.expand_path(File.dirname(File.expand_path(__FILE__))+"/../../config.example.yml")
+    puts "\nCAS SERVER NOT YET CONFIGURED!!!\n"
+    puts "\nAttempting to copy sample configuration from '#{example_conf_file}' to '#{etc_conf}'...\n"
+    
+    begin
+      FileUtils.mkdir("/etc/rubycas-server") unless File.exists? "/etc/rubycas-server"
+      FileUtils.cp(example_conf_file, etc_conf)
+    rescue Errno::EACCES
+      puts "\nIt appears that you do not have permissions to create the '#{etc_conf}' file. Try running this command using sudo (as root).\n"
+      exit 2
+    rescue
+      puts "\nFor some reason the '#{etc_conf}' file could not be created. You'll have to copy the file manually." +
+        " Use '#{example_conf_file}' as a template.\n"  
+      exit 2
+    end
+    
+    puts "\nA sample configuration has been created for you in '#{etc_conf}'. Please edit this file to" +
+      " suit your needs and then run rubycas-server again.\n"
+    exit 1
+  end
+  
+  
   loaded_conf = HashWithIndifferentAccess.new(YAML.load_file(conf_file))
   
   if $CONF
@@ -18,20 +49,12 @@ begin
     require 'casserver/'+auth_rb
     $AUTH = $CONF[:authenticator][:class].constantize.new
   end
-rescue
-  if File.exists? conf_file
-    raise "Your RubyCAS-Server configuration may be invalid."+
-      " Please double-check check your config.yml file."+
-      " Make sure that you are using spaces instead of tabs for your indentation!!" +
-      "\n\nUNDERLYING EXCEPTION:\n#{$!}"
-  else
-    puts "\nCAS SERVER NOT YET CONFIGURED!!!\n"
-    puts "\nIt appears that you have not yet created a configuration for the CAS server." +
-      " \nYou should make a copy of the 'config.example.yml' file, name it 'config.yml'" + 
-      " and edit it to match your desired configuration.\n\n"
-    exit 1
-  end
-end
+#rescue
+#    raise "Your RubyCAS-Server configuration may be invalid."+
+#      " Please double-check check your config.yml file."+
+#      " Make sure that you are using spaces instead of tabs for your indentation!!" +
+#      "\n\nUNDERLYING EXCEPTION:\n#{$!}"
+#end
 
 module CASServer
   module Conf

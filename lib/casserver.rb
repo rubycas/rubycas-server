@@ -22,7 +22,7 @@ srand
 # Camping.goes must be called after the authenticator class is loaded, otherwise weird things happen
 Camping.goes :CASServer
 
-module CASServer  
+module CASServer
 end
 
 require 'casserver/utils'
@@ -53,7 +53,7 @@ end
 
 
 # this gets run if we launch directly (i.e. `ruby casserver.rb` rather than `camping casserver`)
-if __FILE__ == $0
+if __FILE__ == $0 || $RUN
   CASServer::Models::Base.establish_connection(CASServer::Conf.database)
   if CASServer::Conf.db_log
     CASServer::Models::Base.logger = Logger.new(CASServer::Conf.db_log[:file] || 'casserver_db.log')
@@ -84,14 +84,19 @@ if __FILE__ == $0
     cert = OpenSSL::X509::Certificate.new(File.read(cert_path))
     key = OpenSSL::PKey::RSA.new(File.read(key_path))
     
-    s = WEBrick::HTTPServer.new(
-      :BindAddress => "0.0.0.0",
-      :Port => CASServer::Conf.port,
-      :SSLEnable => true,
-      :SSLVerifyClient => ::OpenSSL::SSL::VERIFY_NONE,
-      :SSLCertificate => cert,
-      :SSLPrivateKey => key
-    )
+    begin
+      s = WEBrick::HTTPServer.new(
+        :BindAddress => "0.0.0.0",
+        :Port => CASServer::Conf.port,
+        :SSLEnable => true,
+        :SSLVerifyClient => ::OpenSSL::SSL::VERIFY_NONE,
+        :SSLCertificate => cert,
+        :SSLPrivateKey => key
+      )
+    rescue Errno::EACCES
+      puts "\nThe server could not launch. Are you running on a privileged port? (e.g. port 443) If so, you must run the server as root."
+      exit 2
+    end
     
     CASServer.create
     s.mount "#{CASServer::Conf.uri_path}", WEBrick::CampingHandler, CASServer
@@ -116,7 +121,13 @@ if __FILE__ == $0
     
     CASServer.create
   
-    server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"#{CASServer::Conf.uri_path}",CASServer)
+    begin
+      server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"#{CASServer::Conf.uri_path}",CASServer)
+    rescue Errno::EACCES
+      puts "\nThe server could not launch. Are you running on a privileged port? (e.g. port 443) If so, you must run the server as root."
+      exit 2
+    end
+    
     puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
     server.run.join
   

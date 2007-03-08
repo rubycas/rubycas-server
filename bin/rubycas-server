@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require_gem 'rubycas-server'
+
+$RUN = true
+
+load 'casserver.rb'

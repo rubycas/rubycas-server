@@ -97,7 +97,7 @@ div.messagebox {
 
 div.mistake {
 	color: #d00;
-	background-image: url(/themes/warning.png);
+	background-image: url(warning.png);
 	background-repeat: no-repeat;
 	background-position: 10px 5px;
 	font-weight: bold;
@@ -105,7 +105,7 @@ div.mistake {
 
 div.confirmation {
 	color: #280;
-	background-image: url(/themes/ok.png);
+	background-image: url(ok.png);
 	background-repeat: no-repeat;
 	background-position: 10px 5px;
 	font-weight: bold;

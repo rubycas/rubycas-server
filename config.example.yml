@@ -62,7 +62,7 @@ ssl_cert: /path/to/your/ssl.pem
 
 database:
   adapter: sqlite3
-  dbfile: casserver.db
+  dbfile: /var/lib/casserver.db
   
 
 ##### AUTHENTICATION #################################################################
@@ -186,7 +186,7 @@ infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-
 # Set the level to DEBUG if you want more detailed logging.
 
 log:
-  file: casserver.log
+  file: /var/log/casserver.log
   level: INFO
 
 
@@ -194,4 +194,4 @@ log:
 # Every SQL query will be logged here. This is useful for debugging database problems.
 #
 #db_log:
-#  file: casserver_db.log
+#  file: /var/log/casserver_db.log
