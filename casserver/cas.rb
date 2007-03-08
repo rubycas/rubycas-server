@@ -133,7 +133,7 @@ module CASServer::CAS
   end
 
   def validate_service_ticket(service, ticket, allow_proxy_tickets = false)
-    $LOG.debug("Validating service/proxy ticket '#{ticket}' for service '#{ticket}'")
+    $LOG.debug("Validating service/proxy ticket '#{ticket}' for service '#{service}'")
   
     if service.nil? or ticket.nil?
       error = Error.new("INVALID_REQUEST", "Ticket or service parameter was missing in the request.")
@@ -149,9 +149,9 @@ module CASServer::CAS
         error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has expired.")
         $LOG.warn("Ticket '#{ticket}' has expired.")
       elsif st.service == service
-        $LOG.info("Ticket '#{ticket}' for service '#{service}' successfully validated.")
+        $LOG.info("Ticket '#{ticket}' for service '#{service}' for user '#{st.username}' successfully validated.")
       else
-        error = Error.new("INVALID_SERVICE", "The ticket '#{ticket}' is valid,"+
+        error = Error.new("INVALID_SERVICE", "The ticket '#{ticket}' belonging to user '#{st.username}' is valid,"+
           " but the service '#{service}' specified does not match the service '#{st.service}' associated with this ticket.")
         $LOG.warn("#{error.code} - #{error.message}")
       end
@@ -173,22 +173,27 @@ module CASServer::CAS
     
     if pt.kind_of?(CASServer::Models::ProxyTicket) && !error
       if not pt.proxy_granting_ticket
-        error = Error.new("INTERNAL_ERROR", "Proxy ticket '#{pt}' is not associated with a proxy granting ticket.")
+        error = Error.new("INTERNAL_ERROR", "Proxy ticket '#{pt}' belonging to user '#{pt.username}' is not associated with a proxy granting ticket.")
       elsif not pt.proxy_granting_ticket.service_ticket
         error = Error.new("INTERNAL_ERROR", "Proxy granting ticket '#{pt.proxy_granting_ticket}'"+
-          " (associated with proxy ticket '#{pt}' is not associated with a service ticket.")
+          " (associated with proxy ticket '#{pt}' and belonging to user '#{pt.username}' is not associated with a service ticket.")
       end
     end
     
     [pt, error]
   end
   
-  def validate_proxy_granting_ticket(ticket, service)
-    if ticket.nil? or service.nil?
-      error = Error.new("INVALID_REQUEST", "pgt or targetService parameter was missing in the request.")
+  def validate_proxy_granting_ticket(ticket)
+    if ticket.nil?
+      error = Error.new("INVALID_REQUEST", "pgt parameter was missing in the request.")
       $LOG.warn("#{error.code} - #{error.message}")
     elsif pgt = ProxyGrantingTicket.find_by_ticket(ticket)
-      $LOG.info("Proxy granting ticket '#{ticket}' successfully validated for target service '#{service}'.")
+      if pgt.service_ticket
+        $LOG.info("Proxy granting ticket '#{ticket}' belonging to user '#{pgt.service_ticket.username}' successfully validated.")
+      else
+        error = Error.new("INTERNAL_ERROR", "Proxy granting ticket '#{ticket}' is not associated with a service ticket.")
+        $LOG.error("#{error.code} - #{error.message}")
+      end
     else
       error = Error.new("BAD_PGT", "Invalid proxy granting ticket '#{ticket}' (no matching ticket found in the database).")
       $LOG.warn("#{error.code} - #{error.message}")
