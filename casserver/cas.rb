@@ -90,6 +90,8 @@ module CASServer::CAS
   end
   
   def validate_login_ticket(ticket)
+    $LOG.debug("Validating login ticket '#{ticket}'")
+  
     success = false
     if ticket.nil?
       error = "Your login request did not include a login ticket."
@@ -115,6 +117,8 @@ module CASServer::CAS
   end
   
   def validate_ticket_granting_ticket(ticket)
+    $LOG.debug("Validating ticket granting ticket '#{ticket}'")
+  
     if ticket.nil?
       error = "No ticket granting ticket given."
       $LOG.debug(error)
@@ -129,6 +133,8 @@ module CASServer::CAS
   end
 
   def validate_service_ticket(service, ticket, allow_proxy_tickets = false)
+    $LOG.debug("Validating service/proxy ticket '#{ticket}' for service '#{ticket}'")
+  
     if service.nil? or ticket.nil?
       error = Error.new("INVALID_REQUEST", "Ticket or service parameter was missing in the request.")
       $LOG.warn("#{error.code} - #{error.message}")

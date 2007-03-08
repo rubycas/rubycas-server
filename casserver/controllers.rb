@@ -190,8 +190,6 @@ module CASServer::Controllers
       @renew = @input['renew']
       
       @proxies = []
-      $LOG.debug(@input.to_yaml)
-      $LOG.debug("Validating proxy ticket '#{ticket}' for service '#{ticket}'")
       
       t, @error = validate_proxy_ticket(@service, @ticket)      
       @success = t && !@error
