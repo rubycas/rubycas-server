@@ -3,7 +3,7 @@ require 'mosquito'
 
 $CONF = {:authenticator => {:class => "CASServer::Authenticators::Test"}}
 
-require File.dirname(__FILE__) + "/../casserver"
+require File.dirname(__FILE__) + "/../lib/casserver"
 
 include CASServer::Models
 CASServer.create
@@ -11,7 +11,7 @@ CASServer.create
 class TestCASServer < Camping::FunctionalTest
 
   def test_test_atuhenticator
-    require File.dirname(__FILE__) + "/../casserver/authenticators/test"
+    require File.dirname(__FILE__) + "/../lib/casserver/authenticators/test"
     
     valid_credentials = {:username => "testuser", :password => "testpassword"}
     invalid_credentials = {:username => "asdfsdf", :password => "asdfsdf"}

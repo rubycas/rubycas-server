@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 
+# change to current directory when invoked on its own
 Dir.chdir(File.dirname(File.expand_path(__FILE__))) if __FILE__ == $0
+
+# add current directory to load path
+$: << File.dirname(File.expand_path(__FILE__))
 
 require 'rubygems'
 require_gem 'camping', '~> 1.5'

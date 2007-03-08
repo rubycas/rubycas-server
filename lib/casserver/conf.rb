@@ -1,6 +1,6 @@
 # load configuration
 begin
-  conf_file = File.dirname(File.expand_path(__FILE__))+"/../config.yml"
+  conf_file = File.dirname(File.expand_path(__FILE__))+"/../../config.yml"
   loaded_conf = HashWithIndifferentAccess.new(YAML.load_file(conf_file))
   
   if $CONF
