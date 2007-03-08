@@ -1,6 +1,5 @@
 # load configuration
-#begin
-  
+begin  
   conf_file = etc_conf = "/etc/rubycas-server/config.yml"
   unless File.exists? conf_file 
     # can use local config.yml file in case we're running non-gem installation
@@ -49,12 +48,12 @@
     require 'casserver/'+auth_rb
     $AUTH = $CONF[:authenticator][:class].constantize.new
   end
-#rescue
-#    raise "Your RubyCAS-Server configuration may be invalid."+
-#      " Please double-check check your config.yml file."+
-#      " Make sure that you are using spaces instead of tabs for your indentation!!" +
-#      "\n\nUNDERLYING EXCEPTION:\n#{$!}"
-#end
+rescue
+    raise "Your RubyCAS-Server configuration may be invalid."+
+      " Please double-check check your config.yml file."+
+      " Make sure that you are using spaces instead of tabs for your indentation!!" +
+      "\n\nUNDERLYING EXCEPTION:\n#{$!}"
+end
 
 module CASServer
   module Conf
