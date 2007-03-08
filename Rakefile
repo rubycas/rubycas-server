@@ -20,7 +20,7 @@ HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
 DEPS = [
   ['camping', '>= 1.5'],
-  ['sqlite3-ruby']
+  ['sqlite3-ruby', '>= 1.2.0']
 ]
 
 
@@ -53,6 +53,6 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
   
   # == Optional
-  p.extra_deps = DEPS
-  p.spec_extras = {:executables => 'rubycas-server'}
+  #p.extra_deps = DEPS
+  p.spec_extras = {:executables => 'rubycas-server', :dependencies => DEPS}
 end
