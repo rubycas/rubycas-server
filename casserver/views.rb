@@ -12,8 +12,8 @@ module CASServer::Views
       xhtml_strict do
         head do 
           title { "#{organization} Central Login" }
-          link(:rel => "stylesheet", :type => "text/css", :href => "themes/cas.css")
-          link(:rel => "stylesheet", :type => "text/css", :href => "themes/#{current_theme}/theme.css")
+          link(:rel => "stylesheet", :type => "text/css", :href => "/themes/cas.css")
+          link(:rel => "stylesheet", :type => "text/css", :href => "/themes/#{current_theme}/theme.css")
         end
         body(:onload => "if (document.getElementById('username')) document.getElementById('username').focus()") do
           self << yield 

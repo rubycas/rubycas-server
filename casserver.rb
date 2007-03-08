@@ -59,11 +59,40 @@ if __FILE__ == $0
   case CASServer::Conf.server
   when "webrick", :webrick
     require 'webrick/httpserver'
+    require 'webrick/https'
     require 'camping/webrick'
     
-    s = WEBrick::HTTPServer.new :BindAddress => "0.0.0.0", :Port => CASServer::Conf.port
+    # TODO: verify the certificate's validity
+    # example of how to do this is here: http://pablotron.org/download/ruri-20050331.rb
+    
+    cert_path = CASServer::Conf.ssl_cert
+    key_path = CASServer::Conf.ssl_key || CASServer::Conf.ssl_cert
+      # look for the key in the ssl_cert if no ssl_key is specified
+    
+    raise "'#{cert_path}' is not a valid ssl certificate. Your 'ssl_cert' configuration" +
+      " setting must be a path to a valid ssl certificate file." unless
+        File.exists? cert_path
+    
+    raise "'#{key_path}' is not a valid ssl private key. Your 'ssl_key' configuration" +
+      " setting must be a path to a valid ssl private key file." unless
+        File.exists? key_path
+    
+    cert = OpenSSL::X509::Certificate.new(File.read(cert_path))
+    key = OpenSSL::PKey::RSA.new(File.read(key_path))
+    
+    s = WEBrick::HTTPServer.new(
+      :BindAddress => "0.0.0.0",
+      :Port => CASServer::Conf.port,
+      :SSLEnable => true,
+      :SSLVerifyClient => ::OpenSSL::SSL::VERIFY_NONE,
+      :SSLCertificate => cert,
+      :SSLPrivateKey => key
+    )
+    
     CASServer.create
-    s.mount "/", WEBrick::CampingHandler, CASServer
+    s.mount "#{CASServer::Conf.uri_path}", WEBrick::CampingHandler, CASServer
+    
+    puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'\n\n"
   
     # This lets Ctrl+C shut down your server
     trap(:INT) do
@@ -79,8 +108,8 @@ if __FILE__ == $0
     
     CASServer.create
   
-    server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"/#{CASServer::Conf.uri_path}",CASServer)
-    puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}/#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
+    server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"#{CASServer::Conf.uri_path}",CASServer)
+    puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
     server.run.join
   
   when "fastcgi", :fastcgi

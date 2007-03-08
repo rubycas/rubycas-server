@@ -13,6 +13,8 @@ module CASServer::CAS
     lt.ticket = "LT-" + CASServer::Utils.random_string
     lt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
     lt.save!
+    $LOG.debug("Generated login ticket '#{lt.ticket}' for client" +
+      " at '#{lt.client_hostname}'")
     lt
   end
   
@@ -23,6 +25,8 @@ module CASServer::CAS
     tgt.username = username
     tgt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
     tgt.save!
+    $LOG.debug("Generated ticket granting ticket '#{tgt.ticket}' for user" +
+      " '#{tgt.username}' at '#{tgt.client_hostname}'")
     tgt
   end
   
@@ -34,6 +38,8 @@ module CASServer::CAS
     st.username = username
     st.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
     st.save!
+    $LOG.debug("Generated service ticket '#{st.ticket}' for service '#{st.service}'" +
+      " for user '#{st.username}' at '#{st.client_hostname}'")
     st
   end
   
@@ -46,6 +52,9 @@ module CASServer::CAS
     pt.proxy_granting_ticket_id = pgt.id
     pt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
     pt.save!
+    $LOG.debug("Generated proxy ticket '#{pt.ticket}' for target service '#{pt.service}'" +
+      " for user '#{pt.username}' at '#{pt.client_hostname}' using proxy-granting" +
+      " ticket '#{pgt.ticket}'")
     pt
   end
   

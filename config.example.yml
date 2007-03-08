@@ -7,18 +7,40 @@
 # are currently supported:
 #
 # webrick -- run as a stand-alone webrick server; this is the default method
-# mongrel -- run as a stand-alone mongrel server; fast, but you'll need to install mongrel first
+# mongrel -- run as a stand-alone mongrel server; fast, but you'll need to install
+#            mongrel and run it behind an https reverse proxy like Pound or Apache 2.2's mod_proxy)
 # cgi     -- slow, but simple to set up if you're already familliar with deploying CGI scripts
 # fastcgi -- see http://www.fastcgi.com (e.g. under Apache you can use this with mod_fastcgi)
 #
-# The cgi and fastcgi methods have not been thoroughly tested! Please report any problems to the authors.
+# The cgi and fastcgi methods have not been thoroughly tested! 
+# Please report any problems to the authors.
 # 
-# IMPORTANT: If you use the webrick or mongrel methods, you will need to run the server behind reverse proxy 
-#            (Pound, Apache 2.2 with mod_proxy, etc.) since neither webrick nor mongrel support SSL/HTTPS.
-#            See the RubyCAS-Server install docs for more info.
+# IMPORTANT: If you use mongrel, you will need to run the server behind a reverse proxy 
+#            (Pound, Apache 2.2 with mod_proxy, etc.) since mongrel does not support SSL/HTTPS.
+#            See the RubyCAS-Server install docs for more info. Also, mongrel requries
+#            Camping 1.5.180 which as of writing is only available via SVN. You can install
+#            this by running `gem install camping --source code.whytheluckystiff.net`
+
+### webrick example
 
 server: webrick
-port: 110011  # the port setting is only used when using 'webrick' or 'mongrel'
+port: 443
+ssl_cert: /path/to/your/ssl.pem
+# ssl_key: /path/to/your/private_key.pem  <-- if private key is separate from cert
+
+### mongrel example (you will need to run this behind an https reverse proxy,
+### since mongrel doesn't support SSL on its own)
+
+#server: mongrel
+#port: 110011
+
+### cgi example (you'll need to serve this via an SSL-capable server like Apache)
+
+#server: cgi
+
+### fastcgi example (you'll need to serve this via an SSL-capable server like Apache)
+
+#server: fastcgi
 
 
 ##### DATABASE #######################################################################

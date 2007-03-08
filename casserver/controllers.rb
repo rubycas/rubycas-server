@@ -70,14 +70,14 @@ module CASServer::Controllers
         $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'")
                 
         if @service.blank?
-          $LOG.info("Successfully authenticated user '#{@username}'. No service param was given, so we will not redirect.")
+          $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
           @message = {:type => 'confirmation', :message => "You have successfully logged in."}
           render :login
         else
           @st = generate_service_ticket(@service, @username)        
           service_with_ticket = service_uri_with_ticket(@service, @st)
         
-          $LOG.info("Redirecting authenticated user '#{@username}' to service '#{@service}'")
+          $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
           return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
         end
       else
@@ -114,7 +114,7 @@ module CASServer::Controllers
         
         $LOG.debug("Deleting Ticket-Granting Ticket '#{tgt}' for user '#{tgt.username}'")
         
-        $LOG.info("User #{tgt.username} logged out.")
+        $LOG.info("User '#{tgt.username}' logged out.")
       else
         $LOG.warn("User tried to log out without a valid ticket-granting ticket.")
       end
@@ -224,7 +224,7 @@ module CASServer::Controllers
       @ticket = @input['pgt']
       @target_service = @input['targetService']
       
-      pgt, @error = validate_proxy_granting_ticket(@ticket, @target_service)
+      pgt, @error = validate_proxy_granting_ticket(@ticket)
       @success = pgt && !@error
       
       if @success
