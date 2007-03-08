@@ -1,7 +1,14 @@
 # load configuration
 begin
   conf_file = File.dirname(File.expand_path(__FILE__))+"/../config.yml"
-  $CONF = HashWithIndifferentAccess.new(YAML.load_file(conf_file))
+  loaded_conf = HashWithIndifferentAccess.new(YAML.load_file(conf_file))
+  
+  if $CONF
+    $CONF = loaded_conf.merge $CONF
+  else
+    $CONF = loaded_conf
+  end
+  
   begin
     # attempt to instantiate the authenticator
     $AUTH = $CONF[:authenticator][:class].constantize.new

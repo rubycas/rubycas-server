@@ -3,7 +3,7 @@
 Dir.chdir(File.dirname(File.expand_path(__FILE__))) if __FILE__ == $0
 
 require 'rubygems'
-require_gem 'camping', '~> 1.5.180'
+require_gem 'camping', '~> 1.5'
 require 'camping'
 
 require 'active_support'
@@ -105,6 +105,10 @@ if __FILE__ == $0
     require 'rubygems'
     require 'mongrel/camping'
     
+    # camping has fixes for mongrel currently only availabe in SVN
+    # ... you can install camping from svn (1.5.180) by running: 
+    #     gem install camping --source code.whytheluckystiff.net
+    require_gem 'camping', '~> 1.5.180'
     
     CASServer.create
   

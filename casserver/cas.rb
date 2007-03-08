@@ -170,7 +170,7 @@ module CASServer::CAS
     end
     
     if st
-      st.consume! 
+      st.consume!
     end
     
     
