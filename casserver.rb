@@ -3,6 +3,7 @@
 Dir.chdir(File.dirname(File.expand_path(__FILE__))) if __FILE__ == $0
 
 require 'rubygems'
+gem     'camping', '~> 1.5.180'
 require 'camping'
 
 require 'active_support'

@@ -211,9 +211,7 @@ module CASServer::Controllers
         end
       end
 
-     d = render :proxy_validate
-     $LOG.debug d
-     d
+     render :proxy_validate
     end
   end
   
