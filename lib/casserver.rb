@@ -124,7 +124,7 @@ if __FILE__ == $0 || $RUN
     #     gem install camping --source code.whytheluckystiff.net
     require_gem 'camping', '~> 1.5.180'
     
-    app = CASServer.create
+    CASServer.create
   
 #    begin
 #      server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"#{CASServer::Conf.uri_path}",CASServer)
@@ -137,20 +137,20 @@ if __FILE__ == $0 || $RUN
     
     puts "\n** CASServer is starting. Look in '#{CASServer::Conf.log[:file]}' for further notices."
     
-    config = Mongrel::Configurator.new :host => "0.0.0.0", :log_file => CASServer::Conf.log[:file] do
-      daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
+    settings = {:host => "0.0.0.0", :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME}
+    
+    config = Mongrel::Configurator.new settings  do
       listener :port => CASServer::Conf.port do
-        uri CASServer::Conf.uri_path, :handler => Mongrel::Camping::CampingHandler.new(app)
+        uri CASServer::Conf.uri_path, :handler => Mongrel::Camping::CampingHandler.new(CASServer)
         setup_signals
       end
+      daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
     end
     
     config.run
     
     puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
-    
     config.join
-    
     puts "\n** CASServer is stopped (#{Time.now})"
   
   when "fastcgi", :fastcgi
