@@ -1,7 +1,34 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require_gem 'rubycas-server'
+require 'optparse'
+
+local_casserver = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../lib/casserver.rb')
+if File.exists? local_casserver
+  $: << File.dirname(local_casserver)
+else
+  require 'rubygems'
+  require_gem 'rubycas-server'
+end
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: rubycas-server [options]"
+
+  opts.on("-c", "--config FILE", "Use config file (default is /etc/rubycas-server/config.yml)") do |c|
+  	puts "Using config file #{c}"
+    $CONFIG_FILE = c
+  end
+  
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+  
+  opts.on_tail("-v", "--version", "Show version number") do
+  	require 'casserver/version'
+    puts "rubycas-server-#{CASServer::VERSION::STRING}"
+    exit
+  end
+end.parse!
 
 $RUN = true
 

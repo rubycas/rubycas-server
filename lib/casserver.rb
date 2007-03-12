@@ -14,7 +14,7 @@ require 'active_support'
 require 'yaml'
 
 # enable xhtml source code indentation for debugging views
-Markaby::Builder.set(:indent, 2)
+#Markaby::Builder.set(:indent, 2)
 
 # seed the random number generator (ruby does this by default, but it doesn't hurt to do it here just to be sure)
 srand

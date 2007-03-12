@@ -1,9 +1,13 @@
 # load configuration
-begin  
-  conf_file = etc_conf = "/etc/rubycas-server/config.yml"
-  unless File.exists? conf_file 
-    # can use local config.yml file in case we're running non-gem installation
-    conf_file = File.dirname(File.expand_path(__FILE__))+"/../../config.yml"
+begin
+  if $CONFIG_FILE
+    conf_file = $CONFIG_FILE
+  else
+    conf_file = etc_conf = "/etc/rubycas-server/config.yml"
+    unless File.exists? conf_file 
+      # can use local config.yml file in case we're running non-gem installation
+      conf_file = File.dirname(File.expand_path(__FILE__))+"/../../config.yml"
+    end
   end
 
   unless File.exists? conf_file  
