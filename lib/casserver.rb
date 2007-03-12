@@ -4,7 +4,8 @@
 Dir.chdir(File.dirname(File.expand_path(__FILE__))) if __FILE__ == $0
 
 # add current directory to load path
-$: << File.dirname(File.expand_path(__FILE__))
+$CASSERVER_HOME = File.dirname(File.expand_path(__FILE__))
+$: << $CASSERVER_HOME
 
 require 'rubygems'
 require_gem 'camping', '~> 1.5'
@@ -108,8 +109,12 @@ if __FILE__ == $0 || $RUN
       s.shutdown
     end
   
-    s.start
-    
+    if $DAEMONIZE
+      WEBrick::Daemon.start {s.start}
+    else
+      s.start
+    end
+      
   when "mongrel", :mongrel
     require 'rubygems'
     require 'mongrel/camping'
@@ -119,17 +124,34 @@ if __FILE__ == $0 || $RUN
     #     gem install camping --source code.whytheluckystiff.net
     require_gem 'camping', '~> 1.5.180'
     
-    CASServer.create
+    app = CASServer.create
   
-    begin
-      server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"#{CASServer::Conf.uri_path}",CASServer)
-    rescue Errno::EACCES
-      puts "\nThe server could not launch. Are you running on a privileged port? (e.g. port 443) If so, you must run the server as root."
-      exit 2
+#    begin
+#      server = Mongrel::Camping::start("0.0.0.0",CASServer::Conf.port,"#{CASServer::Conf.uri_path}",CASServer)
+#    rescue Errno::EACCES
+#      puts "\nThe server could not launch. Are you running on a privileged port? (e.g. port 443) If so, you must run the server as root."
+#      exit 2
+#    end
+    
+#    puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
+    
+    puts "\n** CASServer is starting. Look in '#{CASServer::Conf.log[:file]}' for further notices."
+    
+    config = Mongrel::Configurator.new :host => "0.0.0.0", :log_file => CASServer::Conf.log[:file] do
+      daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
+      listener :port => CASServer::Conf.port do
+        uri CASServer::Conf.uri_path, :handler => Mongrel::Camping::CampingHandler.new(app)
+        setup_signals
+      end
     end
     
+    config.run
+    
     puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
-    server.run.join
+    
+    config.join
+    
+    puts "\n** CASServer is stopped (#{Time.now})"
   
   when "fastcgi", :fastcgi
     require 'camping/fastcgi'

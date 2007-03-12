@@ -18,6 +18,10 @@ OptionParser.new do |opts|
     $CONFIG_FILE = c
   end
   
+  opts.on("-d", "--daemonize", "Run as a daemon (only when using webrick/mongrel)") do |c|
+    $DAEMONIZE = true
+  end
+  
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
