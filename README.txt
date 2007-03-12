@@ -1,5 +1,7 @@
 === RubyCAS-Server ===========================================================
 
+Copyright 2007 Urbacon Ltd.
+
 For info and installation instructions please see:
 
   http://code.google.com/p/rubycas-server/
