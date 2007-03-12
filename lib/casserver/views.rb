@@ -27,8 +27,6 @@ module CASServer::Views
 
   # 2.1.3
   def login
-    @logo = 
-  
     table(:id => "login-box") do
       tr do
         td(:colspan => 2) do
