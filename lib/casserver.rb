@@ -144,7 +144,8 @@ if __FILE__ == $0 || $RUN
         uri CASServer::Conf.uri_path, :handler => Mongrel::Camping::CampingHandler.new(CASServer)
         setup_signals
       end
-      daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
+      # I can't get this to work... mongrel just goes to hell when I try to daemonize :(
+      #daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
     end
     
     config.run

@@ -28,8 +28,8 @@ port: 443
 ssl_cert: /path/to/your/ssl.pem
 # ssl_key: /path/to/your/private_key.pem  <-- if private key is separate from cert
 
-### mongrel example (you will need to run this behind an https reverse proxy,
-### since mongrel doesn't support SSL on its own)
+### mongrel example (since mongrel doesn't support SSL on its own, you will have to run
+###  this behind an https reverse proxy)
 
 #server: mongrel
 #port: 110011
