@@ -102,15 +102,15 @@ module CASServer::Views
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
-          tag!("cas:user") {@username}
+          tag!("cas:user") {@username.to_s.to_xs}
           if @pgtiou
-            tag!("cas:proxyGrantingTicket") {@pgtiou}
+            tag!("cas:proxyGrantingTicket") {@pgtiou.to_s.to_xs}
           end
         end
       end
     else
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
-        tag!("cas:authenticationFailure", :code => @error.code) {@error}
+        tag!("cas:authenticationFailure", :code => @error.code) {@error.to_s.to_xs}
       end
     end
   end
@@ -121,14 +121,14 @@ module CASServer::Views
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
-          tag!("cas:user") {@username}
+          tag!("cas:user") {@username.to_s.to_xs}
           if @pgtiou
-            tag!("cas:proxyGrantingTicket") {@pgtiou}
+            tag!("cas:proxyGrantingTicket") {@pgtiou.to_s.to_xs}
           end
           if @proxies && !@proxies.empty?
             tag!("cas:proxies") do
               @proxies.each do |proxy_url|
-                tag!("cas:proxy") {proxy_url}
+                tag!("cas:proxy") {proxy_url.to_s.to_xs}
               end
             end
           end
@@ -136,7 +136,7 @@ module CASServer::Views
       end
     else
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
-        tag!("cas:authenticationFailure", :code => @error.code) {@error}
+        tag!("cas:authenticationFailure", :code => @error.code) {@error.to_s.to_xs}
       end
     end
   end
@@ -147,12 +147,12 @@ module CASServer::Views
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:proxySuccess") do
-          tag!("cas:proxyTicket") {@pt}
+          tag!("cas:proxyTicket") {@pt.to_s.to_xs}
         end
       end
     else
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
-        tag!("cas:proxyFailure", :code => @error.code) {@error}
+        tag!("cas:proxyFailure", :code => @error.code) {@error.to_s.to_xs}
       end
     end
   end
