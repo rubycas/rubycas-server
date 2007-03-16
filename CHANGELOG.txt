@@ -1,9 +1,11 @@
-=== 0.2.0 :: 2007-03-12
+=== 0.2.0 :: 
 
 * ruby-casserver now behaves more like a real command-line app, accepting
   various command line arguments including -h (help), -v (version), -c (use
-  an alternat config.yml), and -d (daemonize, when using mongrel/webrick mode)
-* CAS XML responses are no longer indent-formatted... Markaby's indentation
+  an alternate config.yml), and -d (daemonize, when using webrick mode)
+* special characters in CAS XML responses are now properly encoded into XML
+  entities
+* CAS XML responses are no longer auto-indented... Markaby's indentation
   seemed to be causing problems with the PHP CAS client
 * Misc minor bug fixes/cleanup
 
