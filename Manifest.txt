@@ -3,6 +3,7 @@ LICENSE.txt
 Manifest.txt
 README.txt
 Rakefile
+bin/rubycas-server
 config.example.yml
 lib/casserver.rb
 lib/casserver/authenticators/active_directory_ldap.rb
@@ -14,6 +15,7 @@ lib/casserver/cas.rb
 lib/casserver/conf.rb
 lib/casserver/controllers.rb
 lib/casserver/models.rb
+lib/casserver/postambles.rb
 lib/casserver/utils.rb
 lib/casserver/version.rb
 lib/casserver/views.rb
