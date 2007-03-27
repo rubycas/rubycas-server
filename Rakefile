@@ -20,7 +20,7 @@ HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
 DEPS = [
   ['camping', '>= 1.5'],
-  ['sqlite3-ruby', '>= 1.2.0'],
+#  ['sqlite3-ruby', '>= 1.2.0'],
   ['activesupport', '>= 1.4.0']
 ]
 

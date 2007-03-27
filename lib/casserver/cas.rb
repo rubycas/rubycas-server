@@ -90,7 +90,7 @@ module CASServer::CAS
       if response.code.to_i == 200
         # 3.4 (proxy-granting ticket IOU)
         pgt.save!
-        $LOG.debug "PGT generated for pgt_url '#{pgt_url}'. PGT is: '#{pgt.ticket}', PGT-IOU is: '#{pgt.iou}'"
+        $LOG.debug "PGT generated for pgt_url '#{pgt_url}'. PGT #{pgt.id} is: '#{pgt.ticket}', PGT-IOU is: '#{pgt.iou}'"
         pgt
       else
         $LOG.warn "PGT callback server responded with a bad result code '#{response.code}'. PGT will not be stored."
@@ -157,7 +157,7 @@ module CASServer::CAS
       elsif Time.now - st.created_on > CASServer::Conf.service_ticket_expiry
         error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has expired.")
         $LOG.warn("Ticket '#{ticket}' has expired.")
-      elsif st.service == service
+      elsif st.matches_service? service
         $LOG.info("Ticket '#{ticket}' for service '#{service}' for user '#{st.username}' successfully validated.")
       else
         error = Error.new("INVALID_SERVICE", "The ticket '#{ticket}' belonging to user '#{st.username}' is valid,"+

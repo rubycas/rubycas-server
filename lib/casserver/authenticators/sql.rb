@@ -12,8 +12,8 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
   def validate(credentials)
     read_standard_credentials(credentials)
     
-    raise "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
-    raise "Invalid authenticator configuration!" unless @options[:database]
+    raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
+    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
     
     CASUser.establish_connection @options[:database]
     CASUser.set_table_name @options[:user_table] || "users"

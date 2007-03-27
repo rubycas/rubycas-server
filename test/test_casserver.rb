@@ -123,28 +123,3 @@ class TestCASServer < Camping::FunctionalTest
   end
 
 end
-
-#class TestPost < Camping::UnitTest
-#
-#  fixtures :blog_posts, :blog_users, :blog_comments
-#      
-#  def test_create
-#    post = create
-#    assert post.valid?
-#  end
-#
-#  def test_assoc
-#    post = Post.find :first
-#    assert_kind_of User, post.user
-#    assert_equal 1, post.user.id
-#  end
-#
-#  private
-#  
-#  def create(options={})
-#    Post.create({ :user_id => 1, 
-#                  :title => "Title", 
-#                  :body => "Body"}.merge(options))
-#  end
-#    
-#end

@@ -32,7 +32,7 @@ module CASServer::Views
         td(:colspan => 2) do
           div(:id => "headline-container") do
             strong organization
-            text "Central Login"
+            text " Central Login"
           end
         end
       end

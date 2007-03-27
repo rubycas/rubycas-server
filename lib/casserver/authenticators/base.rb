@@ -19,4 +19,7 @@ module CASServer
       end
     end
   end
+  
+  class AuthenticatorError < Exception
+  end
 end

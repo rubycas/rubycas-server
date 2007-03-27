@@ -36,6 +36,13 @@ module CASServer::Models
   
   class ServiceTicket < Ticket
     include Consumable
+    
+    def matches_service?(service)
+      # We ignore the trailing slash in URLs, since 
+      # "http://www.google.com/" and "http://www.google.com" are almost
+      # certainly the same service.
+      self.service.gsub(/\/$/, '') == service.gsub(/\/$/, '')
+    end
   end
   
   class ProxyTicket < ServiceTicket

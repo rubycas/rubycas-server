@@ -61,7 +61,15 @@ module CASServer::Controllers
       
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
       
-      if $AUTH.validate(:username => @username, :password => @password)
+      begin
+        credentials_are_valid = $AUTH.validate(:username => @username, :password => @password)
+      rescue AuthenticatorError => e
+        $LOG.error(e)
+        @message = {:type => 'mistake', :message => e.to_s}
+        render :login and return
+      end
+      
+      if credentials_are_valid
         $LOG.info("Credentials for username '#{@username}' successfully validated")
         
         # 3.6 (ticket-granting cookie)

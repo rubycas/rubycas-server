@@ -1,13 +1,36 @@
-=== 0.2.0 :: 
+=== 0.3.0 :: in progress
+
+* sqlite3-ruby is no longer required by the gem as a dependency.  The user 
+  must now install it manually prior to installing rubycas-server. The
+  building of sqlite3 native extensions appears to be somewhat flakey
+  and probably defeats the original purpose of using sqlite3 (which was
+  to have a CAS server up and running with no additional DB configuration).
+* Authenticators now raise AuthenticatorError exceptions when encountering
+  a problem/error. This makes it easier to send feedback to the user.
+  However, other exceptions should still be raised when errors ought
+  not be recoverable (i.e. programming errors).
+* Trailing slashes in service URLs are now ignored when validating service
+  and proxy tickets (e.g. "http://www.google.com" and "http://www.google.com/"
+  are now considered to be the same service URL).
+* Fixed serious vulnerability in LDAP authenticator where under some
+  cirumstances the user could just enter '*' as their username to match 
+  any username. The LDAP authenticator will now refuse to process logins 
+  with usernames that contain the characters * ( ) \ / and the NULL 
+  character \0.
+* Fixed some minor bugs in the login view.
+
+
+=== 0.2.0 :: 2007-03-20
 
 * ruby-casserver now behaves more like a real command-line app, accepting
   various command line arguments including -h (help), -v (version), -c (use
-  an alternate config.yml), and -d (daemonize, when using webrick or mongrel mode)
-* special characters in CAS XML responses are now properly encoded into XML
+  an alternate config.yml), and -d (daemonize, when using webrick or mongrel 
+  mode).
+* Special characters in CAS XML responses are now properly encoded into XML
   entities
 * CAS XML responses are no longer auto-indented... Markaby's indentation
-  seemed to be causing problems with the PHP CAS client
-* Misc minor bug fixes/cleanup
+  seemed to be causing problems with the PHP CAS client.
+* Misc minor bug fixes/cleanup.
 
 === 0.1.0 :: 2007-03-01
 
