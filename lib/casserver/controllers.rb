@@ -121,9 +121,11 @@ module CASServer::Controllers
       @cookies.delete :tgt
       
       if tgt
-        pgts = CASServer::Models::ProxyGrantingTicket.find(:all, ["username = ?", tgt.username])
+        pgts = CASServer::Models::ProxyGrantingTicket.find(:all, 
+          :conditions => ["username = ?", tgt.username],
+          :include => :service_ticket)
         pgts.each do |pgt|
-          $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{tgt.username}'")
+          $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
           pgt.destroy
         end
         
