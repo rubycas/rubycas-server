@@ -24,7 +24,7 @@ module CASServer::Controllers
       end
       
       if tgt and !tgt_error
-        @message = {:type => 'notice', :message => %{You are currently logged in as "#{tgt.username}". If you are not "#{tgt.username}", please log in below.}}
+        @message = {:type => 'notice', :message => %{You are currently logged in as "#{tgt.username}". If you are not you, please log in below.}}
       end
       
       if @service && !@renew && tgt && !tgt_error
@@ -81,8 +81,19 @@ module CASServer::Controllers
         
         # 3.6 (ticket-granting cookie)
         tgt = generate_ticket_granting_ticket(@username)
+        
+        if CASServer::Conf.expire_sessions
+          expires = CASServer::Conf.ticket_granting_ticket_expiry.to_i.from_now
+          expiry_info = " It will expire on #{expires}."
+        else
+          expiry_info = " It will not expire."
+        end
+        
+        # TODO: Set expiry time for the cookie when expire_sessions is true. Unfortunately there doesn't
+        #        seem to be an easy way to set cookie expire times in Camping :(
         @cookies[:tgt] = tgt.to_s
-        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'")
+        
+        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'. #{expiry_info}")
                 
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
