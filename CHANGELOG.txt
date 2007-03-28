@@ -10,6 +10,9 @@
 * Autocomplete has been turned off on the password field for better security.
   In the future we may allow autocomplete to be re-enabled using a
   configuration setting.
+* When the user visits the login page and is already authenticated (i.e. they
+  have a valid ticket granting cookie), a message is shown at the top 
+  indicating that they are already logged in.
 * Trailing slashes in service URLs are now ignored when validating service
   and proxy tickets (e.g. "http://www.google.com" and "http://www.google.com/"
   are now considered to be the same service URL).
