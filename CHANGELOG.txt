@@ -13,6 +13,9 @@
 * When the user visits the login page and is already authenticated (i.e. they
   have a valid ticket granting cookie), a message is shown at the top 
   indicating that they are already logged in.
+* Fixed bug that was causing all proxy-granting tickets to be deleted whenever
+  any user logged out. Only the PGTs for the user that is logging out are now
+  being deleted.
 * Trailing slashes in service URLs are now ignored when validating service
   and proxy tickets (e.g. "http://www.google.com" and "http://www.google.com/"
   are now considered to be the same service URL).
