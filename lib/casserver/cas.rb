@@ -112,7 +112,7 @@ module CASServer::CAS
       elsif Time.now - lt.created_on < CASServer::Conf.login_ticket_expiry
         $LOG.info("Login ticket '#{ticket}' successfully validated")
       else
-        error = "Your login ticket  has expired."
+        error = "Your login ticket has expired."
         $LOG.warn("Expired login ticket '#{ticket}'")
       end
     else
@@ -133,7 +133,7 @@ module CASServer::CAS
       $LOG.debug(error)
     elsif tgt = TicketGrantingTicket.find_by_ticket(ticket)
       if CASServer::Conf.expire_sessions && Time.now - tgt.created_on > CASServer::Conf.ticket_granting_ticket_expiry
-        error = "Ticket granting ticket has expired."
+        error = "Your session has expired. Please log in again."
         $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' expired.")
       else
         $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated.")
