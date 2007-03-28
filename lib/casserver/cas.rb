@@ -90,7 +90,7 @@ module CASServer::CAS
       if response.code.to_i == 200
         # 3.4 (proxy-granting ticket IOU)
         pgt.save!
-        $LOG.debug "PGT generated for pgt_url '#{pgt_url}'. PGT #{pgt.id} is: '#{pgt.ticket}', PGT-IOU is: '#{pgt.iou}'"
+        $LOG.debug "PGT generated for pgt_url '#{pgt_url}': #{pgt.inspect}"
         pgt
       else
         $LOG.warn "PGT callback server responded with a bad result code '#{response.code}'. PGT will not be stored."
