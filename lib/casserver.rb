@@ -8,7 +8,7 @@ $CASSERVER_HOME = File.dirname(File.expand_path(__FILE__))
 $: << $CASSERVER_HOME
 
 require 'rubygems'
-gem 'camping', '~> 1.5'
+require_gem 'camping', '~> 1.5'
 require 'camping'
 
 require 'active_support'
