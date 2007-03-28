@@ -1,14 +1,16 @@
 # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec
 # under http://www.ja-sig.org/products/cas/overview/protocol/index.html
 
+# need auto_validation off to render CAS responses and to use the autocomplete='off' property on password field
+Markaby::Builder.set(:auto_validation, false)
+Markaby::Builder.set(:indent, 2)
+
 module CASServer::Views
 
-  # need to turn off autovalidation to render CAS xml responses
-  #
-
   def layout
+    
     # wrap as XHTML only when auto_validation is on, otherwise pass right through
-    if @auto_validation
+    if @use_layout
       xhtml_strict do
         head do 
           title { "#{organization} Central Login" }
@@ -27,6 +29,8 @@ module CASServer::Views
 
   # 2.1.3
   def login
+    @use_layout = true
+  
     table(:id => "login-box") do
       tr do
         td(:colspan => 2) do
@@ -56,7 +60,8 @@ module CASServer::Views
                   label(:id => "username-label", :for => "username") { "Username" }
                 end
                 td(:id => "username-container") do
-                  input(:type => "text", :id => "username", :name => "username", :size => "32", :tabindex => "1", :accesskey => "n")
+                  input(:type => "text", :id => "username", :name => "username",
+                    :size => "32", :tabindex => "1", :accesskey => "u")
                 end
               end
               tr do
@@ -64,7 +69,8 @@ module CASServer::Views
                   label(:id => "password-label", :for => "password") { "Password" }
                 end
                 td(:id => "password-container") do
-                  input(:type => "password", :id => "password", :name => "password", :size => "32", :tabindex => "2", :accesskey => "p")
+                  input(:type => "password", :id => "password", :name => "password", 
+                    :size => "32", :tabindex => "2", :accesskey => "p", :autocomplete => "off")
                 end
               end
               tr do
@@ -88,7 +94,6 @@ module CASServer::Views
   
   # 2.4.2
   def validate
-    @auto_validation = false
     if @success
       text "yes\n#{@username}\n"
     else
@@ -98,7 +103,6 @@ module CASServer::Views
   
   # 2.5.2
   def service_validate
-    @auto_validation = false
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
@@ -117,7 +121,6 @@ module CASServer::Views
   
   # 2.6.2
   def proxy_validate
-    @auto_validation = false
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
@@ -143,7 +146,6 @@ module CASServer::Views
   
   # 2.7.2
   def proxy
-    @auto_validation = false
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:proxySuccess") do
