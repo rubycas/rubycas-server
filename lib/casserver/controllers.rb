@@ -51,6 +51,8 @@ module CASServer::Controllers
       
       if error = validate_login_ticket(@lt)
         @message = {:type => 'mistake', :message => error}
+        # generate another login ticket to allow for re-submitting the form
+        @lt = generate_login_ticket.ticket
         return render(:login)
       end
       
@@ -116,11 +118,12 @@ module CASServer::Controllers
       if tgt
         pgts = CASServer::Models::ProxyGrantingTicket.find(:all, ["username = ?", tgt.username])
         pgts.each do |pgt|
-          pgt.destroy
           $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{tgt.username}'")
+          pgt.destroy
         end
         
         $LOG.debug("Deleting Ticket-Granting Ticket '#{tgt}' for user '#{tgt.username}'")
+        tgt.destroy
         
         $LOG.info("User '#{tgt.username}' logged out.")
       else
