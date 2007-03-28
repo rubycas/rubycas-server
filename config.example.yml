@@ -163,7 +163,7 @@ database:
 #
 # Custom themes are not well supported yet, but will be in the near future. In the
 # meantime, if you want to create a custom theme, you can create a subdirectory
-# under the CASServer's themes dir (for example '/usr/lib/ruby/1.8/gems/casserver-xxx/lib/themes',
+# under the CASServer's themes dir (for example, '/usr/lib/ruby/1.8/gems/casserver-xxx/lib/themes',
 # if you installed CASServer on Linux as a gem). A theme is basically just a theme.css
 # file that overrides the themes/cas.css styles along with a collection of image files
 # like logo.png and bg.png.
@@ -195,3 +195,27 @@ log:
 #
 #db_log:
 #  file: /var/log/casserver_db.log
+
+
+##### OTHER ###########################################################################
+
+# You can set various ticket expiry times (specify the value in seconds).
+
+# Expired login and service tickets are no longer usable this many seconds after they 
+# are created. (Defaults to 5 minutes)
+
+#login_ticket_expiry: 300
+#service_ticket_expiry: 300
+
+# Proxy- and ticket-granting tickets do not expire -- normally they are made invalid only 
+# when the user logs out. But the server must periodically delete them to prevent buildup of
+# stale data. PGTs and TGTs will be deleted during server startup if they are this many
+# seconds old. (Defaults to 48 hours)
+
+#proxy_granting_ticket_expiry: 172800
+#ticket_granting_ticket_expiry: 172800
+
+# If you would prefer that ticket-granting ticket expiry be enforced (in effect limiting
+# the maximum length of a session), you can set expire_sessions to true.
+
+# expire_sessions: false

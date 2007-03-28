@@ -32,6 +32,8 @@
   off to allow for use of the autocomplete property on inputs, since this is
   the only viable way of turning off password storage in IE and Firefox at
   the page level.
+* You can now limit the maximum length of a login session by setting the
+  expire_sessions config setting to true.
 * Fixed some minor bugs in the login view.
 
 
