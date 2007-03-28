@@ -1,22 +1,31 @@
 === 0.3.0 :: in progress
 
+* Fixed glaring security problem with LDAP/AD Authenticator where under some
+  circumstances blank passwords were accepted as valid.
 * sqlite3-ruby is no longer required by the gem as a dependency.  The user 
   must now install it manually prior to installing rubycas-server. The
   building of sqlite3 native extensions appears to be somewhat flakey
   and probably defeats the original purpose of using sqlite3 (which was
   to have a CAS server up and running with no additional DB configuration).
+* Autocomplete has been turned off on the password field for better security.
+  In the future we may allow autocomplete to be re-enabled using a
+  configuration setting.
+* Trailing slashes in service URLs are now ignored when validating service
+  and proxy tickets (e.g. "http://www.google.com" and "http://www.google.com/"
+  are now considered to be the same service URL).
 * Authenticators now raise AuthenticatorError exceptions when encountering
   a problem/error. This makes it easier to send feedback to the user.
   However, other exceptions should still be raised when errors ought
   not be recoverable (i.e. programming errors).
-* Trailing slashes in service URLs are now ignored when validating service
-  and proxy tickets (e.g. "http://www.google.com" and "http://www.google.com/"
-  are now considered to be the same service URL).
 * Fixed serious vulnerability in LDAP authenticator where under some
   cirumstances the user could just enter '*' as their username to match 
   any username. The LDAP authenticator will now refuse to process logins 
   with usernames that contain the characters * ( ) \ / and the NULL 
   character \0.
+* Views are no longer xhtml-validated. Markaby's auto-validation was turned
+  off to allow for use of the autocomplete property on inputs, since this is
+  the only viable way of turning off password storage in IE and Firefox at
+  the page level.
 * Fixed some minor bugs in the login view.
 
 
