@@ -62,6 +62,7 @@ end
 module CASServer
   module Conf
     DEFAULTS = {
+      :expire_sessions => false,
       :login_ticket_expiry => 5.minutes,
       :service_ticket_expiry => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
       :proxy_granting_ticket_expiry => 48.hours,

@@ -132,7 +132,12 @@ module CASServer::CAS
       error = "No ticket granting ticket given."
       $LOG.debug(error)
     elsif tgt = TicketGrantingTicket.find_by_ticket(ticket)
-      $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated.")
+      if CASServer::Conf.expire_sessions && Time.now - tgt.created_on > CASServer::Conf.ticket_granting_ticket_expiry
+        error = "Ticket granting ticket has expired."
+        $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' expired.")
+      else
+        $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated.")
+      end
     else
       error = "Invalid ticket granting ticket '#{ticket}' (no matching ticket found in the database)."
       $LOG.warn(error)

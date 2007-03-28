@@ -55,7 +55,7 @@ ssl_cert: /path/to/your/ssl.pem
 #database:
 #  adapter: mysql
 #  database: casserver
-#  user: root
+#  username: root
 #  password: 
 #  server: localhost
 #
