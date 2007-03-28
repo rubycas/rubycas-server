@@ -110,3 +110,11 @@ div.confirmation {
 	background-position: 10px 5px;
 	font-weight: bold;
 }
+
+div.notice {
+	color: #04c;
+	background-image: url(notice.png);
+	background-repeat: no-repeat;
+	background-position: 10px 5px;
+	font-weight: bold;
+}

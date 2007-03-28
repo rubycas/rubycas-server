@@ -19,14 +19,19 @@ module CASServer::Controllers
       @renew = @input['renew']
       @gateway = @input['gateway']
       
-      if @service && !@renew && tgc = @cookies[:tgt]
-        tgt, error = validate_ticket_granting_ticket(tgc)
-        if tgt && !error
-          st = generate_service_ticket(@service, tgt.username)
-          service_with_ticket = service_uri_with_ticket(@service, st)
-          $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
-          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
-        end
+      if tgc = @cookies[:tgt]
+        tgt, tgt_error = validate_ticket_granting_ticket(tgc)
+      end
+      
+      if tgt and !tgt_error
+        @message = {:type => 'notice', :message => %{You are currently logged in as "#{tgt.username}". If you are not "#{tgt.username}", please log in below.}}
+      end
+      
+      if @service && !@renew && tgt && !tgt_error
+        st = generate_service_ticket(@service, tgt.username)
+        service_with_ticket = service_uri_with_ticket(@service, st)
+        $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
+        return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
       end
       
       lt = generate_login_ticket

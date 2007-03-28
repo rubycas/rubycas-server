@@ -215,7 +215,16 @@ module CASServer::CAS
     raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Models::ServiceTicket
     
     service_uri = URI.parse(service)
-    query_separator = service_uri.query ? "&" : "?"
+    
+    if service.include? "?"
+      if service_uri.query.empty?
+        query_separator = ""
+      else
+        query_separator = "&"
+      end
+    else
+      query_separator = "?"
+    end
     
     service_with_ticket = service + query_separator + "ticket=" + st.ticket
     service_with_ticket
