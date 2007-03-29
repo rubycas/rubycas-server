@@ -20,6 +20,7 @@ lib/casserver/utils.rb
 lib/casserver/version.rb
 lib/casserver/views.rb
 lib/themes/cas.css
+lib/themes/notice.png
 lib/themes/ok.png
 lib/themes/simple/bg.png
 lib/themes/simple/login_box_bg.png
