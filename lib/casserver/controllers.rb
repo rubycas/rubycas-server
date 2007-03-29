@@ -24,7 +24,7 @@ module CASServer::Controllers
       end
       
       if tgt and !tgt_error
-        @message = {:type => 'notice', :message => %{You are currently logged in as "#{tgt.username}". If you are not you, please log in below.}}
+        @message = {:type => 'notice', :message => %{You are currently logged in as "#{tgt.username}". If this is not you, please log in below.}}
       end
       
       if @service && !@renew && tgt && !tgt_error
