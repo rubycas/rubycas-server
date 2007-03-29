@@ -47,22 +47,28 @@ ssl_cert: /path/to/your/ssl.pem
 
 # Set up the database connection. Make sure that this database is secure!
 # 
-# By default, we use sqlite3 since it works without any extra configuration.
-# You can also use MySQL, PostgreSQL, MSSQL, or anything else supported by ActiveRecord.
+# By default, we use MySQL, since it is widely used and does not require any additional
+# ruby libraries besides ActiveRecord.
+# 
+# Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else supported 
+# by ActiveRecord.
 #
 # For example, with MySQL, your config wold be something like:
-#
-#database:
-#  adapter: mysql
-#  database: casserver
-#  username: root
-#  password: 
-#  server: localhost
-#
 
 database:
-  adapter: sqlite3
-  dbfile: /var/lib/casserver.db
+  adapter: mysql
+  database: casserver
+  username: root
+  password: 
+  server: localhost
+
+# If you prefer to use SQLite3 (which does not require a separate database server),
+# your configuration would look something like the following (don't forget to install
+# the sqlite3-ruby gem beforehand!):
+#
+#database:
+#  adapter: sqlite3
+#  dbfile: /var/lib/casserver.db
   
 
 ##### AUTHENTICATION #################################################################
