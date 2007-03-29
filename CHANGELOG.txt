@@ -1,18 +1,21 @@
-=== 0.3.0 :: in progress
+=== 0.3.0 :: 2007-03-29
 
 * Fixed glaring security problem with LDAP/AD Authenticator where under some
   circumstances blank passwords were accepted as valid.
-* sqlite3-ruby is no longer required by the gem as a dependency.  The user 
-  must now install it manually prior to installing rubycas-server. The
-  building of sqlite3 native extensions appears to be somewhat flakey
-  and probably defeats the original purpose of using sqlite3 (which was
-  to have a CAS server up and running with no additional DB configuration).
 * Autocomplete has been turned off on the password field for better security.
   In the future we may allow autocomplete to be re-enabled using a
   configuration setting.
 * When the user visits the login page and is already authenticated (i.e. they
   have a valid ticket granting cookie), a message is shown at the top 
   indicating that they are already logged in.
+* sqlite3-ruby is no longer required by the gem as a dependency.  The user 
+  must now install it manually prior to installing rubycas-server. The
+  building of sqlite3 native extensions appears to be somewhat flakey
+  and probably defeats the original purpose of using it (which was
+  to have a CAS server up and running with no additional DB configuration).
+  We will use MySQL as the default database adapter instead, since it does
+  not require additional libraries and many users will have a MySQL server
+  already available.
 * Fixed bug that was causing all proxy-granting tickets to be deleted whenever
   any user logged out. Only the PGTs for the user that is logging out are now
   being deleted.
