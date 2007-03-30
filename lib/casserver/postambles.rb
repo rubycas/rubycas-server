@@ -88,9 +88,18 @@ module CASServer
       
       CASServer.init_logger
       CASServer.init_db_logger
+
+      if $DAEMONIZE && $PID_FILE
+        open($PID_FILE, "w") { |file| file.write(Process.pid) }
+      end
       
       puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
       config.join
+
+      if $PID_FILE && File.exists?($PID_FILE)
+        File.unlink $PID_FILE
+      end
+
       puts "\n** CASServer is stopped (#{Time.now})"
     end
     

@@ -21,7 +21,19 @@ OptionParser.new do |opts|
   opts.on("-d", "--daemonize", "Run as a daemon (only when using webrick or mongrel)") do |c|
     $DAEMONIZE = true
   end
-  
+
+  opts.on("-P", "--pid_file FILE", "Use pid file (default is /etc/rubycas-server/rubycas-server.pid)") do |c|
+    if $DAEMONIZE && !File.exists?(c)
+      puts "Using pid file #{c}"
+      $PID_FILE = c
+    elsif File.exists?(c)
+      puts "The pid file already exists.  Is rubycas-server running?"
+      exit
+    else
+      puts "Not running as Daemon.  Ignoring pid option"
+    end
+  end
+
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
