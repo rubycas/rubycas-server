@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+@options = {}
+@options[:pid_file] = "/etc/rubycas-server/rubycas-server.pid"
+@options[:conf_file] = nil
+@options[:verbose] = false
+
+def start
+  cmd = "rubycas-server -d -P #{@options[:pid_file]}"
+  cmd += " -c #{@options[:conf_file]}" if !@options[:conf_file].nil?
+  puts cmd if @options[:verbose]
+  output = `#{cmd}`
+  puts output if @options[:verbose]
+end
+
+def stop
+  if File.exists? @options[:pid_file]
+    pid = open(@options[:pid_file]).read.to_i
+    begin
+      Process.kill("TERM", pid)
+    rescue Errno::ESRCH
+      puts "Process does not exist.  Not running."
+    end
+  else
+    puts "#{@options[:pid_file]} not found.  Is rubycas-server running?"
+  end
+end
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} (start|stop|restart) [options]"
+ 
+  opts.on("-c", "--conf_file FILE", "Path to rubycas-server configuration file") { |value| @options[:conf_file] = value }
+  opts.on("-P", "--pid_file FILE", "Path to rubycas-server pid file") { |value| @options[:pid_file] = value }
+  opts.on('-v', '--verbose', "Print all called commands and output.") { |value| @options[:verbose] = value }
+
+  if ARGV.empty?
+    puts opts
+    exit
+  else
+    @cmd = opts.parse!(ARGV)
+    if @cmd.nil?
+      puts opts
+      exit
+    end
+  end
+end
+
+if !@options[:conf_file].nil? && !File.exists?(@options[:conf_file])
+  puts "Invalid path to rubycas-server configuration file: #{@options[:conf_file]}"
+  exit
+end
+
+case @cmd[0]
+when "start": 
+  puts "Starting rubycas-server..."
+  start
+when "stop":
+  puts "Stopping rubycas-server..."
+  stop
+when "restart":
+  puts "Restarting rubycas-server..."
+  stop
+  start
+else
+ puts "Unknown command."
+end
+
+exit
