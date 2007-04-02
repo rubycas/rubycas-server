@@ -8,11 +8,23 @@ require 'optparse'
 @options[:verbose] = false
 
 def start
-  cmd = "rubycas-server -d -P #{@options[:pid_file]}"
+  # use local rubycas-server bin if it exists and is executable -- makes debugging easier
+  bin = File.dirname(File.expand_path(__FILE__)) + "/rubycas-server"
+  
+  if File.exists?(bin)
+    exec = "ruby #{bin}"
+  else
+    exec = "rubycas-server"
+  end
+  	
+  cmd = "#{exec} -d -P #{@options[:pid_file]}"
   cmd += " -c #{@options[:conf_file]}" if !@options[:conf_file].nil?
   puts cmd if @options[:verbose]
   output = `#{cmd}`
   puts output if @options[:verbose]
+  
+  $stderr.puts "rubycas-server could not start properly!\nTry running with the --verbose option for details." unless 
+    get_state == :ok
 end
 
 def stop
@@ -21,18 +33,48 @@ def stop
     begin
       Process.kill("TERM", pid)
     rescue Errno::ESRCH
-      puts "Process does not exist.  Not running."
+      $stderr.puts "Process does not exist.  Not running."
     end
   else
-    puts "#{@options[:pid_file]} not found.  Is rubycas-server running?"
+    $stderr.puts "#{@options[:pid_file]} not found.  Is rubycas-server running?"
+  end
+end
+
+def status
+  case get_state
+  when :ok
+    puts "rubycas-server appears to be up and running."
+  when :missing_pid
+    $stderr.puts "rubycas-server does not appear to be running (pid file not found)."
+  when :not_running
+    $stderr.puts "rubycas-server is not running."
+  when :dead
+    $stderr.puts "rubycas-server is dead or unresponsive."
+  end
+end
+
+def get_state
+  if File.exists? @options[:pid_file]
+    pid = File.read(@options[:pid_file]).strip
+    state = `ps -p #{pid} -o state=`.strip
+    if state == ''
+      :not_running
+    elsif state == 'R' || state == 'S'
+      :ok
+    else
+      :dead
+    end
+  else
+    # TODO: scan through the process table to see if server is running without pid file
+    :missing_pid
   end
 end
 
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} (start|stop|restart) [options]"
-  opts.banner += "\nRubyCAS-Server must use mongrel for (stop|restart)"
+  opts.banner += "\nruby-server-ctl is only usable when using webrick or mongrel"
  
-  opts.on("-c", "--conf_file FILE", "Path to rubycas-server configuration file") { |value| @options[:conf_file] = value }
+  opts.on("-c", "--config FILE", "Path to rubycas-server configuration file") { |value| @options[:conf_file] = value }
   opts.on("-P", "--pid_file FILE", "Path to rubycas-server pid file") { |value| @options[:pid_file] = value }
   opts.on('-v', '--verbose', "Print all called commands and output.") { |value| @options[:verbose] = value }
 
@@ -64,8 +106,11 @@ when "restart":
   puts "Restarting rubycas-server..."
   stop
   start
+when "status":
+  puts "Checking status of rubycas-server..."
+  status
 else
- puts "Unknown command."
+ puts "Invalid command. Usage: rubycas-server-ctl [-cPv] start|stop|restart|status"
 end
 
 exit

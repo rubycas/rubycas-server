@@ -4,8 +4,12 @@ require 'optparse'
 
 local_casserver = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../lib/casserver.rb')
 if File.exists? local_casserver
+  # use local rubycas-server installation
   $: << File.dirname(local_casserver)
+  path = File.dirname(local_casserver)+"/"
 else
+  # use gem installation
+  path = ""
   require 'rubygems'
   require_gem 'rubycas-server'
 end
@@ -24,7 +28,7 @@ OptionParser.new do |opts|
 
   opts.on("-P", "--pid_file FILE", "Use pid file (default is /etc/rubycas-server/rubycas-server.pid)") do |c|
     if $DAEMONIZE && !File.exists?(c)
-      puts "Using pid file #{c}"
+      puts "Using pid file '#{c}'"
       $PID_FILE = c
     elsif File.exists?(c)
       puts "The pid file already exists.  Is rubycas-server running?"
@@ -40,7 +44,7 @@ OptionParser.new do |opts|
   end
   
   opts.on_tail("-v", "--version", "Show version number") do
-  	require 'casserver/version'
+  	require "#{path}casserver/version"
     puts "rubycas-server-#{CASServer::VERSION::STRING}"
     exit
   end
@@ -48,4 +52,4 @@ end.parse!
 
 $RUN = true
 
-load 'casserver.rb'
+load "#{path}casserver.rb"

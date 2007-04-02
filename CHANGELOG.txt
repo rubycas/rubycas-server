@@ -3,6 +3,7 @@
 * Added rubycas-server-ctl script for controlling daemonized server.
 * Authenticator can now be loaded from an external file using the 'source'
   configuration option.
+* Better early detection of startup problems with mongrel.
 
 === 0.3.0 :: 2007-03-29
 

@@ -47,9 +47,16 @@ module CASServer
       trap(:INT) do
         s.shutdown
       end
+      trap(:TERM) do
+        s.shutdown
+      end
     
       if $DAEMONIZE
-        WEBrick::Daemon.start {s.start}
+        WEBrick::Daemon.start do
+          write_pid_file if $PID_FILE
+          s.start
+          clear_pid_file
+        end
       else
         s.start
       end
@@ -66,14 +73,21 @@ module CASServer
       #     gem install camping --source code.whytheluckystiff.net
       require_gem 'camping', '~> 1.5.180'
       
-      CASServer.create    
+      if $DAEMONIZE
+        # check if log and pid are writable before daemonizing, otherwise we won't be able to notify
+        # the user if we run into trouble later (since once daemonized, we can't write to stdout/stderr)
+        check_pid_writable if $PID_FILE
+        check_log_writable
+      end
+      
+      CASServer.create
       
       puts "\n** CASServer is starting. Look in '#{CASServer::Conf.log[:file]}' for further notices."
       
       settings = {:host => "0.0.0.0", :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME}
       
-      # need to close all IOs if we daemonize
-      $LOG.close
+      # need to close all IOs before daemonizing
+      $LOG.close if $DAEMONIZE
       
       config = Mongrel::Configurator.new settings  do
         daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
@@ -88,17 +102,19 @@ module CASServer
       
       CASServer.init_logger
       CASServer.init_db_logger
-
+      
       if $DAEMONIZE && $PID_FILE
-        open($PID_FILE, "w") { |file| file.write(Process.pid) }
+        write_pid_file
+        unless File.exists? $PID_FILE
+          $LOG.error "CASServer could not start because pid file '#{$PID_FILE}' could not be created."
+          exit 1
+        end
       end
       
       puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
       config.join
 
-      if $PID_FILE && File.exists?($PID_FILE)
-        File.unlink $PID_FILE
-      end
+      clear_pid_file
 
       puts "\n** CASServer is stopped (#{Time.now})"
     end
@@ -116,6 +132,37 @@ module CASServer
     def cgi
       CASServer.create
       puts CASServer.run
+    end
+    
+    private
+    def check_log_writable
+      begin
+        f = open($PID_FILE, 'w')
+      rescue
+        $stderr.puts "Couldn't create PID file at '#{$PID_FILE}' (#{$!})."
+        exit 1
+      end
+      f.close
+    end
+    
+    def check_pid_writable
+      begin
+        f = open(CASServer::Conf.log[:file], 'w')
+      rescue
+        $stderr.puts "Couldn't write to log at '#{CASServer::Conf.log[:file]}' (#{$!})."
+        exit 1
+      end
+      f.close
+    end
+    
+    def write_pid_file
+      open($PID_FILE, "w") { |file| file.write(Process.pid) }
+    end
+    
+    def clear_pid_file
+      if $PID_FILE && File.exists?($PID_FILE)
+        File.unlink $PID_FILE
+      end
     end
   
   end
