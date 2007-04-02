@@ -72,7 +72,11 @@ if __FILE__ == $0 || $RUN
   
   require 'casserver/postambles'
   include CASServer::Postambles
-  
+
+  if CASServer::Conf.server.to_s != 'mongrel' && $PID_FILE
+    $LOG.warn("Unable to create a pid file. You must use mongrel for this feature.")
+  end
+
   begin
     raise NoMethodError if CASServer::Conf.server.nil?
     send(CASServer::Conf.server)

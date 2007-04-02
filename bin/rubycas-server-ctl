@@ -30,6 +30,7 @@ end
 
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} (start|stop|restart) [options]"
+  opts.banner += "\nRubyCAS-Server must use mongrel for (stop|restart)"
  
   opts.on("-c", "--conf_file FILE", "Path to rubycas-server configuration file") { |value| @options[:conf_file] = value }
   opts.on("-P", "--pid_file FILE", "Path to rubycas-server pid file") { |value| @options[:pid_file] = value }
