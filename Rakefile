@@ -20,7 +20,6 @@ HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
 DEPS = [
   ['camping', '>= 1.5'],
-#  ['sqlite3-ruby', '>= 1.2.0'],
   ['activesupport', '>= 1.4.0'],
   ['activerecord', '>=1.15.3']
 ]
@@ -56,5 +55,5 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   
   # == Optional
   p.extra_deps = DEPS
-  p.spec_extras = {:executables => 'rubycas-server'}
+  p.spec_extras = {:executables => ['rubycas-server', 'rubycas-server-ctl']}
 end

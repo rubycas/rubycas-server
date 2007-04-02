@@ -4,6 +4,7 @@ Manifest.txt
 README.txt
 Rakefile
 bin/rubycas-server
+bin/rubycas-server-ctl
 config.example.yml
 lib/casserver.rb
 lib/casserver/authenticators/active_directory_ldap.rb
