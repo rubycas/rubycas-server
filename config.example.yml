@@ -158,7 +158,7 @@ database:
 #
 #authenticator:
 #  class: FooModule::MyCustomAuthenticator
-#  source: /path/to/source
+#  source: /path/to/source.rb
 #  option_a: foo
 #  another_option: yeeha
 
