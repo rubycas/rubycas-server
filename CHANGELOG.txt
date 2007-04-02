@@ -1,3 +1,9 @@
+=== 0.4.0 :: in progress
+
+* Added rubycas-server-ctl script for controlling daemonized server.
+* Authenticator can now be loaded from an external file using the 'source'
+  configuration option.
+
 === 0.3.0 :: 2007-03-29
 
 * Fixed glaring security problem with LDAP/AD Authenticator where under some
