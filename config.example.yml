@@ -149,16 +149,16 @@ database:
 # as a hash under :username and :password keys. In the future, this hash
 # might also contain other data such as the domain that the user is logging in to.
 #
-# To use your custom authenticator, specify it's class name in the authenticator section
-# of the config. You will also probably have to load the class using using a `require`
-# call at the top of casserver.rb. Any other parameters you specify in the authenticator
-# configuration will be passed on to the authenticator and made availabe in the validate()
-# method as an @options hash.
+# To use your custom authenticator, specify it's class name and path to the source file 
+# in the authenticator section of the config. Any other parameters you specify in the 
+# authenticator configuration will be passed on to the authenticator and made availabe in
+# the validate() method as an @options hash.
 #
 # Example:
 #
 #authenticator:
 #  class: FooModule::MyCustomAuthenticator
+#  source: /path/to/source
 #  option_a: foo
 #  another_option: yeeha
 

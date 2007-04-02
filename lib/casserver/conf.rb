@@ -47,9 +47,15 @@ begin
     # attempt to instantiate the authenticator
     $AUTH = $CONF[:authenticator][:class].constantize.new
   rescue NameError
-    # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
-    auth_rb = $CONF[:authenticator][:class].underscore.gsub('cas_server/', '')
-    require 'casserver/'+auth_rb
+    if !$CONF[:authenticator][:source].nil?
+      # config.yml explicitly names source file
+      require $CONF[:authenticator][:source]
+    else
+      # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+      auth_rb = $CONF[:authenticator][:class].underscore.gsub('cas_server/', '')
+      require 'casserver/'+auth_rb
+    end
+
     $AUTH = $CONF[:authenticator][:class].constantize.new
   end
 rescue
