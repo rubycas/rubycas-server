@@ -4,7 +4,7 @@
 * Added system startup script to be used in /etc/init.d on Linux systems.
 * Authenticator can now be loaded from an external file using the 'source'
   configuration option.
-* Better early detection of startup problems with mongrel.
+* Better preemptive detection of startup problems with mongrel.
 
 === 0.3.0 :: 2007-03-29
 
