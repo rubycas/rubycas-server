@@ -1,6 +1,7 @@
 === 0.4.0 :: in progress
 
 * Added rubycas-server-ctl script for controlling daemonized server.
+* Added system startup script to be used in /etc/init.d on Linux systems.
 * Authenticator can now be loaded from an external file using the 'source'
   configuration option.
 * Better early detection of startup problems with mongrel.
