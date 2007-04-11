@@ -3,7 +3,10 @@
 # I started working on this but run into a wall, so I am commiting what I've got
 # done and leaving it here with hopes of one day finishing it.
 # 
-# The main problem is that although I've got the Lan Manager/
+# The main problem is that although I've got the Lan Manager/NTLM password hash,
+# I'm not sure what to do with it. i.e. I need to check it against the AD or SMB
+# server or something... maybe faking an SMB share connection and using the LM
+# response for authentication might do the trick?
 
 require 'casserver/authenticators/base'
 
