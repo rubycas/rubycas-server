@@ -89,13 +89,17 @@ module CASServer
       # need to close all IOs before daemonizing
       $LOG.close if $DAEMONIZE
       
-      config = Mongrel::Configurator.new settings  do
-        daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
-        
-        listener :port => CASServer::Conf.port do
-          uri CASServer::Conf.uri_path, :handler => Mongrel::Camping::CampingHandler.new(CASServer)
-          setup_signals
+      begin
+        config = Mongrel::Configurator.new settings  do
+          daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
+          
+          listener :port => CASServer::Conf.port do
+            uri CASServer::Conf.uri_path, :handler => Mongrel::Camping::CampingHandler.new(CASServer)
+            setup_signals
+          end
         end
+      rescue Errno::EADDRINUSE
+        exit 1
       end
       
       config.run
@@ -136,31 +140,35 @@ module CASServer
     
     private
     def check_log_writable
+      log_file = CASServer::Conf.log['file']
       begin
-        f = open($PID_FILE, 'w')
+        f = open(log_file, 'w')
       rescue
-        $stderr.puts "Couldn't create PID file at '#{$PID_FILE}' (#{$!})."
+        $stderr.puts "Couldn't write to log file at '#{log_file}' (#{$!})."
         exit 1
       end
       f.close
     end
     
     def check_pid_writable
-      begin
-        f = open(CASServer::Conf.log[:file], 'w')
+      $LOG.debug "Checking if pid file '#{$PID_FILE}' is writable"
+      begin        
+        f = open($PID_FILE, 'w')
       rescue
-        $stderr.puts "Couldn't write to log at '#{CASServer::Conf.log[:file]}' (#{$!})."
+        $stderr.puts "Couldn't write to log at '#{$PID_FILE}' (#{$!})."
         exit 1
       end
       f.close
     end
     
     def write_pid_file
+      $LOG.debug "Writing pid '#{Process.pid}' to pid file '#{$PID_FILE}'"
       open($PID_FILE, "w") { |file| file.write(Process.pid) }
     end
     
     def clear_pid_file
       if $PID_FILE && File.exists?($PID_FILE)
+        $LOG.debug "Clearing pid file '#{$PID_FILE}'"
         File.unlink $PID_FILE
       end
     end

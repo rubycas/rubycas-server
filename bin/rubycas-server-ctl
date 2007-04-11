@@ -10,21 +10,56 @@ require 'optparse'
 def start
   # use local rubycas-server bin if it exists and is executable -- makes debugging easier
   bin = File.dirname(File.expand_path(__FILE__)) + "/rubycas-server"
-  
+
   if File.exists?(bin)
     exec = "ruby #{bin}"
   else
     exec = "rubycas-server"
   end
+  
+  case get_state
+  when :ok
+    $stderr.puts "rubycas-server is already running"
+    exit 1
+  when :not_running
+    $stderr.puts "The pid file '#{@options[:pid_file]}' exists but rubycas-server is not running." +
+      "Please delete the pid file first."
+    exit 1
+  when :dead
+    $stderr.puts "The pid file '#{@options[:pid_file]}' exists but rubycas-server is not running." +
+      " Please delete the pid file first."
+    exit 1
+  when :missing_pid
+    # we should be good to go (unless the server is already running without a pid file)
+  else
+    $stderr.puts "rubycas-server could not be started. Try looking in the log file for more info."
+    exit 1
+  end
   	
   cmd = "#{exec} -d -P #{@options[:pid_file]}"
   cmd += " -c #{@options[:conf_file]}" if !@options[:conf_file].nil?
-  puts cmd if @options[:verbose]
-  output = `#{cmd}`
-  puts output if @options[:verbose]
   
-  $stderr.puts "rubycas-server could not start properly!\nTry running with the --verbose option for details." unless 
-    get_state == :ok
+  puts ">>> #{cmd}" if @options[:verbose]
+  
+  output = `#{cmd}`
+  
+  puts "<<< #{output}" if @options[:verbose]
+  
+  if s = get_state == :ok
+    exit 0
+  else
+    $stderr.puts "rubycas-server could not start properly!\nTry running with the --verbose option for details." 
+    case s
+    when :missing_pid
+      exit 4
+    when :not_running
+      exit 3
+    when :dead
+      exit 1
+    else
+      exit 4
+    end
+  end
 end
 
 def stop
@@ -32,11 +67,14 @@ def stop
     pid = open(@options[:pid_file]).read.to_i
     begin
       Process.kill("TERM", pid)
+      exit 0
     rescue Errno::ESRCH
-      $stderr.puts "Process does not exist.  Not running."
+      $stderr.puts "rubycas-server process '#{pid}' does not exist."
+      exit 1
     end
   else
     $stderr.puts "#{@options[:pid_file]} not found.  Is rubycas-server running?"
+    exit 4
   end
 end
 
@@ -44,18 +82,27 @@ def status
   case get_state
   when :ok
     puts "rubycas-server appears to be up and running."
+    exit 0
   when :missing_pid
     $stderr.puts "rubycas-server does not appear to be running (pid file not found)."
+    exit 3
+  when :empty_pid
+    $stderr.puts "rubycas-server does not appear to be running (pid file exists but is empty)."
   when :not_running
     $stderr.puts "rubycas-server is not running."
+    exit 1
   when :dead
     $stderr.puts "rubycas-server is dead or unresponsive."
+    exit 102
   end
 end
 
 def get_state
   if File.exists? @options[:pid_file]
     pid = File.read(@options[:pid_file]).strip
+    
+    return :empty_pid unless pid and !pid.empty? # pid file exists but is empty
+    
     state = `ps -p #{pid} -o state=`.strip
     if state == ''
       :not_running

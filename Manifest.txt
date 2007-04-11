@@ -32,5 +32,6 @@ lib/themes/urbacon/login_box_bg.png
 lib/themes/urbacon/logo.png
 lib/themes/urbacon/theme.css
 lib/themes/warning.png
+resources/init.d.sh
 setup.rb
 test/test_casserver.rb

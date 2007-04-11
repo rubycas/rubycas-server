@@ -31,9 +31,14 @@ module CASServer
   module_function :init_logger
 
   def init_db_logger
-    if CASServer::Conf.db_log
-      CASServer::Models::Base.logger = Logger.new(CASServer::Conf.db_log[:file] || 'casserver_db.log')
-      CASServer::Models::Base.logger.level = "CASServer::Utils::Logger::#{CASServer::Conf.db_log[:level] || 'DEBUG'}".constantize
+    begin
+      if CASServer::Conf.db_log
+        log_file = CASServer::Conf.db_log[:file] || 'casserver_db.log'
+        CASServer::Models::Base.logger = Logger.new(log_file)
+        CASServer::Models::Base.logger.level = "CASServer::Utils::Logger::#{CASServer::Conf.db_log[:level] || 'DEBUG'}".constantize
+      end
+    rescue Errno::EACCES => e
+      $LOG.warn "Can't write to database log file at '#{log_file}': #{e}"
     end
   end
   module_function :init_db_logger
@@ -81,6 +86,8 @@ if __FILE__ == $0 || $RUN
     raise NoMethodError if CASServer::Conf.server.nil?
     send(CASServer::Conf.server)
   rescue NoMethodError
+    # FIXME: this rescue can sometime report the incorrect error messages due to other underlying problems
+    #         raising a NoMethodError
     if CASServer::Conf.server
       raise "The server setting '#{CASServer::Conf.server}' in your config.yml file is invalid."
     else

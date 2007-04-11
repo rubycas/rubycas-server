@@ -31,8 +31,9 @@ OptionParser.new do |opts|
       puts "Using pid file '#{c}'"
       $PID_FILE = c
     elsif File.exists?(c)
-      puts "The pid file already exists.  Is rubycas-server running?"
-      exit
+      puts "The pid file already exists.  Is rubycas-server running?\n" +
+      	"You will have to first manually remove the pid file at '#{c}' to start the server as a daemon."
+      exit 1
     else
       puts "Not running as Daemon.  Ignoring pid option"
     end
