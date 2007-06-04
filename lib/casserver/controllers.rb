@@ -27,11 +27,17 @@ module CASServer::Controllers
         @message = {:type => 'notice', :message => %{You are currently logged in as "#{tgt.username}". If this is not you, please log in below.}}
       end
       
-      if @service && !@renew && tgt && !tgt_error
-        st = generate_service_ticket(@service, tgt.username)
-        service_with_ticket = service_uri_with_ticket(@service, st)
-        $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
-        return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+      begin
+        if @service && !@renew && tgt && !tgt_error
+          st = generate_service_ticket(@service, tgt.username)
+          service_with_ticket = service_uri_with_ticket(@service, st)
+          $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
+          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+        end
+      rescue
+        msg = "The service '#{@service}' is not a valid URI!"
+        $LOG.error(msg)
+        @message = {:type => 'mistake', :message => msg}
       end
       
       lt = generate_login_ticket
@@ -98,19 +104,25 @@ module CASServer::Controllers
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
           @message = {:type => 'confirmation', :message => "You have successfully logged in."}
-          render :login
         else
-          @st = generate_service_ticket(@service, @username)        
-          service_with_ticket = service_uri_with_ticket(@service, @st)
-        
-          $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
-          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+          @st = generate_service_ticket(@service, @username)
+          begin
+            service_with_ticket = service_uri_with_ticket(@service, @st)
+            
+            $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
+            return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+          rescue URI::InvalidURIError
+            msg = "The service '#{@service}' is not a valid URI!"
+            $LOG.error(msg)
+            @message = {:type => 'mistake', :message => msg}
+          end
         end
       else
         $LOG.warn("Invalid credentials given for user '#{@username}'")
         @message = {:type => 'mistake', :message => "Incorrect username or password."}
-        render :login
       end
+      
+      render :login
     end
   end
   

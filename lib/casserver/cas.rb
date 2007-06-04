@@ -219,7 +219,8 @@ module CASServer::CAS
   def service_uri_with_ticket(service, st)
     raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Models::ServiceTicket
     
-    # FIXME: URI.parse may choke if query parameter values in the URI are not URI-encoded!
+    # This will choke with a URI::InvalidURIError if service URI is not properly URI-escaped...
+    # This exception is handled further upstream (i.e. in the controller).
     service_uri = URI.parse(service)
     
     if service.include? "?"
