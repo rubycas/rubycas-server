@@ -4,7 +4,7 @@ begin
   require 'net/ldap'
 rescue LoadError
   require 'rubygems'
-  require_gem 'ruby-net-ldap', '~> 0.0.4'
+  gem 'ruby-net-ldap', '~> 0.0.4'
   require 'net/ldap'
 end
 

@@ -71,7 +71,7 @@ module CASServer
       # camping has fixes for mongrel currently only availabe in SVN
       # ... you can install camping from svn (1.5.180) by running: 
       #     gem install camping --source code.whytheluckystiff.net
-      require_gem 'camping', '~> 1.5.180'
+      gem 'camping', '~> 1.5.180'
       
       if $DAEMONIZE
         # check if log and pid are writable before daemonizing, otherwise we won't be able to notify

@@ -11,7 +11,7 @@ else
   # use gem installation
   path = ""
   require 'rubygems'
-  require_gem 'rubycas-server'
+  gem 'rubycas-server'
 end
 
 OptionParser.new do |opts|
