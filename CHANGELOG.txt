@@ -5,6 +5,8 @@
 * Authenticator can now be loaded from an external file using the 'source'
   configuration option.
 * Better preemptive detection of startup problems with mongrel.
+* User now sees an error message if the service URI is not a valid URI (i.e.
+  if it's not URI-encoded or otherwise malformed).
 
 === 0.3.0 :: 2007-03-29
 

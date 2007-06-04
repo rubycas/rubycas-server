@@ -35,9 +35,8 @@ module CASServer::Controllers
           return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
         end
       rescue
-        msg = "The service '#{@service}' is not a valid URI!"
-        $LOG.error(msg)
-        @message = {:type => 'mistake', :message => msg}
+        $LOG.error("The service '#{@service}' is not a valid URI!")
+        @message = {:type => 'mistake', :message => "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."}
       end
       
       lt = generate_login_ticket
@@ -112,9 +111,8 @@ module CASServer::Controllers
             $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
             return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
           rescue URI::InvalidURIError
-            msg = "The service '#{@service}' is not a valid URI!"
-            $LOG.error(msg)
-            @message = {:type => 'mistake', :message => msg}
+            $LOG.error("The service '#{@service}' is not a valid URI!")
+            @message = {:type => 'mistake', :message => "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."}
           end
         end
       else
