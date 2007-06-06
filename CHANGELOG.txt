@@ -1,4 +1,4 @@
-=== 0.4.0 :: In progress...
+=== 0.4.0 :: 2007-06-05
 
 * Added rubycas-server-ctl script for controlling daemonized server.
 * Added system startup script to be used in /etc/init.d on Linux systems.
