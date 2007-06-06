@@ -8,6 +8,7 @@
 * Fixed minor bug in rubycas-server-ctl that sometimes incorrectly reported
   startup problems when in fact the server had started just fine.
 
+
 === 0.4.0 :: 2007-06-05
 
 * Added rubycas-server-ctl script for controlling daemonized server.
@@ -17,6 +18,7 @@
 * Better preemptive detection of startup problems with mongrel.
 * User now sees an error message if the service URI is not a valid URI (i.e.
   if it's not URI-encoded or otherwise malformed).
+
 
 === 0.3.0 :: 2007-03-29
 
@@ -71,6 +73,7 @@
 * CAS XML responses are no longer auto-indented... Markaby's indentation
   seemed to be causing problems with the PHP CAS client.
 * Misc minor bug fixes/cleanup.
+
 
 === 0.1.0 :: 2007-03-01
 
