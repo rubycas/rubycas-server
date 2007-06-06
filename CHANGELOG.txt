@@ -3,6 +3,8 @@
 * rubycas-server is now again compatible with older versions of rubygems
   (pre-0.9.0). To achieve this, we alias the 'gem' method to the old 
   'require_gem' if 'gem' is not already defined.
+* rubycas-server-ctl will now quiety delete an orphaned .pid file 
+  instead complaining loudly and refusing to start up.
 * Fixed minor bug in rubycas-server-ctl that sometimes incorrectly reported
   startup problems when in fact the server had started just fine.
 
