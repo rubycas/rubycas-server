@@ -23,8 +23,8 @@ def start
     exit 1
   when :not_running
     $stderr.puts "The pid file '#{@options[:pid_file]}' exists but rubycas-server is not running." +
-      "Please delete the pid file first."
-    exit 1
+      " The pid file will be automatically deleted for you, but this shouldn't have happened!"
+    File.delete(@options[:pid_file])
   when :dead
     $stderr.puts "The pid file '#{@options[:pid_file]}' exists but rubycas-server is not running." +
       " Please delete the pid file first."
@@ -105,15 +105,15 @@ def get_state
     
     state = `ps -p #{pid} -o state=`.strip
     if state == ''
-      :not_running
+      return :not_running
     elsif state == 'R' || state == 'S'
-      :ok
+      return :ok
     else
-      :dead
+      return :dead
     end
   else
     # TODO: scan through the process table to see if server is running without pid file
-    :missing_pid
+    return :missing_pid
   end
 end
 

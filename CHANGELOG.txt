@@ -3,6 +3,8 @@
 * rubycas-server is now again compatible with older versions of rubygems
   (pre-0.9.0). To achieve this, we alias the 'gem' method to the old 
   'require_gem' if 'gem' is not already defined.
+* Fixed minor bug in rubycas-server-ctl that sometimes incorrectly reported
+  startup problems when in fact the server had started just fine.
 
 === 0.4.0 :: 2007-06-05
 
