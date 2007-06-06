@@ -8,6 +8,12 @@ $CASSERVER_HOME = File.dirname(File.expand_path(__FILE__))
 $: << $CASSERVER_HOME
 
 require 'rubygems'
+
+# make things backwards-compatible for rubygems < 0.9.0
+unless Object.method_defined? :gem
+  alias gem require_gem
+end
+
 gem 'camping', '~> 1.5'
 require 'camping'
 

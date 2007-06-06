@@ -48,7 +48,7 @@ def start
   if s = get_state == :ok
     exit 0
   else
-    $stderr.puts "rubycas-server could not start properly!\nTry running with the --verbose option for details." 
+    $stderr.puts "rubycas-server could not start properly! (#{s})\nTry running with the --verbose option for details." 
     case s
     when :missing_pid
       exit 4
