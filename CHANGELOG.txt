@@ -1,6 +1,6 @@
 === 0.4.1 :: In progress...
 
-* rubycas-server is now again compatible with older versions of rubygems
+* This release restores compatiblity with older versions of rubygems
   (pre-0.9.0). To achieve this, we alias the 'gem' method to the old 
   'require_gem' if 'gem' is not already defined.
 * rubycas-server-ctl will now quiety delete an orphaned .pid file 
@@ -12,6 +12,7 @@
 === 0.4.0 :: 2007-06-05
 
 * Added rubycas-server-ctl script for controlling daemonized server.
+* rubygems-0.9.0 or later is now required.
 * Added system startup script to be used in /etc/init.d on Linux systems.
 * Authenticator can now be loaded from an external file using the 'source'
   configuration option.
