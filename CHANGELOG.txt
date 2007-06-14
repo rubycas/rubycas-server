@@ -1,3 +1,9 @@
+=== 0.4.2 :: In progress...
+
+* Minor improvements to error messages having to do with login tickets.
+  They're a bit more prescriptive now, explaining to the user what steps
+  they should take to correct the error.
+
 === 0.4.1 :: 2007-06-07
 
 * This release restores compatiblity with older versions of rubygems
