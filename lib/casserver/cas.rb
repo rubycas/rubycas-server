@@ -103,16 +103,16 @@ module CASServer::CAS
   
     success = false
     if ticket.nil?
-      error = "Your login request did not include a login ticket."
+      error = "Your login request did not include a login ticket. There may be a problem with the authentication system."
       $LOG.warn("Missing login ticket.")
     elsif lt = LoginTicket.find_by_ticket(ticket)
       if lt.consumed?
-        error = "The login ticket you provided has already been used up."
+        error = "The login ticket you provided has already been used up. Please try logging in again."
         $LOG.warn("Login ticket '#{ticket}' previously used up")
       elsif Time.now - lt.created_on < CASServer::Conf.login_ticket_expiry
         $LOG.info("Login ticket '#{ticket}' successfully validated")
       else
-        error = "Your login ticket has expired."
+        error = "Your login ticket has expired. Please try logging in again."
         $LOG.warn("Expired login ticket '#{ticket}'")
       end
     else
