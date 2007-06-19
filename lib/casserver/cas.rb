@@ -116,7 +116,7 @@ module CASServer::CAS
         $LOG.warn("Expired login ticket '#{ticket}'")
       end
     else
-      error = "The login ticket you provided is invalid."
+      error = "The login ticket you provided is invalid. Please try logging in again."
       $LOG.warn("Invalid login ticket '#{ticket}'")
     end
     

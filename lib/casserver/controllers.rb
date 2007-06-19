@@ -63,7 +63,7 @@ module CASServer::Controllers
         @message = {:type => 'mistake', :message => error}
         # generate another login ticket to allow for re-submitting the form
         @lt = generate_login_ticket.ticket
-        return render(:login)
+        return render :login
       end
       
       # generate another login ticket to allow for re-submitting the form after a post
@@ -75,10 +75,10 @@ module CASServer::Controllers
       
       begin
         credentials_are_valid = $AUTH.validate(:username => @username, :password => @password)
-      rescue AuthenticatorError => e
+      rescue CASServer::AuthenticatorError => e
         $LOG.error(e)
         @message = {:type => 'mistake', :message => e.to_s}
-        render :login and return
+        return render :login
       end
       
       if credentials_are_valid

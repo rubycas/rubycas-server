@@ -104,15 +104,17 @@ database:
 #
 #
 # ==> ActiveDirectory Authentication:
-# This method authenticates against Microsoft's ActiveDirectory using LDAP.
+# This method authenticates against Microsoft's Active Directory using LDAP.
 # You must enter your ActiveDirectory server, and base DN. The port number
-# and LDAP filter are optional. You must also enter a username and password
+# and LDAP filter are optional. You must also enter a CN and password
 # for an "authenticator" user. The authenticator users this account to
 # log in to the ActiveDirectory server and search LDAP. This does not have
-# to be an administrative account; it only has to be able to search for other
+# to be an administrative account -- it only has to be able to search for other
 # users.
-#
-# Example:
+# 
+# Note that the auth_user parameter must be the user's CN (Common Name)!
+# In Active Directory, the CN is genarally the user's full name, which is not 
+# the same as their username (sAMAccountName).
 #
 #authenticator: 
 #  class: CASServer::Authenticators::ActiveDirectoryLDAP
@@ -123,6 +125,13 @@ database:
 #    filter: (objectClass=person)
 #    auth_user: authenticator
 #    auth_password: itsasecret
+#
+# It is possible to authenticate against Active Directory without the
+# authenticator user, but this requires that users type in their CN as
+# the username, rather than typing in their sAMAccountName. In other words
+# users will likely have to authenticate by typing their full name,
+# rather than their username. If you prefer to do this, then just
+# omit the auth_user and auth_password values in the above example.
 #
 #
 # ==> LDAP Authentication:
