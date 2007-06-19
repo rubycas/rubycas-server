@@ -18,9 +18,7 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:ldap]
     raise CASServer::AuthenticatorError, "You must specify an ldap server in the configuration!" unless @options[:ldap][:server]
     
-    raise CASServer::AuthenticatorError, "The username '#{@username}' contains invalid characters." if (@username =~ /[*\(\)\0\/]/)
-    
-    preprocess_username
+    raise CASServer::AuthenticatorError, "The username '#{@username}' contains invalid characters." if (@username =~ /[*\(\)\\\0\/]/)
     
     @ldap = Net::LDAP.new
     @ldap.host = @options[:ldap][:server]
@@ -44,14 +42,6 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     end
   
   private
-    def preprocess_username
-      # allow \ in the username, but make sure that we escape it
-      @username.gsub!(/\\/, '\\\\')
-      
-      # add prefix to username, if prefix was given
-      @username = @username + @options[:ldap][:username_prefix] if @options[:ldap][:username_prefix]
-    end
-    
     def bind_with_preauthentication
       # If an auth_user is specified, we will connect ("pre-authenticate") to the
       # LDAP server using the authenticator account, and then attempt to bind as the
@@ -68,6 +58,8 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
         @options[:ldap][:auth_password]
       
       @ldap.authenticate(@options[:ldap][:auth_user], @options[:ldap][:auth_password])
+      
+      username_attribute = options[:ldap][:username_attribute] || default_username_attribute
       
       filter = Net::LDAP::Filter.construct(@options[:ldap][:filter]) & 
         Net::LDAP::Filter.eq(username_attribute, @username)
