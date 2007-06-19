@@ -82,10 +82,10 @@ module CASServer::Controllers
       end
       
       if credentials_are_valid
-        $LOG.info("Credentials for username '#{@username}' successfully validated")
+        $LOG.info("Credentials for username '#{$AUTH.username}' successfully validated")
         
         # 3.6 (ticket-granting cookie)
-        tgt = generate_ticket_granting_ticket(@username)
+        tgt = generate_ticket_granting_ticket($AUTH.username)
         
         if CASServer::Conf.expire_sessions
           expires = CASServer::Conf.ticket_granting_ticket_expiry.to_i.from_now
@@ -98,17 +98,17 @@ module CASServer::Controllers
         #        seem to be an easy way to set cookie expire times in Camping :(
         @cookies[:tgt] = tgt.to_s
         
-        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'. #{expiry_info}")
+        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{$AUTH.username}'. #{expiry_info}")
                 
         if @service.blank?
-          $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
+          $LOG.info("Successfully authenticated user '#{$AUTH.username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
           @message = {:type => 'confirmation', :message => "You have successfully logged in."}
         else
-          @st = generate_service_ticket(@service, @username)
+          @st = generate_service_ticket(@service, $AUTH.username)
           begin
             service_with_ticket = service_uri_with_ticket(@service, @st)
             
-            $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
+            $LOG.info("Redirecting authenticated user '#{$AUTH.username}' at '#{@st.client_hostname}' to service '#{@service}'")
             return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
           rescue URI::InvalidURIError
             $LOG.error("The service '#{@service}' is not a valid URI!")
@@ -116,7 +116,7 @@ module CASServer::Controllers
           end
         end
       else
-        $LOG.warn("Invalid credentials given for user '#{@username}'")
+        $LOG.warn("Invalid credentials given for user '#{$AUTH.username}'")
         @message = {:type => 'mistake', :message => "Incorrect username or password."}
       end
       

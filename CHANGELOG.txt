@@ -1,5 +1,15 @@
 === 0.4.2 :: In progress...
 
+* The LDAP/AD authenticator has been largely re-written. The code is a bit
+  cleaner now, and should work better with non-Active Directory LDAP servers
+  (although this has yet to be tested, since I don't have access to a non-AD
+  LDAP server).
+* By request, a :username_prefix option has been added to the ldap 
+  configuration. If entered, this string will be automatically prefixed to 
+  the username entered by the user.
+* A bug having to do with handling authenticator errors has been fixed.
+  Any authenticator error messages should now be correctly shown on the
+  login page.
 * Minor improvements to error messages having to do with login tickets.
   They're a bit more prescriptive now, explaining to the user what steps
   they should take to correct the error.

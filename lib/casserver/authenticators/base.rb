@@ -2,6 +2,8 @@ module CASServer
   module Authenticators
     class Base
       attr_accessor :options
+      attr_reader :username # make this accessible so that we can pick up any 
+                            # transformations done within the authenticator
     
       def validate(credentials)
         raise NotImplementedError, "This method must be implemented by a class extending #{self.class}"
