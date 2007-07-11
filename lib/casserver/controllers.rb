@@ -74,7 +74,7 @@ module CASServer::Controllers
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
       
       begin
-        credentials_are_valid = $AUTH.validate(:username => @username, :password => @password)
+        credentials_are_valid = $AUTH.validate(:username => @username, :password => @password, :service => @service)
       rescue CASServer::AuthenticatorError => e
         $LOG.error(e)
         @message = {:type => 'mistake', :message => e.to_s}

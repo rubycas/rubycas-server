@@ -18,6 +18,7 @@ module CASServer
       def read_standard_credentials(credentials)
         @username = credentials[:username]
         @password = credentials[:password]
+        @service = credentials[:service]
       end
     end
   end

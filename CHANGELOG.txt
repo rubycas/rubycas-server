@@ -2,8 +2,13 @@
 
 * The LDAP/AD authenticator has been largely re-written. The code is a bit
   cleaner now, and should work better with non-Active Directory LDAP servers
-  (although this has yet to be tested, since I don't have access to a non-AD
+  (although this has yet to be tested since I don't have access to a non-AD
   LDAP server).
+* The validate() method in your authenticators now receives a :service element
+  (in addition to :username, and :password). This is simply the service
+  url (if any) specified in the user's CAS request. If you call 
+  read_standard_credentials(credentials) at the top of your validator, the value
+  will also be available as @service along with @username and @password.
 * By request, a :username_prefix option has been added to the ldap 
   configuration. If entered, this string will be automatically prefixed to 
   the username entered by the user.
