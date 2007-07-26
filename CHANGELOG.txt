@@ -1,4 +1,4 @@
-=== 0.4.2 :: In progress...
+=== 0.4.2 :: 2007-07-26
 
 * The LDAP/AD authenticator has been largely re-written. The code is a bit
   cleaner now, and should work better with non-Active Directory LDAP servers
