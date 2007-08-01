@@ -88,6 +88,11 @@ if __FILE__ == $0 || $RUN
     $LOG.warn("Unable to create a pid file. You must use mongrel or webrick for this feature.")
   end
 
+  require 'casserver/version'
+  puts
+  puts "*** Starting RubyCAS-Server #{CASServer::VERSION::STRING} using codebase at #{$CASSERVER_HOME}"
+
+
   begin
     raise NoMethodError if CASServer::Conf.server.nil?
     send(CASServer::Conf.server)
