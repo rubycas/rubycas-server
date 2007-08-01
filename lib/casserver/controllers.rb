@@ -28,13 +28,21 @@ module CASServer::Controllers
       end
       
       begin
-        if @service && !@renew && tgt && !tgt_error
-          st = generate_service_ticket(@service, tgt.username)
-          service_with_ticket = service_uri_with_ticket(@service, st)
-          $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
-          return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+        if @service 
+          if !@renew && tgt && !tgt_error
+            st = generate_service_ticket(@service, tgt.username)
+            service_with_ticket = service_uri_with_ticket(@service, st)
+            $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
+            return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+          elsif @gateway
+            $LOG.info("Redirecting unauthenticated gateway request to service '#{@service}'.")
+            return redirect(@service, :status => 303)
+          end
+        elsif @gateway
+            $LOG.error("This is a gateway request but no service parameter was given!")
+            @message = {:type => 'mistake', :message => "The server cannot fulfill this gateway request because no service parameter was given."}
         end
-      rescue
+      rescue # FIXME: shouldn't this only rescue URI::InvalidURIError?
         $LOG.error("The service '#{@service}' is not a valid URI!")
         @message = {:type => 'mistake', :message => "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."}
       end
