@@ -64,7 +64,7 @@ CASServer.init_logger
 def CASServer.create
   CASServer::Models.create_schema
   
-  $LOG.info("RubyCAS-Server initialized.")
+  $LOG.info("RubyCAS-Server #{CASServer::VERSION::STRING} initialized.")
   
   $LOG.debug("Configuration is:\n#{$CONF.to_yaml}")
   $LOG.debug("Authenticator is: #{$AUTH}")
