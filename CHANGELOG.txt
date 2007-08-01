@@ -1,8 +1,12 @@
 === 0.5.0 :: In Progress
 
-* Gateway requests should now be handled correctly. Note that if you are using
-  RubyCAS-Client and want gatewaying, you will need to upgrade it to 1.1.0 as 
-  gatewaying was broken in prior versions.
+* Gateway requests should now be handled correctly. When the request to the
+  login page is made with gateway=true as one of the parameters, the CAS
+  server will immediately redirect back to the target service along with
+  a service ticket if an SSO session exists for the user (or without a
+  service ticket if there is no pre-existing SSO session). 
+  Note that if you are using RubyCAS-Client and want gatewaying, you will 
+  need to upgrade it to 1.1.0 as gatewaying was broken in prior versions.
 
 === 0.4.2 :: 2007-07-26
 
