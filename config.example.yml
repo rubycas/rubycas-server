@@ -128,7 +128,7 @@ database:
 #
 # It is possible to authenticate against Active Directory without the
 # authenticator user, but this requires that users type in their CN as
-# the username, rather than typing in their sAMAccountName. In other words
+# the username rather than typing in their sAMAccountName. In other words
 # users will likely have to authenticate by typing their full name,
 # rather than their username. If you prefer to do this, then just
 # omit the auth_user and auth_password values in the above example.
