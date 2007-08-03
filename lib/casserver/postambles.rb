@@ -41,7 +41,7 @@ module CASServer
       CASServer.create
       s.mount "#{CASServer::Conf.uri_path}", WEBrick::CampingHandler, CASServer
       
-      puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'\n\n"
+      puts "\n** CASServer is running at https://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'\n\n"
     
       # This lets Ctrl+C shut down your server
       trap(:INT) do
