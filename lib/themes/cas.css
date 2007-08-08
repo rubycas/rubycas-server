@@ -3,6 +3,7 @@
 }
 
 body {
+    text-align: center; /* hack for IE */
 }
 
 label {

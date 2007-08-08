@@ -30,7 +30,7 @@ module CASServer::Views
   # The full login page.
   def login
     @use_layout = true
-    p env.inspect
+    
     table(:id => "login-box") do
       tr do
         td(:colspan => 2) do
