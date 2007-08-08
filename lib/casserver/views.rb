@@ -30,7 +30,7 @@ module CASServer::Views
   # The full login page.
   def login
     @use_layout = true
-  
+    p env.inspect
     table(:id => "login-box") do
       tr do
         td(:colspan => 2) do
@@ -61,7 +61,7 @@ module CASServer::Views
   
   # Just the login form.
   def login_form
-    form(:method => "post", :action => "/login", :id => "login-form",
+    form(:method => "post", :action => @form_action, :id => "login-form",
         :onsubmit => "submit = document.getElementById('login-submit'); submit.value='Please wait...'; submit.disabled=true; return true;") do
       table(:id => "form-layout") do
         tr do

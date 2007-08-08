@@ -53,9 +53,28 @@ module CASServer::Controllers
       
       @lt = lt.ticket
       
-      if @input['onlyLoginForm']
-        render :login_form
+      # If the 'onlyLoginForm' parameter is specified, we will only return the 
+      # login form part of the page. This is useful for when you want to
+      # embed the login form in some external page (as an IFRAME, or otherwise).
+      # The optional 'submitToURI' parameter can be given to explicitly set the
+      # action for the form, otherwise the server will try to guess this for you.
+      if @input.has_key? 'onlyLoginForm'
+        if env['HTTP_HOST']
+          guessed_login_uri = "https://" + env['HTTP_HOST'] + self / "/login"
+        else
+          guessed_login_uri = nil
+        end
+
+        @form_action = @input['submitToURI'] || guessed_login_uri
+        
+        if @form_action
+          render :login_form
+        else
+          @status = 500
+          "Could not guess the CAS login URI. Please supply a submitURI parameter with your request."
+        end
       else
+        @form_action = "/login"
         render :login
       end
     end

@@ -7,6 +7,15 @@
   service ticket if there is no pre-existing SSO session). 
   Note that if you are using RubyCAS-Client and want gatewaying, you will 
   need to upgrade it to 1.1.0 as gatewaying was broken in prior versions.
+* A login ticket can now be remotely requested from the server by placing
+  a POST request to '/loginTicket'.
+* The login view can now be made to return only the login form. This is
+  done by adding the 'onlyLoginForm' parameter to the '/login' request.
+  Optionally, a 'submitToURI' parameter can be supplied to force the login
+  form to submit to the given URI (otherwise the server will try to figure
+  out the full URI to its own login controller). This functionality may be
+  useful when you want to embed the login form in some external page, as
+  an IFRAME otherwise.
 
 === 0.4.2 :: 2007-07-26
 
