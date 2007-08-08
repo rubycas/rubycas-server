@@ -8,7 +8,6 @@ Markaby::Builder.set(:indent, 2)
 module CASServer::Views
 
   def layout
-    
     # wrap as XHTML only when auto_validation is on, otherwise pass right through
     if @use_layout
       xhtml_strict do
@@ -28,6 +27,7 @@ module CASServer::Views
 
 
   # 2.1.3
+  # The full login page.
   def login
     @use_layout = true
   
@@ -52,47 +52,54 @@ module CASServer::Views
           img(:id => "logo", :src => "/themes/#{current_theme}/logo.png")
         end
         td(:id => "login-form-container") do
-          form(:method => "post", :action => "/login", :id => "login-form",
-              :onsubmit => "submit = document.getElementById('login-submit'); submit.value='Please wait...'; submit.disabled=true; return true;") do
-            table(:id => "form-layout") do
-              tr do
-                td(:id => "username-label-container") do
-                  label(:id => "username-label", :for => "username") { "Username" }
-                end
-                td(:id => "username-container") do
-                  input(:type => "text", :id => "username", :name => "username",
-                    :size => "32", :tabindex => "1", :accesskey => "u")
-                end
-              end
-              tr do
-                td(:id => "password-label-container") do
-                  label(:id => "password-label", :for => "password") { "Password" }
-                end
-                td(:id => "password-container") do
-                  input(:type => "password", :id => "password", :name => "password", 
-                    :size => "32", :tabindex => "2", :accesskey => "p", :autocomplete => "off")
-                end
-              end
-              tr do
-                td{}
-                td(:id => "submit-container") do
-                  input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
-                  input(:type => "hidden", :id => "service", :name => "service", :value => @service)
-                  input(:type => "hidden", :id => "warn", :name => "warn", :value => @warn)
-                  input(:type => "submit", :class => "button", :accesskey => "l", :value => "LOGIN", :tabindex => "4", :id => "login-submit")
-                end
-              end
-              tr do
-                td(:colspan => 2, :id => "infoline") { infoline }
-              end
-            end
-          end
+          @include_infoline = true
+          login_form
         end
       end
     end
   end
   
+  # Just the login form.
+  def login_form
+    form(:method => "post", :action => "/login", :id => "login-form",
+        :onsubmit => "submit = document.getElementById('login-submit'); submit.value='Please wait...'; submit.disabled=true; return true;") do
+      table(:id => "form-layout") do
+        tr do
+          td(:id => "username-label-container") do
+            label(:id => "username-label", :for => "username") { "Username" }
+          end
+          td(:id => "username-container") do
+            input(:type => "text", :id => "username", :name => "username",
+              :size => "32", :tabindex => "1", :accesskey => "u")
+          end
+        end
+        tr do
+          td(:id => "password-label-container") do
+            label(:id => "password-label", :for => "password") { "Password" }
+          end
+          td(:id => "password-container") do
+            input(:type => "password", :id => "password", :name => "password", 
+              :size => "32", :tabindex => "2", :accesskey => "p", :autocomplete => "off")
+          end
+        end
+        tr do
+          td{}
+          td(:id => "submit-container") do
+            input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
+            input(:type => "hidden", :id => "service", :name => "service", :value => @service)
+            input(:type => "hidden", :id => "warn", :name => "warn", :value => @warn)
+            input(:type => "submit", :class => "button", :accesskey => "l", :value => "LOGIN", :tabindex => "4", :id => "login-submit")
+          end
+        end
+        tr do
+          td(:colspan => 2, :id => "infoline") { infoline }
+        end if @include_infoline
+      end
+    end
+  end
+  
   # 2.4.2
+  # CAS 1.0 validate response.
   def validate
     if @success
       text "yes\n#{@username}\n"
@@ -102,6 +109,7 @@ module CASServer::Views
   end
   
   # 2.5.2
+  # CAS 2.0 service validate response.
   def service_validate
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
@@ -120,6 +128,7 @@ module CASServer::Views
   end
   
   # 2.6.2
+  # CAS 2.0 proxy validate response.
   def proxy_validate
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
@@ -145,6 +154,7 @@ module CASServer::Views
   end
   
   # 2.7.2
+  # CAS 2.0 proxy request response.
   def proxy
     if @success
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do

@@ -53,7 +53,11 @@ module CASServer::Controllers
       
       @lt = lt.ticket
       
-      render :login
+      if @input['onlyLoginForm']
+        render :login_form
+      else
+        render :login
+      end
     end
     
     # 2.2
