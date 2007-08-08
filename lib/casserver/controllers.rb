@@ -282,6 +282,32 @@ module CASServer::Controllers
     end
   end
   
+  # Controller for obtaining login tickets.
+  # This is useful when you want to build a custom login form located on a 
+  # remote server. Your form will have to include a valid login ticket
+  # value, and this can be fetched from the CAS server using this controller'
+  # POST method.
+  class LoginTicketDispenser < R '/loginTicket'
+    include CASServer::CAS
+    
+    def get
+      @status = 500
+      "To generate a login ticket, you must make a POST request."
+    end
+    
+    # Renders a page with a login ticket (and only the login ticket)
+    # in the response body.
+    def post
+      lt = generate_login_ticket
+      
+      $LOG.debug("Generated login ticket: #{lt}, host: #{env['REMOTE_HOST'] || env['REMOTE_ADDR']}")
+      
+      @lt = lt.ticket
+      
+      @lt
+    end
+  end
+  
   class Themes < R '/themes/(.+)'         
     MIME_TYPES = {'.css' => 'text/css', '.js' => 'text/javascript', 
                   '.jpg' => 'image/jpeg'}
