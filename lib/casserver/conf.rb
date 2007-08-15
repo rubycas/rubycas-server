@@ -1,4 +1,5 @@
 # load configuration
+
 begin
   if $CONFIG_FILE
     conf_file = $CONFIG_FILE
@@ -33,8 +34,7 @@ begin
       " suit your needs and then run rubycas-server again.\n"
     exit 1
   end
-  
-  
+ 
   loaded_conf = HashWithIndifferentAccess.new(YAML.load_file(conf_file))
   
   if $CONF
@@ -42,21 +42,44 @@ begin
   else
     $CONF = loaded_conf
   end
-  
+ 
+  if $CONF[:authenticator].instance_of? Array
+    $CONF[:authenticator].each_index { |auth_index| $CONF[:authenticator][auth_index] = HashWithIndifferentAccess.new($CONF[:authenticator][auth_index])}
+  end
+
+  $AUTH = []
   begin
     # attempt to instantiate the authenticator
-    $AUTH = $CONF[:authenticator][:class].constantize.new
-  rescue NameError
-    if !$CONF[:authenticator][:source].nil?
-      # config.yml explicitly names source file
-      require $CONF[:authenticator][:source]
+    if $CONF[:authenticator].instance_of? Array
+      $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize.new}
     else
-      # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
-      auth_rb = $CONF[:authenticator][:class].underscore.gsub('cas_server/', '')
-      require 'casserver/'+auth_rb
+      $AUTH << $CONF[:authenticator][:class].constantize.new
     end
+  rescue NameError
+    if $CONF[:authenticator].instance_of? Array
+      $CONF[:authenticator].each do |authenticator|
+        if !authenticator[:source].nil?
+          # config.yml explicitly names source file
+          require authenticator[:source]
+        else
+          # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+          auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
+          require 'casserver/'+auth_rb
+        end
+        $AUTH << authenticator[:class].constantize.new
+      end
+    else
+      if !$CONF[:authenticator][:source].nil?
+        # config.yml explicitly names source file
+        require $CONF[:authenticator][:source]
+      else
+        # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+        auth_rb = $CONF[:authenticator][:class].underscore.gsub('cas_server/', '')
+        require 'casserver/'+auth_rb
+      end
 
-    $AUTH = $CONF[:authenticator][:class].constantize.new
+      $AUTH << $CONF[:authenticator][:class].constantize.new
+    end
   end
 rescue
     raise "Your RubyCAS-Server configuration may be invalid."+
