@@ -95,7 +95,7 @@ database:
 #  database:
 #    adapter: mysql
 #    database: some_database_with_users_table
-#    user: root
+#    username: root
 #    password: 
 #    server: localhost
 #  user_table: user
@@ -170,7 +170,32 @@ database:
 #  source: /path/to/source.rb
 #  option_a: foo
 #  another_option: yeeha
-
+#
+# ==> Multiple Authenticators
+# If you need to have more than one source for authentication, such as an LDAP directory
+# and a database, you can use multiple authenticators by making :authenticator an array
+# of authenticators.
+#
+#authenticator:
+#  -
+#    class: CASServer::Authenticators::ActiveDirectoryLDAP
+#    ldap:
+#      server: ad.example.net
+#      port: 389
+#      base: dc=example,dc=net
+#      filter: (objectClass=person)
+#  -
+#    class: CASServer::Authenticators::SQL
+#    database:
+#      adapter: mysql
+#      database: some_database_with_users_table
+#      user: root
+#      password:
+#      server: localhost
+#    user_table: user
+#    username_column: username
+#    password_column: password
+#
 
 ##### LOOK & FEEL ######################################################################
 
