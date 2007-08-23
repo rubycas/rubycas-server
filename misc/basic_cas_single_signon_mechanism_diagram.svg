@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/URBACON/mzukowski/workspace/rubycas-server/misc"
+   sodipodi:docname="basic_cas_single_signon_mechanism_diagram.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/URBACON/mzukowski/workspace/rubycas-server/misc/basic_cas_single_signon_mechanism_diagram.png"
+   inkscape:export-xdpi="59.871429"
+   inkscape:export-ydpi="59.871429">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Dot_l"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Dot_l"
+       style="overflow:visible">
+      <path
+         id="path5767"
+         d="M -2.5,-1.0 C -2.5,1.7600000 -4.7400000,4.0 -7.5,4.0 C -10.260000,4.0 -12.5,1.7600000 -12.5,-1.0 C -12.5,-3.7600000 -10.260000,-6.0 -7.5,-6.0 C -4.7400000,-6.0 -2.5,-3.7600000 -2.5,-1.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;marker-end:none"
+         transform="scale(0.8) translate(7.4, 1)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path5726"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="547.74448"
+     inkscape:cy="559.41199"
+     inkscape:document-units="px"
+     inkscape:current-layer="g6196"
+     inkscape:window-width="1050"
+     inkscape:window-height="910"
+     inkscape:window-x="45"
+     inkscape:window-y="174" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g6196"
+       transform="translate(-8.5714286,72.857143)">
+      <rect
+         y="411.08395"
+         x="54.43605"
+         height="178.27074"
+         width="495.41364"
+         id="rect6063"
+         style="fill:#fff84d;fill-opacity:0.23809524;stroke:#000000;stroke-width:1.80067635;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:7.20270515, 7.20270515;stroke-dashoffset:0;stroke-opacity:1" />
+      <rect
+         y="447.18683"
+         x="172.08548"
+         height="104.99249"
+         width="141.09586"
+         id="rect2162"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1.15984082;stroke-opacity:1;fill-opacity:1" />
+      <text
+         transform="scale(1.0650305,0.9389402)"
+         id="text3152"
+         y="538.65576"
+         x="172.24358"
+         style="font-size:8.10052872px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="538.65576"
+           x="172.24358"
+           id="tspan3154"
+           sodipodi:role="line">Username:</tspan></text>
+      <text
+         transform="scale(1.0650305,0.9389402)"
+         id="text3156"
+         y="553.08411"
+         x="173.55655"
+         style="font-size:8.10052872px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="553.08411"
+           x="173.55655"
+           id="tspan3158"
+           sodipodi:role="line">Password:</tspan></text>
+      <rect
+         y="496.16171"
+         x="232.10291"
+         height="10.884437"
+         width="67.540466"
+         id="rect3160"
+         style="fill:none;stroke:#000000;stroke-width:0.67504406;stroke-opacity:1" />
+      <rect
+         y="510.88766"
+         x="232.10291"
+         height="11.524696"
+         width="67.540466"
+         id="rect3162"
+         style="fill:none;stroke:#000000;stroke-width:0.67504406;stroke-opacity:1" />
+      <rect
+         y="529.43451"
+         x="242.97296"
+         height="12.846746"
+         width="47.252808"
+         id="rect3164"
+         style="fill:#c4c4c4;fill-opacity:1;stroke:#000000;stroke-width:0.63081616;stroke-linejoin:round;stroke-opacity:1" />
+      <text
+         transform="scale(1.0650305,0.9389402)"
+         id="text3166"
+         y="572.76434"
+         x="240.52916"
+         style="font-size:8.10052872px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="572.76434"
+           x="240.52916"
+           id="tspan3168"
+           sodipodi:role="line">Login</tspan></text>
+      <image
+         xlink:href="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/database.png"
+         sodipodi:absref="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/database.png"
+         width="128"
+         height="128"
+         id="image4402"
+         x="115.80714"
+         y="778.25043" />
+      <image
+         style="stroke:#d88383;stroke-opacity:0.4642857"
+         xlink:href="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/Login Manager.png"
+         sodipodi:absref="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/Login Manager.png"
+         width="128"
+         height="128"
+         id="image4412"
+         x="172.3757"
+         y="755.01691" />
+      <flowRoot
+         transform="translate(77.794059,358.3221)"
+         id="flowRoot4683"
+         xml:space="preserve"><flowRegion
+           id="flowRegion4685"><rect
+             y="398.79349"
+             x="185.86807"
+             height="41.416252"
+             width="197.9899"
+             id="rect4687" /></flowRegion><flowPara
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle"
+           id="flowPara4689">Username/Password</flowPara><flowPara
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle"
+           id="flowPara4691">Data Source</flowPara></flowRoot>      <image
+         xlink:href="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         sodipodi:absref="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         width="128"
+         height="128"
+         id="image4700"
+         x="150.88766"
+         y="177.97473" />
+      <image
+         xlink:href="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         sodipodi:absref="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         width="75.14286"
+         height="76.571426"
+         id="image4703"
+         x="367.49109"
+         y="122.8522" />
+      <image
+         xlink:href="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         sodipodi:absref="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         width="43.714287"
+         height="45.142857"
+         id="image4705"
+         x="445.17639"
+         y="96.778969" />
+      <flowRoot
+         transform="translate(6.135703,-278.29052)"
+         id="flowRoot4707"
+         xml:space="preserve"><flowRegion
+           id="flowRegion4709"><rect
+             y="398.79349"
+             x="185.86807"
+             height="41.416252"
+             width="197.9899"
+             id="rect4711" /></flowRegion><flowPara
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle"
+           id="flowPara4715">Your Web </flowPara><flowPara
+           id="flowPara4727"
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle">Applications</flowPara></flowRoot>      <path
+         transform="matrix(0.7530864,0,0,0.7037037,119.19544,-3.919848)"
+         d="M 92.934036 137.66905 A 40.911179 40.911179 0 1 1  11.111679,137.66905 A 40.911179 40.911179 0 1 1  92.934036 137.66905 z"
+         sodipodi:ry="40.911179"
+         sodipodi:rx="40.911179"
+         sodipodi:cy="137.66905"
+         sodipodi:cx="52.022858"
+         id="path5948"
+         style="fill:#d6d6d6;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857"
+         sodipodi:type="arc" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-type="polyline"
+         id="path4729"
+         d="M 90.913731,69.483756 C 152.53874,99.37138 165.42358,137.86021 182.83761,175.54977"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Dot_l);marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text5916"
+         y="50.656349"
+         x="122.0305"
+         style="font-size:20px;font-style:normal;font-weight:normal;line-height:100%;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           id="tspan5942"
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="50.656349"
+           x="122.0305"
+           sodipodi:role="line">User asks to log in or accesses a CAS-</tspan><tspan
+           id="tspan6140"
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="68.656349"
+           x="122.0305"
+           sodipodi:role="line">protected page on one of your web apps</tspan></text>
+      <text
+         transform="scale(1.0344928,0.9666572)"
+         id="text5944"
+         y="116.38718"
+         x="136.8195"
+         style="font-size:8.73571777px;font-style:normal;font-weight:normal;fill:#8c8c8c;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:52.41415787px;font-weight:bold;fill:#8c8c8c;fill-opacity:1"
+           y="116.38718"
+           x="136.8195"
+           id="tspan5946"
+           sodipodi:role="line">1</tspan></text>
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-type="polyline"
+         id="path5958"
+         d="M 177.14286,300.93361 C 122.77698,351.25116 149.56669,400.2563 180,432.36218"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
+      <rect
+         y="327.36783"
+         x="131.23285"
+         height="64.548241"
+         width="39.39595"
+         id="rect5986"
+         style="fill:#ffffff;fill-opacity:0.81547618;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857" />
+      <g
+         id="g5988">
+        <path
+           sodipodi:type="arc"
+           style="fill:#d6d6d6;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857"
+           id="path5962"
+           sodipodi:cx="52.022858"
+           sodipodi:cy="137.66905"
+           sodipodi:rx="40.911179"
+           sodipodi:ry="40.911179"
+           d="M 92.934036 137.66905 A 40.911179 40.911179 0 1 1  11.111679,137.66905 A 40.911179 40.911179 0 1 1  92.934036 137.66905 z"
+           transform="matrix(0.7530864,0,0,0.7037037,40.281693,248.08974)" />
+        <text
+           xml:space="preserve"
+           style="font-size:20px;font-style:normal;font-weight:normal;line-height:100%;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="99.11676"
+           y="346.66592"
+           id="text5964"
+           sodipodi:linespacing="100%"><tspan
+             sodipodi:role="line"
+             x="99.11676"
+             y="346.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+             id="tspan5968">CAS client redirects </tspan><tspan
+             sodipodi:role="line"
+             x="99.11676"
+             y="364.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+             id="tspan5984">user's browser to </tspan><tspan
+             id="tspan6099"
+             sodipodi:role="line"
+             x="99.11676"
+             y="382.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start">CAS server's login page</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:8.73571777px;font-style:normal;font-weight:normal;fill:#8c8c8c;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="60.536995"
+           y="375.02045"
+           id="text5970"
+           transform="scale(1.0344928,0.9666572)"><tspan
+             sodipodi:role="line"
+             id="tspan5972"
+             x="60.536995"
+             y="375.02045"
+             style="font-size:52.41426086px;font-weight:bold;fill:#8c8c8c;fill-opacity:1">2</tspan></text>
+      </g>
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-type="polyline"
+         id="path6023"
+         d="M 221.22341,745.27581 C 223.2843,689.97992 182.92101,668.26983 242.43661,567.48896"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-type="polyline"
+         id="path6016"
+         d="M 267.69042,570.51942 C 294.10574,686.35839 253.44877,692.00715 245.46707,751.33672"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
+      <rect
+         y="623.04736"
+         x="193.44421"
+         height="54.548237"
+         width="101.01526"
+         id="rect6018"
+         style="fill:#ffffff;fill-opacity:0.81547618;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857" />
+      <g
+         transform="translate(26.51177,281.83256)"
+         id="g5996">
+        <path
+           sodipodi:type="arc"
+           style="fill:#d6d6d6;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857"
+           id="path5998"
+           sodipodi:cx="52.022858"
+           sodipodi:cy="137.66905"
+           sodipodi:rx="40.911179"
+           sodipodi:ry="40.911179"
+           d="M 92.934036 137.66905 A 40.911179 40.911179 0 1 1  11.111679,137.66905 A 40.911179 40.911179 0 1 1  92.934036 137.66905 z"
+           transform="matrix(0.7530864,0,0,0.7037037,40.281693,248.08974)" />
+        <text
+           xml:space="preserve"
+           style="font-size:20px;font-style:normal;font-weight:normal;line-height:100%;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="95.11676"
+           y="364.66592"
+           id="text6000"
+           sodipodi:linespacing="100%"><tspan
+             id="tspan6012"
+             sodipodi:role="line"
+             x="95.11676"
+             y="364.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start">Your CAS server validates the username and password </tspan><tspan
+             id="tspan6027"
+             sodipodi:role="line"
+             x="95.11676"
+             y="382.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start">with your datasource (AD, LDAP, SQL database, etc.)</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:8.73571777px;font-style:normal;font-weight:normal;fill:#8c8c8c;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="60.536995"
+           y="375.02045"
+           id="text6006"
+           transform="scale(1.0344928,0.9666572)"><tspan
+             sodipodi:role="line"
+             id="tspan6008"
+             x="60.536995"
+             y="375.02045"
+             style="font-size:52.41426086px;font-weight:bold;fill:#8c8c8c;fill-opacity:1">3</tspan></text>
+      </g>
+      <flowRoot
+         transform="translate(-43.501115,62.848217)"
+         id="flowRoot6029"
+         xml:space="preserve"><flowRegion
+           id="flowRegion6031"><rect
+             y="398.79349"
+             x="185.86807"
+             height="41.416252"
+             width="197.9899"
+             id="rect6033" /></flowRegion><flowPara
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle"
+           id="flowPara6037">Login Page</flowPara></flowRoot>      <flowRoot
+         transform="translate(-174.35827,64.491079)"
+         id="flowRoot6049"
+         xml:space="preserve"><flowRegion
+           id="flowRegion6051"><rect
+             y="398.79349"
+             x="185.86807"
+             height="41.416252"
+             width="197.9899"
+             id="rect6053" /></flowRegion><flowPara
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle"
+           id="flowPara6057">Your CAS </flowPara><flowPara
+           id="flowPara6061"
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle">Server</flowPara></flowRoot>      <rect
+         y="450.69028"
+         x="365.75668"
+         height="68.486626"
+         width="148.48663"
+         id="rect6073"
+         style="fill:#000000;fill-opacity:0.59523806;stroke:#000000;stroke-width:1.5847975;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         style="fill:#f9f9f9"
+         transform="translate(153.43952,68.276791)"
+         id="flowRoot6075"
+         xml:space="preserve"><flowRegion
+           id="flowRegion6077"><rect
+             style="fill:#f9f9f9"
+             y="398.79349"
+             x="185.86807"
+             height="41.416252"
+             width="197.9899"
+             id="rect6079" /></flowRegion><flowPara
+           id="flowPara6087"
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#f9f9f9">Ticket </flowPara><flowPara
+           id="flowPara6091"
+           style="font-size:18px;font-weight:bold;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#f9f9f9">Validator</flowPara></flowRoot>      <g
+         transform="translate(259.27425,-8.95413)"
+         id="g6103">
+        <path
+           sodipodi:type="arc"
+           style="fill:#d6d6d6;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857"
+           id="path6105"
+           sodipodi:cx="52.022858"
+           sodipodi:cy="137.66905"
+           sodipodi:rx="40.911179"
+           sodipodi:ry="40.911179"
+           d="M 92.934036 137.66905 A 40.911179 40.911179 0 1 1  11.111679,137.66905 A 40.911179 40.911179 0 1 1  92.934036 137.66905 z"
+           transform="matrix(0.7530864,0,0,0.7037037,40.281693,248.08974)" />
+        <text
+           xml:space="preserve"
+           style="font-size:20px;font-style:normal;font-weight:normal;line-height:100%;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="99.11676"
+           y="346.66592"
+           id="text6107"
+           sodipodi:linespacing="100%"><tspan
+             id="tspan6113"
+             sodipodi:role="line"
+             x="99.11676"
+             y="346.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start">User is now authenticated</tspan><tspan
+             id="tspan6124"
+             sodipodi:role="line"
+             x="99.11676"
+             y="364.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start">for all web applications, and</tspan><tspan
+             id="tspan6126"
+             sodipodi:role="line"
+             x="99.11676"
+             y="382.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start">is redirected back to original</tspan><tspan
+             id="tspan6128"
+             sodipodi:role="line"
+             x="99.11676"
+             y="400.66592"
+             style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start">destination, with a <tspan
+   id="tspan6132"
+   style="font-weight:bold">service ticket</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:8.73571777px;font-style:normal;font-weight:normal;fill:#8c8c8c;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="60.536995"
+           y="375.02045"
+           id="text6115"
+           transform="scale(1.0344928,0.9666572)"><tspan
+             sodipodi:role="line"
+             id="tspan6117"
+             x="60.536995"
+             y="375.02045"
+             style="font-size:52.41426086px;font-weight:bold;fill:#8c8c8c;fill-opacity:1">4</tspan></text>
+      </g>
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-type="polyline"
+         id="path6101"
+         d="M 284.28571,438.36218 C 327.38237,403.34113 341.72605,344.12374 278.57143,275.50504"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
+      <image
+         xlink:href="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         sodipodi:absref="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         width="75.14286"
+         height="76.571426"
+         id="image6134"
+         x="456.71429"
+         y="144.07646" />
+      <image
+         xlink:href="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         sodipodi:absref="/home/URBACON/mzukowski/Downloads/Crystal Clear/Linspire Clear/128x128/apps/internet.png"
+         width="43.714287"
+         height="45.142857"
+         id="image6136"
+         x="302.42859"
+         y="172.6479" />
+      <path
+         transform="matrix(0.7530864,0,0,0.7037037,375.41079,160.18381)"
+         d="M 92.934036 137.66905 A 40.911179 40.911179 0 1 1  11.111679,137.66905 A 40.911179 40.911179 0 1 1  92.934036 137.66905 z"
+         sodipodi:ry="40.911179"
+         sodipodi:rx="40.911179"
+         sodipodi:cy="137.66905"
+         sodipodi:cx="52.022858"
+         id="path6146"
+         style="fill:#d6d6d6;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857"
+         sodipodi:type="arc" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-type="polyline"
+         id="path6142"
+         d="M 290,255.21933 C 614.35962,322.40837 842.57613,334.41943 527.14286,483.79075"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text6148"
+         y="249.33141"
+         x="439.3887"
+         style="font-size:20px;font-style:normal;font-weight:normal;line-height:100%;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="249.33141"
+           x="439.3887"
+           sodipodi:role="line"
+           id="tspan6156">CAS client validates the <tspan
+   id="tspan6192"
+   style="font-weight:bold">service </tspan></tspan><tspan
+           id="tspan6184"
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="267.33141"
+           x="439.3887"
+           sodipodi:role="line"><tspan
+   id="tspan6194"
+   style="font-weight:bold">ticket </tspan>with CAS server (via HTTP</tspan><tspan
+           id="tspan6186"
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="285.33141"
+           x="439.3887"
+           sodipodi:role="line">            CAS protocol)</tspan><tspan
+           id="tspan6182"
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="303.33141"
+           x="439.3887"
+           sodipodi:role="line" /></text>
+      <text
+         transform="scale(1.0344928,0.9666572)"
+         id="text6160"
+         y="284.08234"
+         x="384.49191"
+         style="font-size:8.73571777px;font-style:normal;font-weight:normal;fill:#8c8c8c;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:52.41423416px;font-weight:bold;fill:#8c8c8c;fill-opacity:1"
+           y="284.08234"
+           x="384.49191"
+           id="tspan6162"
+           sodipodi:role="line">5</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="59.428574"
+         y="-3.3521032"
+         id="text6475"><tspan
+           sodipodi:role="line"
+           id="tspan6477"
+           x="59.428574"
+           y="-3.3521032"
+           style="font-size:32px;font-weight:bold">Basic CAS Authentication Mechanism</tspan></text>
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-type="polyline"
+         id="path6479"
+         d="M 492.85714,530.93361 C 503.98532,609.14204 392.78869,548.345 328.57143,540.93361"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:3,1.5,0.75,1.5;stroke-opacity:1;display:inline;stroke-dashoffset:0" />
+      <rect
+         y="535.80237"
+         x="508.87347"
+         height="68.833954"
+         width="50.82452"
+         id="rect6525"
+         style="fill:#ffffff;fill-opacity:0.81547618;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857" />
+      <path
+         transform="matrix(0.7530864,0,0,0.7037037,451.90354,473.8499)"
+         d="M 92.934036 137.66905 A 40.911179 40.911179 0 1 1  11.111679,137.66905 A 40.911179 40.911179 0 1 1  92.934036 137.66905 z"
+         sodipodi:ry="40.911179"
+         sodipodi:rx="40.911179"
+         sodipodi:cy="137.66905"
+         sodipodi:cx="52.022858"
+         id="path6481"
+         style="fill:#d6d6d6;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.4642857"
+         sodipodi:type="arc" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text6483"
+         y="555.85461"
+         x="511.59576"
+         style="font-size:20px;font-style:normal;font-weight:normal;line-height:100%;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           id="tspan6495"
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="555.85461"
+           x="511.59576"
+           sodipodi:role="line">If ticket validation fails,</tspan><tspan
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="573.85461"
+           x="511.59576"
+           sodipodi:role="line"
+           id="tspan6517">user is redirected back to</tspan><tspan
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="591.85461"
+           x="511.59576"
+           sodipodi:role="line"
+           id="tspan6521">login page; otherwise </tspan><tspan
+           style="font-size:18px;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start"
+           y="609.85461"
+           x="511.59576"
+           sodipodi:role="line"
+           id="tspan6523">allowed to proceed</tspan></text>
+      <text
+         transform="scale(1.0344928,0.9666572)"
+         id="text6497"
+         y="608.56763"
+         x="458.43414"
+         style="font-size:8.73571777px;font-style:normal;font-weight:normal;fill:#8c8c8c;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:52.41422653px;font-weight:bold;fill:#8c8c8c;fill-opacity:1"
+           y="608.56763"
+           x="458.43414"
+           id="tspan6499"
+           sodipodi:role="line">6</tspan></text>
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 50.571429,4.647896 L 686.28572,4.647896"
+         id="path6529" />
+    </g>
+  </g>
+</svg>
