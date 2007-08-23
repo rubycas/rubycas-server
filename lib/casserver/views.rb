@@ -193,3 +193,7 @@ module CASServer::Views
   end
   module_function :infoline
 end
+
+if CASServer::Conf.custom_views_file
+  require CASServer::Conf.custom_views_file
+end

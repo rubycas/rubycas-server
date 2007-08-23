@@ -217,6 +217,8 @@ organization: CAS
 # A short bit of text that shows up on the login page. You can make this blank if you prefer.
 infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-Server</a>
 
+# Custom views file.  Overrides methodes in lib/casserver/views.rb
+#custom_views_file: /path/to/custom/views.rb
 
 ##### LOGGING #########################################################################
 
