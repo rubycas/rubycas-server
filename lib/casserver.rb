@@ -14,7 +14,10 @@ unless Object.method_defined? :gem
   alias gem require_gem
 end
 
-gem 'camping', '~> 1.5'
+
+#gem 'camping', '~> 1.5.180'
+$: << $CASSERVER_HOME + "/../vendor/camping-1.5.180/lib"
+puts $:.inspect
 require 'camping'
 
 require 'active_support'

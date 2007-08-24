@@ -68,11 +68,6 @@ module CASServer
       require 'rubygems'
       require 'mongrel/camping'
       
-      # camping has fixes for mongrel currently only availabe in SVN
-      # ... you can install camping from svn (1.5.180) by running: 
-      #     gem install camping --source code.whytheluckystiff.net
-      gem 'camping', '~> 1.5.180'
-      
       if $DAEMONIZE
         # check if log and pid are writable before daemonizing, otherwise we won't be able to notify
         # the user if we run into trouble later (since once daemonized, we can't write to stdout/stderr)
