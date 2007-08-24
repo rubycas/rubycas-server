@@ -49,11 +49,10 @@ ssl_cert: /path/to/your/ssl.pem
 # 
 # By default, we use MySQL, since it is widely used and does not require any additional
 # ruby libraries besides ActiveRecord.
-# 
-# Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else supported 
-# by ActiveRecord.
 #
-# For example, with MySQL, your config wold be something like:
+# With MySQL, your config would be something like the following:
+# (be sure to create the casserver database in MySQL beforehand,
+#   i.e. `mysqladmin -u root create casserver`)
 
 database:
   adapter: mysql
@@ -62,9 +61,13 @@ database:
   password: 
   server: localhost
 
-# If you prefer to use SQLite3 (which does not require a separate database server),
-# your configuration would look something like the following (don't forget to install
-# the sqlite3-ruby gem beforehand!):
+#
+# Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else supported 
+# by ActiveRecord.
+#
+# With SQLite3 (which does not require a separate database server), your configuration
+# would look something like the following (don't forget to install the 
+# sqlite3-ruby gem beforehand!):
 #
 #database:
 #  adapter: sqlite3
@@ -195,6 +198,9 @@ database:
 #    user_table: user
 #    username_column: username
 #    password_column: password
+#
+# During authentication, the user credentials will be checked against the first
+# authenticator and on failure fall through to the second authenticator.
 #
 
 ##### LOOK & FEEL ######################################################################
