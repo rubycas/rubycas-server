@@ -31,10 +31,12 @@ module CASServer::Models
   end
   
   class LoginTicket < Ticket
+    set_table_name 'casserver_lt'
     include Consumable
   end
   
   class ServiceTicket < Ticket
+    set_table_name 'casserver_st'
     include Consumable
     
     def matches_service?(service)
@@ -50,9 +52,11 @@ module CASServer::Models
   end
   
   class TicketGrantingTicket < Ticket
+    set_table_name 'casserver_tgt'
   end
   
   class ProxyGrantingTicket < Ticket
+    set_table_name 'casserver_pgt'
     belongs_to :service_ticket
     has_many :proxy_tickets, :dependent => :destroy
   end
@@ -111,6 +115,25 @@ module CASServer::Models
     def self.down
       drop_table :casserver_service_tickets
       drop_table :casserver_login_tickets
+    end
+  end
+  
+  # Oracle table names cannot exceed 30 chars... 
+  # See http://code.google.com/p/rubycas-server/issues/detail?id=15
+  class ShortenTableNames < V 0.5
+    def self.up
+      $LOG.info("Shortening table names")
+      rename_table :casserver_login_tickets, :casserver_lt
+      rename_table :casserver_service_tickets, :casserver_st
+      rename_table :casserver_ticket_granting_tickets, :casserver_tgt
+      rename_table :casserver_proxy_granting_tickets, :casserver_pgt
+    end
+    
+    def self.down
+      rename_table :casserver_lt, :cassserver_login_tickets
+      rename_table :casserver_st, :casserver_service_tickets
+      rename_table :casserver_tgt, :casserver_ticket_granting_tickets
+      rename_table :casserver_pgt, :casserver_proxy_granting_tickets
     end
   end
 end

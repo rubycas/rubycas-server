@@ -17,7 +17,6 @@ end
 
 #gem 'camping', '~> 1.5.180'
 $: << $CASSERVER_HOME + "/../vendor/camping-1.5.180/lib"
-puts $:.inspect
 require 'camping'
 
 require 'active_support'

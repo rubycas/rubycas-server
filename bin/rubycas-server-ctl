@@ -21,7 +21,7 @@ def start
   when :ok
     $stderr.puts "rubycas-server is already running"
     exit 1
-  when :not_running
+  when :not_running, :empty_pid
     $stderr.puts "The pid file '#{@options[:pid_file]}' exists but rubycas-server is not running." +
       " The pid file will be automatically deleted for you, but this shouldn't have happened!"
     File.delete(@options[:pid_file])

@@ -16,6 +16,16 @@
   out the full URI to its own login controller). This functionality may be
   useful when you want to embed the login form in some external page, as
   an IFRAME otherwise.
+* Custom views can now be used to override the default Markaby templates
+  by specifying a 'custom_views_file' option in the configuration. See
+  custom_views.example.rb. [jzylks]
+* Table names have been shortened to work with Oracle. A migration has
+  been added that should do the shortening for you the first time you run
+  this new RubyCAS-Server version.
+* Multiple authenticators can now be specified. During authentication,
+  credentials are presented to the first authenticator, then the second,
+  and so on, until the user is validated by any one authenticator or fails 
+  validation for all of them. [jzylks]
 
 === 0.4.2 :: 2007-07-26
 
