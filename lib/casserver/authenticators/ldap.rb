@@ -68,8 +68,14 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
       
       username_attribute = options[:ldap][:username_attribute] || default_username_attribute
       
-      filter = Net::LDAP::Filter.construct(@options[:ldap][:filter]) & 
-        Net::LDAP::Filter.eq(username_attribute, @username)
+      filter = Net::LDAP::Filter.construct(@options[:ldap][:filter]) if 
+        @options[:ldap][:filter] && !@options[:ldap][:filter].blank?
+      username_filter = Net::LDAP::Filter.eq(username_attribute, @username)
+      if filter
+        filter &= username_filter
+      else
+        filter = username_filter
+      end
       
       @ldap.bind_as(:base => @options[:ldap][:base], :password => @password, :filter => filter)
     end
