@@ -176,6 +176,8 @@ module CASServer::Controllers
       @service = @input['url'] || @input['service']
       # TODO: display service name in view as per 2.3.2
       
+      @gateway = @input['gateway']
+      
       tgt = CASServer::Models::TicketGrantingTicket.find_by_ticket(@cookies[:tgt])
       
       @cookies.delete :tgt
@@ -201,7 +203,11 @@ module CASServer::Controllers
       
       @lt = generate_login_ticket
       
-      render :login
+      if @gateway && @service
+        redirect(@service, :status => 303)
+      else
+        render :login
+      end
     end
   end
 
