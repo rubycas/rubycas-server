@@ -7,6 +7,10 @@
   service ticket if there is no pre-existing SSO session). 
   Note that if you are using RubyCAS-Client and want gatewaying, you will 
   need to upgrade it to 1.1.0 as gatewaying was broken in prior versions.
+* If gateway=true is specified as part of the logout URI, the server will
+  log the user out and immediately redirect them back to the specified
+  service. In other words, you can now do "gatewayed logouts" as well
+  as logins.
 * A login ticket can now be remotely requested from the server by placing
   a POST request to '/loginTicket'.
 * The login view can now be made to return only the login form. This is
