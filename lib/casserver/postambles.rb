@@ -13,26 +13,28 @@ module CASServer
       key_path = CASServer::Conf.ssl_key || CASServer::Conf.ssl_cert
         # look for the key in the ssl_cert if no ssl_key is specified
       
-      raise "'#{cert_path}' is not a valid ssl certificate. Your 'ssl_cert' configuration" +
-        " setting must be a path to a valid ssl certificate file." unless
-          File.exists? cert_path
+      webrick_options = {:BindAddress => "0.0.0.0", :Port => CASServer::Conf.port}
       
-      raise "'#{key_path}' is not a valid ssl private key. Your 'ssl_key' configuration" +
-        " setting must be a path to a valid ssl private key file." unless
-          File.exists? key_path
-      
-      cert = OpenSSL::X509::Certificate.new(File.read(cert_path))
-      key = OpenSSL::PKey::RSA.new(File.read(key_path))
+      unless cert_path.nil? && key_path.nil?
+        raise "'#{cert_path}' is not a valid ssl certificate. Your 'ssl_cert' configuration" +
+          " setting must be a path to a valid ssl certificate file." unless
+            File.exists? cert_path
+        
+        raise "'#{key_path}' is not a valid ssl private key. Your 'ssl_key' configuration" +
+          " setting must be a path to a valid ssl private key file." unless
+            File.exists? key_path
+        
+        cert = OpenSSL::X509::Certificate.new(File.read(cert_path))
+        key = OpenSSL::PKey::RSA.new(File.read(key_path))
+        
+        webrick_options[:SSLEnable] = true
+        webrick_options[:SSLVerifyClient] = ::OpenSSL::SSL::VERIFY_NONE
+        webrick_options[:SSLCertificate] = cert
+        webrick_options[:SSLPrivateKey] = key
+      end
       
       begin
-        s = WEBrick::HTTPServer.new(
-          :BindAddress => "0.0.0.0",
-          :Port => CASServer::Conf.port,
-          :SSLEnable => true,
-          :SSLVerifyClient => ::OpenSSL::SSL::VERIFY_NONE,
-          :SSLCertificate => cert,
-          :SSLPrivateKey => key
-        )
+        s = WEBrick::HTTPServer.new(webrick_options)
       rescue Errno::EACCES
         puts "\nThe server could not launch. Are you running on a privileged port? (e.g. port 443) If so, you must run the server as root."
         exit 2
@@ -41,7 +43,7 @@ module CASServer
       CASServer.create
       s.mount "#{CASServer::Conf.uri_path}", WEBrick::CampingHandler, CASServer
       
-      puts "\n** CASServer is running at https://#{Socket.gethostname}:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'\n\n"
+      puts "\n** CASServer is running at http#{webrick_options[:SSLEnable] ? 's' : ''}://#{Socket.gethostname}:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'\n\n"
     
       # This lets Ctrl+C shut down your server
       trap(:INT) do

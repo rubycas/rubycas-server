@@ -9,6 +9,8 @@ module CASServer::Controllers
     
     # 2.1.1
     def get
+      CASServer::Utils::log_controller_action(self.class, @input)
+      
       # make sure there's no caching
       headers['Pragma'] = 'no-cache'
       headers['Cache-Control'] = 'no-store'
@@ -53,6 +55,8 @@ module CASServer::Controllers
       
       @lt = lt.ticket
       
+      $LOG.debug(env)
+      
       # If the 'onlyLoginForm' parameter is specified, we will only return the 
       # login form part of the page. This is useful for when you want to
       # embed the login form in some external page (as an IFRAME, or otherwise).
@@ -60,7 +64,7 @@ module CASServer::Controllers
       # action for the form, otherwise the server will try to guess this for you.
       if @input.has_key? 'onlyLoginForm'
         if env['HTTP_HOST']
-          guessed_login_uri = "https://" + env['HTTP_HOST'] + self / "/login"
+          guessed_login_uri = "http#{env['HTTPS'] && env['HTTPS'] == 'on' ? 's' : ''}://#{env['REQUEST_URI']}#{self / '/login'}"
         else
           guessed_login_uri = nil
         end
@@ -74,13 +78,14 @@ module CASServer::Controllers
           "Could not guess the CAS login URI. Please supply a submitURI parameter with your request."
         end
       else
-        @form_action = "/login"
         render :login
       end
     end
     
     # 2.2
     def post
+      CASServer::Utils::log_controller_action(self.class, @input)
+      
       # 2.2.1 (optional)
       @service = @input['service']
       @warn = @input['warn']
@@ -169,6 +174,8 @@ module CASServer::Controllers
     
     # 2.3.1
     def get
+      CASServer::Utils::log_controller_action(self.class, @input)
+      
       # The behaviour here is somewhat non-standard. Rather than showing just a blank
       # "logout" page, we take the user back to the login page with a "you have been logged out"
       # message, allowing for an opportunity to immediately log back in. This makes it
@@ -217,6 +224,8 @@ module CASServer::Controllers
   
     # 2.4.1
     def get
+      CASServer::Utils::log_controller_action(self.class, @input)
+      
       # required
       @service = @input['service']
       @ticket = @input['ticket']
@@ -238,6 +247,8 @@ module CASServer::Controllers
   
     # 2.5.1
     def get
+      CASServer::Utils::log_controller_action(self.class, @input)
+      
       # required
       @service = @input['service']
       @ticket = @input['ticket']
@@ -266,6 +277,8 @@ module CASServer::Controllers
   
     # 2.6.1
     def get
+      CASServer::Utils::log_controller_action(self.class, @input)
+      
       # required
       @service = @input['service']
       @ticket = @input['ticket']
@@ -304,6 +317,8 @@ module CASServer::Controllers
   
     # 2.7
     def get
+      CASServer::Utils::log_controller_action(self.class, @input)
+      
       # required
       @ticket = @input['pgt']
       @target_service = @input['targetService']
@@ -328,6 +343,8 @@ module CASServer::Controllers
     include CASServer::CAS
     
     def get
+      CASServer::Utils::log_controller_action(self.class, @input)
+      $LOG.error("Tried to use login ticket dispenser with get method!")
       @status = 500
       "To generate a login ticket, you must make a POST request."
     end
@@ -335,6 +352,7 @@ module CASServer::Controllers
     # Renders a page with a login ticket (and only the login ticket)
     # in the response body.
     def post
+      CASServer::Utils::log_controller_action(self.class, @input)
       lt = generate_login_ticket
       
       $LOG.debug("Generated login ticket: #{lt}, host: #{env['REMOTE_HOST'] || env['REMOTE_ADDR']}")
@@ -350,8 +368,7 @@ module CASServer::Controllers
                   '.jpg' => 'image/jpeg'}
     PATH = CASServer::Conf.themes_dir || File.expand_path(File.dirname(__FILE__))+'/../themes'
 
-    def get(path)
-      @headers['Content-Type'] = MIME_TYPES[path[/\.\w+$/, 0]] || "text/plain"
+    def get(path)@headers['Content-Type'] = MIME_TYPES[path[/\.\w+$/, 0]] || "text/plain"
       unless path.include? ".." # prevent directory traversal attacks
         @headers['X-Sendfile'] = "#{PATH}/#{path}"
       else

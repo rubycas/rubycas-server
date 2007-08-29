@@ -30,6 +30,8 @@
   credentials are presented to the first authenticator, then the second,
   and so on, until the user is validated by any one authenticator or fails 
   validation for all of them. [jzylks]
+* When using webrick, you can now run with SSL disabled by omitting the 
+  ssl_cert and ssl_key parameters.
 
 === 0.4.2 :: 2007-07-26
 
