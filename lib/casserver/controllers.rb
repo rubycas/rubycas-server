@@ -17,7 +17,7 @@ module CASServer::Controllers
       # optional params
       @service = @input['service']
       @renew = @input['renew']
-      @gateway = @input['gateway']
+      @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
       
       if tgc = @cookies[:tgt]
         tgt, tgt_error = validate_ticket_granting_ticket(tgc)
@@ -171,12 +171,12 @@ module CASServer::Controllers
     def get
       # The behaviour here is somewhat non-standard. Rather than showing just a blank
       # "logout" page, we take the user back to the login page with a "you have been logged out"
-      # message, allowing for an opportunity to immediately log back in. This makes
-      # switching users a lot smoother.
+      # message, allowing for an opportunity to immediately log back in. This makes it
+      # easier for the user to log out and log in as someone else.
       @service = @input['url'] || @input['service']
       # TODO: display service name in view as per 2.3.2
       
-      @gateway = @input['gateway']
+      @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
       
       tgt = CASServer::Models::TicketGrantingTicket.find_by_ticket(@cookies[:tgt])
       
