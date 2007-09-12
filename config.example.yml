@@ -59,7 +59,7 @@ database:
   database: casserver
   username: root
   password: 
-  server: localhost
+  host: localhost
 
 #
 # Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else supported 
