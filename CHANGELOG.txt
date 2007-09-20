@@ -1,4 +1,4 @@
-=== In Progress
+=== 0.5.0 :: 2007-09-20
 
 * Gateway requests should now be handled correctly. When the request to the
   login page is made with gateway=true as one of the parameters, the CAS
