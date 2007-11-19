@@ -1,0 +1,3 @@
+*	Add a C version of the ISAAC algorithm and make it possible to install
+	the pure Ruby version and/or a version using a C extension for better
+	performance.

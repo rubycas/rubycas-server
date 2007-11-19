@@ -74,8 +74,8 @@ module CASServer::CAS
       path = uri.path.empty? ? '/' : uri.path
       
       pgt = ProxyGrantingTicket.new
-      pgt.ticket = "PGT-" + CASServer::Utils.random_string
-      pgt.iou = "PGTIOU-" + CASServer::Utils.random_string
+      pgt.ticket = "PGT-" + CASServer::Utils.random_string(60)
+      pgt.iou = "PGTIOU-" + CASServer::Utils.random_string(57)
       pgt.service_ticket_id = st.id
       pgt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
       

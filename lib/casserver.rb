@@ -19,14 +19,15 @@ end
 $: << $CASSERVER_HOME + "/../vendor/camping-1.5.180/lib"
 require 'camping'
 
+$: << $CASSERVER_HOME + "/../vendor/isaac_0.9.1"
+require 'crypt/ISAAC'
+
 require 'active_support'
 require 'yaml'
 
 # enable xhtml source code indentation for debugging views
 #Markaby::Builder.set(:indent, 2)
 
-# seed the random number generator (ruby does this by default, but it doesn't hurt to do it here just to be sure)
-srand
 
 # Camping.goes must be called after the authenticator class is loaded, otherwise weird things happen
 Camping.goes :CASServer

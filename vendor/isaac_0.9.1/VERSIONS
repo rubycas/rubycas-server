@@ -1,0 +1,3 @@
+* 0.9		Initial public release.  Pure Ruby.
+* 0.9.1		Update to tweak a couple things and reorganize project struct.
+		Now uses a Package based installer, or can be installed as a gem.
