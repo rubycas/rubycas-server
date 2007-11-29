@@ -36,7 +36,10 @@ lib/themes/warning.png
 resources/init.d.sh
 setup.rb
 test/test_casserver.rb
-
+vendor/camping-1.5.180/CHANGELOG
+vendor/camping-1.5.180/COPYING
+vendor/camping-1.5.180/README
+vendor/camping-1.5.180/Rakefile
 vendor/camping-1.5.180/lib/camping-unabridged.rb
 vendor/camping-1.5.180/lib/camping.rb
 vendor/camping-1.5.180/lib/camping/db.rb
@@ -44,4 +47,11 @@ vendor/camping-1.5.180/lib/camping/fastcgi.rb
 vendor/camping-1.5.180/lib/camping/reloader.rb
 vendor/camping-1.5.180/lib/camping/session.rb
 vendor/camping-1.5.180/lib/camping/webrick.rb
-
+vendor/isaac_0.9.1/LICENSE
+vendor/isaac_0.9.1/README
+vendor/isaac_0.9.1/TODO
+vendor/isaac_0.9.1/VERSIONS
+vendor/isaac_0.9.1/crypt/ISAAC.rb
+vendor/isaac_0.9.1/isaac.gemspec
+vendor/isaac_0.9.1/setup.rb
+vendor/isaac_0.9.1/test/TC_ISAAC.rb
