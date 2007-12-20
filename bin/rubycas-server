@@ -1,56 +1,18 @@
 #!/usr/bin/env ruby
 
-require 'optparse'
-
-local_casserver = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../lib/casserver.rb')
-if File.exists? local_casserver
-  # use local rubycas-server installation
-  $: << File.dirname(local_casserver)
-  path = File.dirname(local_casserver)+"/"
+if File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../vendor/picnic/lib'))
+  $: << picnic
+elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../picnic/lib'))
+  $: << picnic
 else
-  # use gem installation
-  path = ""
   require 'rubygems'
-  gem 'rubycas-server'
 end
 
-OptionParser.new do |opts|
-  opts.banner = "Usage: rubycas-server [options]"
+require 'picnic/cli'
 
-  opts.on("-c", "--config FILE", "Use config file (default is /etc/rubycas-server/config.yml)") do |c|
-  	puts "Using config file #{c}"
-    $CONFIG_FILE = c
-  end
-  
-  opts.on("-d", "--daemonize", "Run as a daemon (only when using webrick or mongrel)") do |c|
-    $DAEMONIZE = true
-  end
+cli = Picnic::Cli.new(
+  'rubycas-server',
+  :app_path => File.expand_path(File.dirname(File.expand_path(__FILE__)))
+)
 
-  opts.on("-P", "--pid_file FILE", "Use pid file (default is /etc/rubycas-server/rubycas-server.pid)") do |c|
-    if $DAEMONIZE && !File.exists?(c)
-      puts "Using pid file '#{c}'"
-      $PID_FILE = c
-    elsif File.exists?(c)
-      puts "The pid file already exists.  Is rubycas-server running?\n" +
-      	"You will have to first manually remove the pid file at '#{c}' to start the server as a daemon."
-      exit 1
-    else
-      puts "Not running as Daemon.  Ignoring pid option"
-    end
-  end
-
-  opts.on_tail("-h", "--help", "Show this message") do
-    puts opts
-    exit
-  end
-  
-  opts.on_tail("-v", "--version", "Show version number") do
-  	require "#{path}casserver/version"
-    puts "rubycas-server-#{CASServer::VERSION::STRING}"
-    exit
-  end
-end.parse!
-
-$RUN = true
-
-load "#{path}casserver.rb"
+cli.handle_cli_input

@@ -21,13 +21,14 @@ HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DEPS = [
 #  ['camping', '>= 1.5'], # camping is now bundled with rubycas-server
   ['activesupport', '>= 1.4.0'],
-  ['activerecord', '>=1.15.3']
+  ['activerecord', '>=1.15.3'],
+  'picnic'
 ]
 
 
 NAME = "rubycas-server"
-REV = nil
-#REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
+#REV = nil
+REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
 VERS = ENV['VERSION'] || (CASServer::VERSION::STRING + (REV ? ".#{REV}" : ""))
                           CLEAN.include ['**/.*.sw?', '*.gem', '.config']
 RDOC_OPTS = ['--quiet', '--title', "RubyCAS-Server #{VERS} Documentation",

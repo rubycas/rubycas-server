@@ -1,76 +1,84 @@
 #!/usr/bin/env ruby
 
+$: << File.dirname(File.expand_path(__FILE__))
+require 'casserver/environment'
+
 # change to current directory when invoked on its own
 Dir.chdir(File.dirname(File.expand_path(__FILE__))) if __FILE__ == $0
 
-# add current directory to load path
-$CASSERVER_HOME = File.dirname(File.expand_path(__FILE__))
-$: << $CASSERVER_HOME
-
-require 'rubygems'
-
-# make things backwards-compatible for rubygems < 0.9.0
-unless Object.method_defined? :gem
-  alias gem require_gem
-end
-
-
-#gem 'camping', '~> 1.5.180'
-$: << $CASSERVER_HOME + "/../vendor/camping-1.5.180/lib"
-require 'camping'
-
-$: << $CASSERVER_HOME + "/../vendor/isaac_0.9.1"
+$: << $APP_PATH + "/../vendor/isaac_0.9.1"
 require 'crypt/ISAAC'
 
 require 'active_support'
 require 'yaml'
 
-# enable xhtml source code indentation for debugging views
-#Markaby::Builder.set(:indent, 2)
-
 
 # Camping.goes must be called after the authenticator class is loaded, otherwise weird things happen
 Camping.goes :CASServer
 
-module CASServer
-  def init_logger
-    $LOG = CASServer::Utils::Logger.new(CASServer::Conf.log[:file])
-    $LOG.level = "CASServer::Utils::Logger::#{CASServer::Conf.log[:level]}".constantize
-  end
-  module_function :init_logger
+$CONFIG_FILE ||= '/etc/rubycas-server/config.yml'
 
-  def init_db_logger
-    begin
-      if CASServer::Conf.db_log
-        log_file = CASServer::Conf.db_log[:file] || 'casserver_db.log'
-        CASServer::Models::Base.logger = Logger.new(log_file)
-        CASServer::Models::Base.logger.level = "CASServer::Utils::Logger::#{CASServer::Conf.db_log[:level] || 'DEBUG'}".constantize
+CASServer.picnic!
+
+$CONF[:expire_sessions] ||= false
+$CONF[:login_ticket_expiry] ||= 5.minutes
+$CONF[:service_ticket_expiry] ||= 5.minutes # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
+$CONF[:proxy_granting_ticket_expiry] ||= 48.hours
+$CONF[:ticket_granting_ticket_expiry] ||= 48.hours
+$CONF[:log] ||= {:file => 'casserver.log', :level => 'DEBUG'}
+$CONF[:uri_path] ||= "/"
+
+if $CONF[:authenticator].instance_of? Array
+  $CONF[:authenticator].each_index do |auth_index| 
+    $CONF[:authenticator][auth_index] = HashWithIndifferentAccess.new($CONF[:authenticator][auth_index])
+  end
+end
+
+$AUTH = []
+begin
+  # attempt to instantiate the authenticator
+  if $CONF[:authenticator].instance_of? Array
+    $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize.new}
+  else
+    $AUTH << $CONF[:authenticator][:class].constantize.new
+  end
+rescue NameError
+  if $CONF[:authenticator].instance_of? Array
+    $CONF[:authenticator].each do |authenticator|
+      if !authenticator[:source].nil?
+        # config.yml explicitly names source file
+        require authenticator[:source]
+      else
+        # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+        auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
+        require 'casserver/'+auth_rb
       end
-    rescue Errno::EACCES => e
-      $LOG.warn "Can't write to database log file at '#{log_file}': #{e}"
+      $AUTH << authenticator[:class].constantize.new
     end
-  end
-  module_function :init_db_logger
+  else
+    if !$CONF[:authenticator][:source].nil?
+      # config.yml explicitly names source file
+      require $CONF[:authenticator][:source]
+    else
+      # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+      auth_rb = $CONF[:authenticator][:class].underscore.gsub('cas_server/', '')
+      require 'casserver/'+auth_rb
+    end
 
+    $AUTH << $CONF[:authenticator][:class].constantize.new
+  end
 end
 
 require 'casserver/utils'
 require 'casserver/models'
 require 'casserver/cas'
-require 'casserver/conf'
 require 'casserver/views'
 require 'casserver/controllers'
 
-CASServer.init_logger
-
-# do initialization stuff
 def CASServer.create
+  $LOG.info "Creating RubyCAS-Server..."
+  CASServer::Models::Base.establish_connection(CASServer::Conf.database)
   CASServer::Models.create_schema
-  
-  $LOG.info("RubyCAS-Server #{CASServer::VERSION::STRING} initialized.")
-  
-  $LOG.debug("Configuration is:\n#{$CONF.to_yaml}")
-  $LOG.debug("Authenticator is: #{$AUTH}")
   
   CASServer::Models::ServiceTicket.cleanup_expired(CASServer::Conf.service_ticket_expiry)
   CASServer::Models::LoginTicket.cleanup_expired(CASServer::Conf.login_ticket_expiry)
@@ -79,34 +87,4 @@ def CASServer.create
 end
 
 
-# this gets run if we launch directly (i.e. `ruby casserver.rb` rather than `camping casserver`)
-if __FILE__ == $0 || $RUN
-  CASServer::Models::Base.establish_connection(CASServer::Conf.database)
-  CASServer.init_db_logger unless CASServer::Conf.server.to_s == 'mongrel'
-  
-  require 'casserver/postambles'
-  include CASServer::Postambles
-
-  if $PID_FILE && (CASServer::Conf.server.to_s != 'mongrel' || CASServer::Conf.server.to_s != 'webrick')
-    $LOG.warn("Unable to create a pid file. You must use mongrel or webrick for this feature.")
-  end
-
-  require 'casserver/version'
-  puts
-  puts "*** Starting RubyCAS-Server #{CASServer::VERSION::STRING} using codebase at #{$CASSERVER_HOME}"
-
-
-  begin
-    raise NoMethodError if CASServer::Conf.server.nil?
-    send(CASServer::Conf.server)
-  rescue NoMethodError
-    # FIXME: this rescue can sometime report the incorrect error messages due to other underlying problems
-    #         raising a NoMethodError
-    if CASServer::Conf.server
-      raise "The server setting '#{CASServer::Conf.server}' in your config.yml file is invalid."
-    else
-      raise "You must have a 'server' setting in your config.yml file. Please see the RubyCAS-Server documentation."
-    end
-  end
-
-end 
+CASServer.start_picnic
