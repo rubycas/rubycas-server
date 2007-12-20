@@ -1,17 +1,13 @@
-=== RubyCAS-Server ===========================================================
+= RubyCAS-Server
 
-Copyright 2007 Urbacon Ltd.
+*Copyright*:: 2007 Urbacon Ltd.
+*Authors*::   Matt Zukowski <matt at roughest dot net>, Jason Zylks
+*Homepage*::  http://rubycas-server.googlecode.com
 
-For info and installation instructions please see:
-
-  http://code.google.com/p/rubycas-server/
-
-You can contact the author at:
-
-  matt@roughest.net
+For info and installation instructions please see http://code.google.com/p/rubycas-server
 
 
-==============================================================================
+== License
 
 RubyCAS-Server is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published 

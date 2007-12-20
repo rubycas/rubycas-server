@@ -11,8 +11,8 @@ require 'hoe'
 include FileUtils
 require File.join(File.dirname(__FILE__), 'lib', 'casserver', 'version')
 
-AUTHOR = "Matt Zukowski"  # can also be an array of Authors
-EMAIL = "matt@roughest.net"
+AUTHOR = ["Matt Zukowski", "Jason Zylks"]  # can also be an array of Authors
+EMAIL = ["matt at roughest dot net"]
 DESCRIPTION = "Provides single sign on for web applications using the CAS protocol."
 GEM_NAME = "rubycas-server" # what ppl will type to install your gem
 RUBYFORGE_PROJECT = "rubycas-server" # The unix name for your project
@@ -26,8 +26,8 @@ DEPS = [
 
 
 NAME = "rubycas-server"
-#REV = nil
-REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
+REV = nil
+#REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
 VERS = ENV['VERSION'] || (CASServer::VERSION::STRING + (REV ? ".#{REV}" : ""))
                           CLEAN.include ['**/.*.sw?', '*.gem', '.config']
 RDOC_OPTS = ['--quiet', '--title', "RubyCAS-Server #{VERS} Documentation",
