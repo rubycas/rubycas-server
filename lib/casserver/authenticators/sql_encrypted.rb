@@ -1,5 +1,7 @@
 require 'casserver/authenticators/base'
+
 require 'digest/sha1'
+require 'digest/sha2'
 
 $: << File.dirname(File.expand_path(__FILE__)) + "/../../../vendor/isaac_0.9.1"
 require 'crypt/ISAAC'
@@ -54,7 +56,7 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     end
     
     def encrypt(str)
-      Digest::SHA1.hexdigest("#{encryption_salt}::#{str}")
+      Digest::SHA256.hexdigest("#{encryption_salt}::#{str}")
     end
     
     def password=(password)
@@ -62,7 +64,6 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     end
     
     def generate_encryption_salt
-      puts "GENERATING ENCRYPTION SALT"
       self.encryption_salt = Digest::SHA1.hexdigest(Crypt::ISAAC.new.rand(2**31).to_s) unless
         encryption_salt
     end
