@@ -5,6 +5,9 @@
   into its own library. This new library is called Picnic and is
   now a gem dependency for RubyCAS-Server. You can find out more about
   it at http://code.google.com/p/camping-picnic/.
+* An encryption-enabled version of the SQL authenticator is now
+  available. For more info have a look at:
+  http://code.google.com/p/rubycas-server/wiki/UsingTheSQLEncryptedAuthenticator
 
 === 0.5.1 :: 2007-12-20
 
