@@ -1,6 +1,10 @@
 === In Progress
 
-* 
+* Much of the supporting functionality that makes RubyCAS-Server
+  act as a well-behaved Linux service has been abstracted out
+  into its own library. This new library is called Picnic and is
+  now a gem dependency for RubyCAS-Server. You can find out more about
+  it at http://code.google.com/p/camping-picnic/.
 
 === 0.5.1 :: 2007-12-20
 
