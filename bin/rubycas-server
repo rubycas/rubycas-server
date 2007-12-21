@@ -6,6 +6,13 @@ elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FIL
   $: << picnic
 else
   require 'rubygems'
+  
+  # make things backwards-compatible for rubygems < 0.9.0
+  unless Object.method_defined? :gem
+    alias gem require_gem
+  end
+  
+  gem 'picnic'
 end
 
 require 'picnic/cli'

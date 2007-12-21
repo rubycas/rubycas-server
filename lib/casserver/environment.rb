@@ -4,11 +4,17 @@ $: << File.dirname(File.expand_path(__FILE__))
 $: << File.dirname(File.expand_path(__FILE__))+"/../../../picnic/lib"
 $: << File.dirname(File.expand_path(__FILE__))+"/../../vendor/picnic/lib"
 
-require 'rubygems'
-
-# make things backwards-compatible for rubygems < 0.9.0
-unless Object.method_defined? :gem
-  alias gem require_gem
+begin
+  require 'picnic'
+rescue LoadError
+  require 'rubygems'
+  
+  # make things backwards-compatible for rubygems < 0.9.0
+  unless Object.method_defined? :gem
+    alias gem require_gem
+  end
+  
+  gem 'picnic'
+  
+  require 'picnic'
 end
-
-require 'picnic'
