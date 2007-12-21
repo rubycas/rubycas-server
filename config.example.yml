@@ -84,12 +84,17 @@ database:
 # SQL, ActiveDirectory, and LDAP. If none of these work for you, it is relatively
 # easy to write your own custom Authenticator class.
 #
-# ==> SQL Authentication:
+# === SQL Authentication =============================================================
+#
 # The simplest method is to validate against a SQL database. This assumes
 # that all of your users are stored in a table that has a 'username' column
 # and a 'password' column. When the user logs in, CAS conects to this database
-# and look for a matching username/password in the users table. If a matching
+# and looks for a matching username/password in the users table. If a matching
 # username and password is found, authentication is successful.
+#
+# If you prefer to have your passwords stored in an encrypted form, have a 
+# look at the SQLEncrypted authenticator: 
+# http://code.google.com/p/rubycas-server/wiki/UsingTheSQLEncryptedAuthenticator
 # 
 # Example:
 #
@@ -101,12 +106,13 @@ database:
 #    username: root
 #    password: 
 #    server: localhost
-#  user_table: user
+#  user_table: users
 #  username_column: username
 #  password_column: password
 #
 #
-# ==> ActiveDirectory Authentication:
+# === ActiveDirectory Authentication ================================================
+#
 # This method authenticates against Microsoft's Active Directory using LDAP.
 # You must enter your ActiveDirectory server, and base DN. The port number
 # and LDAP filter are optional. You must also enter a CN and password
@@ -137,7 +143,8 @@ database:
 # omit the auth_user and auth_password values in the above example.
 #
 #
-# ==> LDAP Authentication:
+# === LDAP Authentication ===========================================================
+#
 # This is a more general version of the ActiveDirectory authenticator.
 # The configuration is similar, except you don't need an authenticator
 # username or password. Note that this authenticator hasn't been widely
@@ -152,7 +159,8 @@ database:
 #    filter: (objectClass=person)
 #
 #
-# ==> Custom Authentication:
+# === Custom Authentication =========================================================
+#
 # It should be relatively easy to write your own Authenticator class. Have a look
 # at the built-in authenticators in the casserver/authenticators directory. Your
 # authenticator should extend the CASServer::Authenticators::Base class and must
@@ -174,7 +182,8 @@ database:
 #  option_a: foo
 #  another_option: yeeha
 #
-# ==> Multiple Authenticators
+# === Multiple Authenticators ======================================================
+#
 # If you need to have more than one source for authentication, such as an LDAP directory
 # and a database, you can use multiple authenticators by making :authenticator an array
 # of authenticators.
@@ -202,6 +211,7 @@ database:
 # During authentication, the user credentials will be checked against the first
 # authenticator and on failure fall through to the second authenticator.
 #
+
 
 ##### LOOK & FEEL ######################################################################
 
