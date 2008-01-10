@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 $: << File.dirname(File.expand_path(__FILE__))
 require 'casserver/environment'
 
