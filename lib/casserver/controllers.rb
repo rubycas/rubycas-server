@@ -99,6 +99,7 @@ module CASServer::Controllers
         @message = {:type => 'mistake', :message => error}
         # generate another login ticket to allow for re-submitting the form
         @lt = generate_login_ticket.ticket
+        @status = 401
         return render(:login)
       end
       
@@ -162,6 +163,7 @@ module CASServer::Controllers
       else
         $LOG.warn("Invalid credentials given for user '#{@username}'")
         @message = {:type => 'mistake', :message => "Incorrect username or password."}
+        @status = 401
       end
       
       render :login
@@ -355,7 +357,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       lt = generate_login_ticket
       
-      $LOG.debug("Generated login ticket: #{lt}, host: #{env['REMOTE_HOST'] || env['REMOTE_ADDR']}")
+      $LOG.debug("Dispensing login ticket #{lt} to host #{(env['REMOTE_HOST'] || env['REMOTE_ADDR']).inspect}")
       
       @lt = lt.ticket
       

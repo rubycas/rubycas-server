@@ -1,5 +1,8 @@
 === In Progress
 
+* When an authentication failure occurs (because the user submitted
+  invalid credentials or the login ticket is missing), the server
+  now returns a 401 (Unauthorized) response instead of 200.
 * Much of the supporting functionality that makes RubyCAS-Server
   act as a well-behaved Linux service has been abstracted out
   into its own library. This new library is called Picnic and is
