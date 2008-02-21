@@ -10,7 +10,6 @@ module CASServer::Models
   end
   
   class Ticket < Base
-    self.abstract_class = true
     def to_s
       ticket
     end
