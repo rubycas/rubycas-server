@@ -11,6 +11,8 @@
 * An encryption-enabled version of the SQL authenticator is now
   available. For more info have a look at:
   http://code.google.com/p/rubycas-server/wiki/UsingTheSQLEncryptedAuthenticator
+* Fixed bug with ActiveRecord 2.0.2 where service tickets were not
+  being given a type (issue #37).
 
 === 0.5.1 :: 2007-12-20
 
