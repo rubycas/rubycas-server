@@ -11,6 +11,9 @@
 * An encryption-enabled version of the SQL authenticator is now
   available. For more info have a look at:
   http://code.google.com/p/rubycas-server/wiki/UsingTheSQLEncryptedAuthenticator
+* Better compatibility with Oracle databases. The database migration 
+  no longer tries to create tables with long names when long
+  table names are not supported by the underlying database connector.
 * Fixed bug with ActiveRecord 2.0.2 where service tickets were not
   being given a type (issue #37).
 
