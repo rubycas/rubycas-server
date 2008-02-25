@@ -95,6 +95,11 @@ module CASServer::Controllers
       @password = @input['password']
       @lt = @input['lt']
       
+      if @username && $CONF[:downcase_username]
+        $LOG.debug("Converting username #{@username.inspect} to lowercase because 'downcase_username' option is enabled.")
+        @username.downcase!
+      end
+      
       if error = validate_login_ticket(@lt)
         @message = {:type => 'mistake', :message => error}
         # generate another login ticket to allow for re-submitting the form
