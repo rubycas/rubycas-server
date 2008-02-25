@@ -277,3 +277,11 @@ log:
 # the maximum length of a session), you can set expire_sessions to true.
 
 # expire_sessions: false
+
+
+# If you want the usernames entered on the login page to be automatically downcased 
+# (converted to lowercase), enable the following option. When this option is set to
+# true, if the user enters "JSmith" as their username, the system will automatically
+# convert this to "jsmith".
+
+# downcase_username: true
