@@ -22,7 +22,7 @@ DEPS = [
 #  ['camping', '>= 1.5'], # camping is now bundled with rubycas-server
   ['activesupport', '>= 1.4.0'],
   ['activerecord', '>=1.15.3'],
-  'picnic'
+  ['picnic', '>=0.5.0.17']
 ]
 
 
