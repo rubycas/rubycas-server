@@ -26,6 +26,17 @@ $CONF[:ticket_granting_ticket_expiry] ||= 48.hours
 $CONF[:log] ||= {:file => 'casserver.log', :level => 'DEBUG'}
 $CONF[:uri_path] ||= "/"
 
+unless $CONF[:authenticator]
+  $stderr.puts
+  $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  $stderr.puts
+  $stderr.puts "You have not yet defined an authenticator for your CAS server!"
+  $stderr.puts "Please consult your config file at #{$CONFIG_FILE.inspect} for details."
+  $stderr.puts
+  $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  exit 1
+end
+
 if $CONF[:authenticator].instance_of? Array
   $CONF[:authenticator].each_index do |auth_index| 
     $CONF[:authenticator][auth_index] = HashWithIndifferentAccess.new($CONF[:authenticator][auth_index])
