@@ -39,10 +39,16 @@ module CASServer::Models
     include Consumable
     
     def matches_service?(service)
-      # We ignore the trailing slash in URLs, since 
+      # Remove CAS-related parameters from the service URL, since they really shoudln't
+      # be there (some misbehaving clients include them in the service URL).
+      ['service', 'ticket', 'gateway', 'renew'].each do |p|
+        service.gsub!(Regexp.new("#{p}=[^&]*"), '')
+      end
+      
+      # We ignore the trailing slash and ? in URLs, since 
       # "http://www.google.com/" and "http://www.google.com" are almost
       # certainly the same service.
-      self.service.gsub(/\/$/, '') == service.gsub(/\/$/, '')
+      self.service.gsub(/[\/\?]$/, '') == service.gsub(/[\/\?]$/, '')
     end
   end
   
