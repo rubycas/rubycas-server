@@ -78,6 +78,11 @@ rescue NameError
   end
 end
 
+$CONF[:public_dir] = {
+  :path => "/themes",
+  :dir  => File.expand_path(File.dirname(__FILE__))+"/themes"
+}
+
 require 'casserver/utils'
 require 'casserver/models'
 require 'casserver/cas'
