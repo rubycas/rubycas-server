@@ -1,4 +1,4 @@
-=== In Progress
+=== 0.6.0 :: In Progress
 
 * When an authentication failure occurs (because the user submitted
   invalid credentials or the login ticket is missing), the server
