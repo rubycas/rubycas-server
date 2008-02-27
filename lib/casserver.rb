@@ -1,8 +1,10 @@
 $: << File.dirname(File.expand_path(__FILE__))
 require 'casserver/environment'
 
+$APP_PATH ||= File.dirname(File.expand_path(__FILE__))
+
 # change to current directory when invoked on its own
-Dir.chdir(File.dirname(File.expand_path(__FILE__))) if __FILE__ == $0
+Dir.chdir($APP_PATH) if __FILE__ == $0
 
 $: << $APP_PATH + "/../vendor/isaac_0.9.1"
 require 'crypt/ISAAC'
@@ -15,6 +17,10 @@ require 'yaml'
 Camping.goes :CASServer
 
 $CONFIG_FILE ||= '/etc/rubycas-server/config.yml'
+
+# for some reason this makes JRuby happy
+class CASServer::Models::Base
+end
 
 CASServer.picnic!
 
@@ -36,6 +42,12 @@ unless $CONF[:authenticator]
   $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   exit 1
 end
+
+require 'casserver/utils'
+require 'casserver/models'
+require 'casserver/cas'
+require 'casserver/views'
+require 'casserver/controllers'
 
 if $CONF[:authenticator].instance_of? Array
   $CONF[:authenticator].each_index do |auth_index| 
@@ -82,12 +94,6 @@ $CONF[:public_dir] = {
   :path => "/themes",
   :dir  => File.expand_path(File.dirname(__FILE__))+"/themes"
 }
-
-require 'casserver/utils'
-require 'casserver/models'
-require 'casserver/cas'
-require 'casserver/views'
-require 'casserver/controllers'
 
 def CASServer.create
   $LOG.info "Creating RubyCAS-Server..."
