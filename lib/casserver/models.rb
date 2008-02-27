@@ -16,15 +16,13 @@ module CASServer::Models
     
     def self.cleanup_expired(expiry_time)
       transaction do
-        expired_tickets = find(:all, 
-          :conditions => ["created_on < ?", Time.now - expiry_time])
+        conditions = ["created_on < ?", Time.now - expiry_time]
+        expired_tickets_count = count(:conditions => conditions)
           
-        $LOG.debug("Destroying #{expired_tickets.size} expired #{self}"+
-          "#{'s' if expired_tickets.size > 1}.") if expired_tickets.size > 0
+        $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.split('::').last}"+
+          "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
       
-        expired_tickets.each do |t|
-          t.destroy
-        end
+        destroy_all(conditions)
       end
     end
   end
