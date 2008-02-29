@@ -26,13 +26,25 @@
 server: webrick
 port: 443
 ssl_cert: /path/to/your/ssl.pem
-# ssl_key: /path/to/your/private_key.pem  <-- if private key is separate from cert
+
+# If private key is separate from cert
+#ssl_key: /path/to/your/private_key.pem
+
+# By default the login page will be available at the root path (e.g. https://example.foo/).
+# The uri_path option lets you serve it from a different path (e.g. https://example.foo/cas).
+#uri_path: /cas
+
 
 ### mongrel example (since mongrel doesn't support SSL on its own, you will have to run
 ###  this behind an https reverse proxy)
 
 #server: mongrel
 #port: 110011
+
+# By default the login page will be available at the root path (e.g. https://example.foo/).
+# The uri_path option lets you serve it from a different path (e.g. https://example.foo/cas).
+#uri_path: /cas
+
 
 ### cgi example (you'll need to serve this via an SSL-capable server like Apache)
 
