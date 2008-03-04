@@ -55,7 +55,7 @@ module CASServer::Controllers
       
       @lt = lt.ticket
       
-      $LOG.debug(env)
+      #$LOG.debug(env)
       
       # If the 'onlyLoginForm' parameter is specified, we will only return the 
       # login form part of the page. This is useful for when you want to
