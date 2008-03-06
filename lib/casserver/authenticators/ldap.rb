@@ -18,6 +18,9 @@ rescue LoadError
   require 'net/ldap'
 end
 
+# Basic LDAP authenticator. Should be compatible with OpenLDAP and other similar LDAP servers,
+# although it hasn't been officially tested. See example config file for details on how
+# to configure it.
 class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
   def validate(credentials)
     read_standard_credentials(credentials)
