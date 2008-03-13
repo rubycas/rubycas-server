@@ -5,6 +5,15 @@
   into its own library. This new library is called Picnic and is
   now a gem dependency for RubyCAS-Server. You can find out more about
   it at http://code.google.com/p/camping-picnic/.
+* The logout action will not accept a 'destination' parameter in lieu of
+  'service'. This means that if a 'destination' parameter is given with
+  some URL, the logout action will show the login form, allowing the user
+  to immedietly log back in to the service specified by 'destination'.
+* The logout action will now accept a 'url' parameter. If given, the logout
+  page will show a message indicating that the CAS session has been terminated
+  and instructing the user to click on a link to follow the given URL. If the
+  'url' parameter is given, the login form will NOT be shown on the logout
+  page (see above).
 * When an authentication failure occurs (because the user submitted
   invalid credentials or the login ticket is missing), the server
   now returns a 401 (Unauthorized) response instead of 200.

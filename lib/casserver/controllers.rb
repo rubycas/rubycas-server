@@ -187,8 +187,8 @@ module CASServer::Controllers
       # "logout" page, we take the user back to the login page with a "you have been logged out"
       # message, allowing for an opportunity to immediately log back in. This makes it
       # easier for the user to log out and log in as someone else.
-      @service = @input['url'] || @input['service']
-      # TODO: display service name in view as per 2.3.2
+      @service = @input['service'] || @input['destination']
+      @continue_url = @input['url']
       
       @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
       
@@ -215,10 +215,15 @@ module CASServer::Controllers
       
       @message = {:type => 'confirmation', :message => "You have successfully logged out."}
       
+      @message[:message] << 
+        " Please click on the following link to continue:" if @continue_url
+      
       @lt = generate_login_ticket
       
       if @gateway && @service
         redirect(@service, :status => 303)
+      elsif @continue_url
+        render :logout
       else
         render :login
       end

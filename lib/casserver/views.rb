@@ -98,6 +98,34 @@ module CASServer::Views
     end
   end
   
+  # 2.3.2
+  def logout
+    @use_layout = true
+    
+    table(:id => "login-box") do
+      tr do
+        td(:colspan => 2) do
+          div(:id => "headline-container") do
+            strong organization
+            text " Central Login"
+          end
+        end
+      end
+      if @message
+        tr do
+          td(:colspan => 2, :id => "messagebox-container") do
+            div(:class => "messagebox #{@message[:type]}") { @message[:message] }
+            if @continue_url
+              p do
+                a(:href => @continue_url) { @continue_url }
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+  
   # 2.4.2
   # CAS 1.0 validate response.
   def validate
