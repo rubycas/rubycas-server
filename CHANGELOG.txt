@@ -5,7 +5,7 @@
   into its own library. This new library is called Picnic and is
   now a gem dependency for RubyCAS-Server. You can find out more about
   it at http://code.google.com/p/camping-picnic/.
-* The logout action will not accept a 'destination' parameter in lieu of
+* The logout action will now accept a 'destination' parameter in lieu of
   'service'. This means that if a 'destination' parameter is given with
   some URL, the logout action will show the login form, allowing the user
   to immedietly log back in to the service specified by 'destination'.
