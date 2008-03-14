@@ -95,6 +95,9 @@ module CASServer::Controllers
       @password = @input['password']
       @lt = @input['lt']
       
+      # Remove leading and trailing widespace from username.
+      @username.strip! if @username
+      
       if @username && $CONF[:downcase_username]
         $LOG.debug("Converting username #{@username.inspect} to lowercase because 'downcase_username' option is enabled.")
         @username.downcase!

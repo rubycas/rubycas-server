@@ -24,6 +24,9 @@
   no longer tries to create tables with long names when long
   table names are not supported by the underlying database connector
   (issue #15).
+* The server now automatically removes leading and trailing whitespace from
+  the username entered by users. Passwords however are left intact, with no
+  whitespace removed.
 * The server can now be configured to automatically downcase the
   username entered by users (dowcase_username option). So if a user
   enters "JSmith", the system will convert it to "jsmith" if the
