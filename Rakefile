@@ -19,10 +19,9 @@ RUBYFORGE_PROJECT = "rubycas-server" # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
 DEPS = [
-#  ['camping', '>= 1.5'], # camping is now bundled with rubycas-server
   ['activesupport', '>= 1.4.0'],
   ['activerecord', '>=1.15.3'],
-  ['picnic', '>=0.6.2']
+  ['picnic', '>=0.6.3']
 ]
 
 
