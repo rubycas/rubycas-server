@@ -26,8 +26,8 @@ DEPS = [
 
 
 NAME = "rubycas-server"
-#REV = nil
-REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
+REV = nil
+#REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
 VERS = ENV['VERSION'] || (CASServer::VERSION::STRING + (REV ? ".#{REV}" : ""))
                           CLEAN.include ['**/.*.sw?', '*.gem', '.config']
 RDOC_OPTS = ['--quiet', '--title', "RubyCAS-Server #{VERS} Documentation",
