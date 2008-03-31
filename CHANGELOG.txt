@@ -1,4 +1,4 @@
-=== 0.6.0 :: In Progress
+=== 0.6.0 :: 2008-03-28
 
 * Much of the supporting functionality that makes RubyCAS-Server
   act as a well-behaved Linux service has been abstracted out
@@ -31,6 +31,8 @@
   username entered by users (dowcase_username option). So if a user
   enters "JSmith", the system will convert it to "jsmith" if the
   downcase_username option is set to true.
+* The server can now be made to bind to a specific address. See the
+  :bind_address option in the config.example.yml file.
 * Fixed bug with ActiveRecord 2.0.2 where service tickets were not
   being given a type (issue #37).
 

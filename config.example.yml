@@ -1,25 +1,28 @@
 # IMPORTANT NOTE ABOUT YAML CONFIGURATION FILES
-# ---> Be sure to use spaces instead of tabs for indentation. Yaml is white-space sensitive!
+# ---> Be sure to use spaces instead of tabs for indentation. YAML is 
+#      white-space sensitive!
 
-##### SERVER ########################################################################
+##### SERVER ###################################################################
 
 # Under what environment are you running the CAS server? The following methods
 # are currently supported:
 #
 # webrick -- run as a stand-alone webrick server; this is the default method
-# mongrel -- run as a stand-alone mongrel server; fast, but you'll need to install
-#            mongrel and run it behind an https reverse proxy like Pound or Apache 2.2's mod_proxy)
-# cgi     -- slow, but simple to set up if you're already familliar with deploying CGI scripts
-# fastcgi -- see http://www.fastcgi.com (e.g. under Apache you can use this with mod_fastcgi)
+# mongrel -- run as a stand-alone mongrel server; fast, but you'll need to 
+#            install mongrel and run it behind an https reverse proxy like Pound 
+#            or Apache 2.2's mod_proxy)
+# cgi     -- slow, but simple to set up if you're already familliar with 
+#            deploying CGI scripts
+# fastcgi -- see http://www.fastcgi.com (e.g. under Apache you can use this with 
+#            mod_fastcgi)
 #
 # The cgi and fastcgi methods have not been thoroughly tested! 
 # Please report any problems to the authors.
 # 
-# IMPORTANT: If you use mongrel, you will need to run the server behind a reverse proxy 
-#            (Pound, Apache 2.2 with mod_proxy, etc.) since mongrel does not support SSL/HTTPS.
-#            See the RubyCAS-Server install docs for more info. Also, mongrel requries
-#            Camping 1.5.180 which as of writing is only available via SVN. You can install
-#            this by running `gem install camping --source code.whytheluckystiff.net`
+# IMPORTANT: If you use mongrel, you will need to run the server behind a 
+#            reverse proxy (Pound, Apache 2.2 with mod_proxy, etc.) since 
+#            mongrel does not support SSL/HTTPS. See the RubyCAS-Server install 
+#            docs for more info.
 
 ### webrick example
 
@@ -30,21 +33,29 @@ ssl_cert: /path/to/your/ssl.pem
 # If private key is separate from cert
 #ssl_key: /path/to/your/private_key.pem
 
-# By default the login page will be available at the root path (e.g. https://example.foo/).
-# The uri_path option lets you serve it from a different path (e.g. https://example.foo/cas).
+# By default the login page will be available at the root path 
+# (e.g. https://example.foo/). The uri_path option lets you serve it from a 
+# different path (e.g. https://example.foo/cas).
 #uri_path: /cas
 
+# Bind the server to a specific address. Use 0.0.0.0 to listen on all
+# available interfaces.
+#bind_address: 0.0.0.0
 
-### mongrel example (since mongrel doesn't support SSL on its own, you will have to run
-###  this behind an https reverse proxy)
+### mongrel example (since mongrel doesn't support SSL on its own, you will have
+###  to run this behind an https reverse proxy)
 
 #server: mongrel
 #port: 110011
 
-# By default the login page will be available at the root path (e.g. https://example.foo/).
-# The uri_path option lets you serve it from a different path (e.g. https://example.foo/cas).
+# By default the login page will be available at the root path 
+# (e.g. https://example.foo/). The uri_path option lets you serve it from a 
+# different path (e.g. https://example.foo/cas).
 #uri_path: /cas
 
+# Bind the server to a specific address. Use 0.0.0.0 to listen on all
+# available interfaces.
+#bind_address: 0.0.0.0
 
 ### cgi example (you'll need to serve this via an SSL-capable server like Apache)
 
@@ -55,11 +66,12 @@ ssl_cert: /path/to/your/ssl.pem
 #server: fastcgi
 
 
-##### DATABASE #######################################################################
+##### DATABASE #################################################################
 
 # Set up the database connection. Make sure that this database is secure!
 # 
-# By default, we use MySQL, since it is widely used and does not require any additional
+# By default, we use MySQL, since it is widely used and does not require any 
+# additional
 # ruby libraries besides ActiveRecord.
 #
 # With MySQL, your config would be something like the following:
@@ -74,29 +86,29 @@ database:
   host: localhost
 
 #
-# Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else supported 
-# by ActiveRecord.
+# Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else 
+# supported by ActiveRecord.
 #
-# With SQLite3 (which does not require a separate database server), your configuration
-# would look something like the following (don't forget to install the 
-# sqlite3-ruby gem beforehand!):
+# With SQLite3 (which does not require a separate database server), your 
+# configuration would look something like the following (don't forget to install 
+# the sqlite3-ruby gem beforehand!):
 #
 #database:
 #  adapter: sqlite3
 #  dbfile: /var/lib/casserver.db
   
 
-##### AUTHENTICATION #################################################################
+##### AUTHENTICATION ###########################################################
 
 # Configure how username/passwords are validated.
 #
-# !!! YOU MUST CONFIGURE ONE (AND ONLY ONE) OF THESE AUTHENTICATION METHODS !!!
+# !!! YOU MUST CONFIGURE ONE OF THESE AUTHENTICATION METHODS !!!
 #
 # Currently there are three built-in methods for authentication:
-# SQL, ActiveDirectory, and LDAP. If none of these work for you, it is relatively
-# easy to write your own custom Authenticator class.
+# SQL, ActiveDirectory, and LDAP. If none of these work for you, it is 
+# relatively easy to write your own custom Authenticator class.
 #
-# === SQL Authentication =============================================================
+# === SQL Authentication =======================================================
 #
 # The simplest method is to validate against a SQL database. This assumes
 # that all of your users are stored in a table that has a 'username' column
@@ -123,7 +135,7 @@ database:
 #  password_column: password
 #
 #
-# === ActiveDirectory Authentication ================================================
+# === ActiveDirectory Authentication ===========================================
 #
 # This method authenticates against Microsoft's Active Directory using LDAP.
 # You must enter your ActiveDirectory server, and base DN. The port number
@@ -155,13 +167,13 @@ database:
 # omit the auth_user and auth_password values in the above example.
 #
 #
-# === LDAP Authentication ===========================================================
+# === LDAP Authentication ======================================================
 #
 # This is a more general version of the ActiveDirectory authenticator.
 # The configuration is similar, except you don't need an authenticator
 # username or password. Note that this authenticator hasn't been widely
 # tested, so it is not guaranteed to work.
-#
+#=====
 #authenticator:
 #  class: CASServer::Authenticators::ActiveDirectoryLDAP
 #  ldap:
@@ -171,20 +183,21 @@ database:
 #    filter: (objectClass=person)
 #
 #
-# === Custom Authentication =========================================================
+# === Custom Authentication ====================================================
 #
 # It should be relatively easy to write your own Authenticator class. Have a look
 # at the built-in authenticators in the casserver/authenticators directory. Your
 # authenticator should extend the CASServer::Authenticators::Base class and must
-# implement a validate() method that takes a single hash argument. When the user submits
-# the login form, the username and password they entered is passed to validate()
-# as a hash under :username and :password keys. In the future, this hash
-# might also contain other data such as the domain that the user is logging in to.
+# implement a validate() method that takes a single hash argument. When the user 
+# submits the login form, the username and password they entered is passed to 
+# validate() as a hash under :username and :password keys. In the future, this 
+# hash might also contain other data such as the domain that the user is logging 
+# in to.
 #
-# To use your custom authenticator, specify it's class name and path to the source file 
-# in the authenticator section of the config. Any other parameters you specify in the 
-# authenticator configuration will be passed on to the authenticator and made availabe in
-# the validate() method as an @options hash.
+# To use your custom authenticator, specify it's class name and path to the 
+# source file in the authenticator section of the config. Any other parameters 
+# you specify in the authenticator configuration will be passed on to the 
+# authenticator and made availabe in the validate() method as an @options hash.
 #
 # Example:
 #
@@ -194,11 +207,11 @@ database:
 #  option_a: foo
 #  another_option: yeeha
 #
-# === Multiple Authenticators ======================================================
+# === Multiple Authenticators ==================================================
 #
-# If you need to have more than one source for authentication, such as an LDAP directory
-# and a database, you can use multiple authenticators by making :authenticator an array
-# of authenticators.
+# If you need to have more than one source for authentication, such as an LDAP 
+# directory and a database, you can use multiple authenticators by making 
+# :authenticator an array of authenticators.
 #
 #authenticator:
 #  -
@@ -225,15 +238,16 @@ database:
 #
 
 
-##### LOOK & FEEL ######################################################################
+##### LOOK & FEEL ##############################################################
 
 # Set the path to the theme directory that determines how your CAS pages look. 
 #
-# Custom themes are not well supported yet, but will be in the near future. In the
-# meantime, if you want to create a custom theme, you can create a subdirectory
-# under the CASServer's themes dir (for example, '/usr/lib/ruby/1.8/gems/casserver-xxx/lib/themes',
-# if you installed CASServer on Linux as a gem). A theme is basically just a theme.css
-# file that overrides the themes/cas.css styles along with a collection of image files
+# Custom themes are not well supported yet, but will be in the near future. In 
+# the meantime, if you want to create a custom theme, you can create a 
+# subdirectory under the CASServer's themes dir (for example, 
+# '/usr/lib/ruby/1.8/gems/casserver-xxx/lib/themes', if you installed CASServer 
+# on Linux as a gem). A theme is basically just a theme.css file that overrides 
+# the themes/cas.css styles along with a collection of image files
 # like logo.png and bg.png.
 #
 # By default, we use the 'simple' theme which you can find in themes/simple.
@@ -242,15 +256,18 @@ theme: simple
 # The name of your company/organization. This will show up on the login page.
 organization: CAS
 
-# A short bit of text that shows up on the login page. You can make this blank if you prefer.
+# A short bit of text that shows up on the login page. You can make this blank 
+# if you prefer to have no extra text shown at the bottom of the login box.
 infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-Server</a>
 
 # Custom views file.  Overrides methodes in lib/casserver/views.rb
 #custom_views_file: /path/to/custom/views.rb
 
-##### LOGGING #########################################################################
 
-# Configure general logging. This log is where you'll want to look in case of problems.
+##### LOGGING ##################################################################
+
+# Configure general logging. This log is where you'll want to look in case of 
+# problems.
 #
 # You may want to change the file to something like /var/log/casserver.log
 # Set the level to DEBUG if you want more detailed logging.
@@ -261,39 +278,41 @@ log:
 
 
 # If you want full database logging, uncomment this next section.
-# Every SQL query will be logged here. This is useful for debugging database problems.
+# Every SQL query will be logged here. This is useful for debugging database 
+# problems.
 #
 #db_log:
 #  file: /var/log/casserver_db.log
 
 
-##### OTHER ###########################################################################
+##### OTHER ####################################################################
 
 # You can set various ticket expiry times (specify the value in seconds).
 
-# Expired login and service tickets are no longer usable this many seconds after they 
-# are created. (Defaults to 5 minutes)
+# Expired login and service tickets are no longer usable this many seconds after 
+# they are created. (Defaults to 5 minutes)
 
 #login_ticket_expiry: 300
 #service_ticket_expiry: 300
 
-# Proxy- and ticket-granting tickets do not expire -- normally they are made invalid only 
-# when the user logs out. But the server must periodically delete them to prevent buildup of
-# stale data. PGTs and TGTs will be deleted during server startup if they are this many
-# seconds old. (Defaults to 48 hours)
+# Proxy- and ticket-granting tickets do not expire -- normally they are made 
+# invalid only when the user logs out. But the server must periodically delete 
+# them to prevent buildup of stale data. PGTs and TGTs will be deleted during 
+# server startup if they are this many seconds old. (Defaults to 48 hours)
 
 #proxy_granting_ticket_expiry: 172800
 #ticket_granting_ticket_expiry: 172800
 
-# If you would prefer that ticket-granting ticket expiry be enforced (in effect limiting
-# the maximum length of a session), you can set expire_sessions to true.
+# If you would prefer that ticket-granting ticket expiry be enforced (in effect 
+# limiting the maximum length of a session), you can set expire_sessions to true.
 
-# expire_sessions: false
+#expire_sessions: false
 
 
-# If you want the usernames entered on the login page to be automatically downcased 
-# (converted to lowercase), enable the following option. When this option is set to
-# true, if the user enters "JSmith" as their username, the system will automatically
+# If you want the usernames entered on the login page to be automatically 
+# downcased (converted to lowercase), enable the following option. When this 
+# option is set to true, if the user enters "JSmith" as their username, the 
+# system will automatically
 # convert this to "jsmith".
 
-# downcase_username: true
+#downcase_username: true
