@@ -216,6 +216,40 @@ module CASServer::CAS
     [pgt, error]
   end
   
+  # Takes an existing ServiceTicket object (presumably pulled from the database)
+  # and sends a POST with logout information to the service that the ticket
+  # was generated for.
+  #
+  # This makes possible the "single sign-out" functionality added in CAS 3.1.
+  # See http://www.ja-sig.org/wiki/display/CASUM/Single+Sign+Out
+  def send_logout_notification_for_service_ticket(st)
+    uri = URI.parse(st.service)
+    http = Net::HTTP.new(uri.host,uri.port)
+    #http.use_ssl = true if uri.scheme = 'https'
+    
+    http.start do |conn|
+      path = uri.path || '/'
+      
+      time = Time.now
+      rand = CASServer::Utils.random_string
+      
+      data = %{<samlp:LogoutRequest ID="#{rand}" Version="2.0" IssueInstant="#{time.rfc2822}">
+<saml:NameID></saml:NameID>
+<samlp:SessionIndex>#{st.ticket}</samlp:SessionIndex>
+</samlp:LogoutRequest>}
+      
+      response = conn.request_post(path, data)
+      
+      if response.code.to_i == 200
+        $LOG.info "Logout notification successfully posted to #{st.service.inspect}."
+        return true
+      else
+        $LOG.error "Service #{st.service.inspect} responed to logout notification with code '#{response.code}'."
+        return false
+      end
+    end
+  end
+  
   def service_uri_with_ticket(service, st)
     raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Models::ServiceTicket
     

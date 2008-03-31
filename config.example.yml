@@ -285,6 +285,26 @@ log:
 #  file: /var/log/casserver_db.log
 
 
+##### SINGLE SIGN-OUT ##########################################################
+
+# When a user logs in to a CAS-enabled client application, that application
+# generally opens its own local user session. When the user then logs out
+# through the CAS server, each of the CAS-enabled client applications need
+# to be notified so that they can close their own local sessions for that user.
+#
+# Up until recently this was not possible within CAS. However, a method for
+# performing this notification was recently added to the protocol (in CAS 3.1). 
+# This works exactly as described above -- when the user logs out, the CAS 
+# server individually contacts each client service and notifies it of the 
+# logout. Currently not all client applications support this, so this
+# behaviour is disabled by default. To enable it, uncomment the following
+# configuration line. Note that currently it is not possible to enable
+# or disable single-sign-out on a per-service basis, but this functionality
+# is planned for a future release.
+
+#enable_single_sign_out: true
+
+
 ##### OTHER ####################################################################
 
 # You can set various ticket expiry times (specify the value in seconds).

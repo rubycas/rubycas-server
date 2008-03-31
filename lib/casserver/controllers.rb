@@ -147,9 +147,14 @@ module CASServer::Controllers
           expiry_info = " It will not expire."
         end
         
-        # TODO: Set expiry time for the cookie when expire_sessions is true. Unfortunately there doesn't
-        #        seem to be an easy way to set cookie expire times in Camping :(
-        @cookies[:tgt] = tgt.to_s
+        if CASServer::Conf.expire_sessions
+          @cookies[:tgt] = {
+            :value => tgt.to_s, 
+            :expires => Time.now + CASServer::Conf.ticket_granting_ticket_expiry
+          }
+        else
+          @cookies[:tgt] = tgt.to_s
+        end
         
         $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'. #{expiry_info}")
                 
@@ -200,16 +205,28 @@ module CASServer::Controllers
       @cookies.delete :tgt
       
       if tgt
-        pgts = CASServer::Models::ProxyGrantingTicket.find(:all, 
-          :conditions => ["username = ?", tgt.username],
-          :include => :service_ticket)
-        pgts.each do |pgt|
-          $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
-          pgt.destroy
-        end
-        
-        $LOG.debug("Deleting Ticket-Granting Ticket '#{tgt}' for user '#{tgt.username}'")
-        tgt.destroy
+        CASServer::Models::TicketGrantingTicket.transaction do
+          pgts = CASServer::Models::ProxyGrantingTicket.find(:all, 
+            :conditions => ["username = ?", tgt.username],
+            :include => :service_ticket)
+          pgts.each do |pgt|
+            $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
+            pgt.destroy
+          end
+          
+          $LOG.debug("Deleting Ticket-Granting Ticket '#{tgt}' for user '#{tgt.username}'")
+          tgt.destroy
+          
+          if CASServer::Conf.enable_single_sign_out
+            CASServer::Models::ServiceTicket.find_all_by_username(tgt.username).each do |st|
+              send_logout_notification_for_service_ticket(st)
+              # TODO: Maybe we should so something else if send_logout_notification_for_service_ticket fails? 
+              #       Note that the method returns false if the POST results in a non-200 HTTP response.
+              $LOG.debug "Deleting #{st.class} #{st.ticket.inspect}."
+              st.destroy
+          end
+          end
+        end  
         
         $LOG.info("User '#{tgt.username}' logged out.")
       else
