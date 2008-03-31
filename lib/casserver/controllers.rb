@@ -307,10 +307,6 @@ module CASServer::Controllers
       @success = t && !@error
       
       if @success
-        
-      end
-      
-      if @success
         @username = t.username
         
         if t.kind_of? CASServer::Models::ProxyTicket
