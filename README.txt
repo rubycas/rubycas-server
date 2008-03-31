@@ -1,6 +1,6 @@
 = RubyCAS-Server
 
-*Copyright*:: 2007 Urbacon Ltd.
+*Copyright*:: 2008 Urbacon Ltd.
 *Authors*::   Matt Zukowski <matt at roughest dot net>, Jason Zylks
 *Homepage*::  http://rubycas-server.googlecode.com
 
