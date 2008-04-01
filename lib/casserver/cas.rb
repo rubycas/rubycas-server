@@ -30,12 +30,13 @@ module CASServer::CAS
     tgt
   end
   
-  def generate_service_ticket(service, username)
+  def generate_service_ticket(service, username, tgt)
     # 3.1 (service ticket)
     st = ServiceTicket.new
     st.ticket = "ST-" + CASServer::Utils.random_string
     st.service = service
     st.username = username
+    st.ticket_granting_ticket = tgt
     st.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
     st.save!
     $LOG.debug("Generated service ticket '#{st.ticket}' for service '#{st.service}'" +
@@ -269,6 +270,15 @@ module CASServer::CAS
     
     service_with_ticket = service + query_separator + "ticket=" + st.ticket
     service_with_ticket
+  end
+  
+  # Strips the ticket=XXXXX parameter from a service. Some clients incorrectly
+  # submit their service URI along with a ticket which can confuse the CAS
+  # client.
+  def strip_ticket_from_service_uri(service)
+    return service unless service.kind_of? String
+    url = service.gsub(/ticket=[^&]*/, '')
+    url.gsub(/\?$/, '')
   end
   
 end

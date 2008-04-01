@@ -17,7 +17,7 @@ module CASServer::Controllers
       headers['Expires'] = (Time.now - 1.year).rfc2822
       
       # optional params
-      @service = @input['service']
+      @service = strip_ticket_from_service_uri(@input['service'])
       @renew = @input['renew']
       @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
       
@@ -26,13 +26,19 @@ module CASServer::Controllers
       end
       
       if tgt and !tgt_error
-        @message = {:type => 'notice', :message => %{You are currently logged in as "#{tgt.username}". If this is not you, please log in below.}}
+        @message = {:type => 'notice', 
+          :message => %{You are currently logged in as "#{tgt.username}". If this is not you, please log in below.}}
+      end
+
+      if @input['redirection_loop_intercepted']
+        @message = {:type => 'mistake', 
+          :message => %{The client and server are unable to negotiate authentication. Please try logging in again later.}}
       end
       
       begin
         if @service 
           if !@renew && tgt && !tgt_error
-            st = generate_service_ticket(@service, tgt.username)
+            st = generate_service_ticket(@service, tgt.username, tgt)
             service_with_ticket = service_uri_with_ticket(@service, st)
             $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
             return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
@@ -42,11 +48,13 @@ module CASServer::Controllers
           end
         elsif @gateway
             $LOG.error("This is a gateway request but no service parameter was given!")
-            @message = {:type => 'mistake', :message => "The server cannot fulfill this gateway request because no service parameter was given."}
+            @message = {:type => 'mistake', 
+              :message => "The server cannot fulfill this gateway request because no service parameter was given."}
         end
-      rescue # FIXME: shouldn't this only rescue URI::InvalidURIError?
+      rescue URI::InvalidURIError
         $LOG.error("The service '#{@service}' is not a valid URI!")
-        @message = {:type => 'mistake', :message => "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."}
+        @message = {:type => 'mistake', 
+          :message => "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."}
       end
       
       lt = generate_login_ticket
@@ -87,7 +95,12 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # 2.2.1 (optional)
-      @service = @input['service']
+      @service = strip_ticket_from_service_uri(@input['service'])
+      
+      # FIXME: This is a potential security/phishing hole! Maybe @warn should 
+      #        be the id of a registered error string, rather than blindly
+      #        printing whatever message the client wants printed... although
+      #        I can't figure out if this is even used at all anymore. 
       @warn = @input['warn']
       
       # 2.2.2 (required)
@@ -156,13 +169,13 @@ module CASServer::Controllers
           @cookies[:tgt] = tgt.to_s
         end
         
-        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt]}' granted to '#{@username}'. #{expiry_info}")
+        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt].inspect}' granted to '#{@username.inspect}'. #{expiry_info}")
                 
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
           @message = {:type => 'confirmation', :message => "You have successfully logged in."}
         else
-          @st = generate_service_ticket(@service, @username)
+          @st = generate_service_ticket(@service, @username, tgt)
           begin
             service_with_ticket = service_uri_with_ticket(@service, @st)
             
@@ -195,7 +208,7 @@ module CASServer::Controllers
       # "logout" page, we take the user back to the login page with a "you have been logged out"
       # message, allowing for an opportunity to immediately log back in. This makes it
       # easier for the user to log out and log in as someone else.
-      @service = @input['service'] || @input['destination']
+      @service = strip_ticket_from_service_uri(@input['service'] || @input['destination'])
       @continue_url = @input['url']
       
       @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
@@ -214,18 +227,19 @@ module CASServer::Controllers
             pgt.destroy
           end
           
-          $LOG.debug("Deleting Ticket-Granting Ticket '#{tgt}' for user '#{tgt.username}'")
-          tgt.destroy
-          
           if CASServer::Conf.enable_single_sign_out
-            CASServer::Models::ServiceTicket.find_all_by_username(tgt.username).each do |st|
+            $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
+            tgt.service_tickets.each do |st|
               send_logout_notification_for_service_ticket(st)
-              # TODO: Maybe we should so something else if send_logout_notification_for_service_ticket fails? 
+              # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails? 
               #       Note that the method returns false if the POST results in a non-200 HTTP response.
               $LOG.debug "Deleting #{st.class} #{st.ticket.inspect}."
               st.destroy
+            end
           end
-          end
+          
+          $LOG.debug("Deleting Ticket-Granting Ticket '#{tgt}' for user '#{tgt.username}'")
+          tgt.destroy
         end  
         
         $LOG.info("User '#{tgt.username}' logged out.")
@@ -259,7 +273,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # required
-      @service = @input['service']
+      @service = strip_ticket_from_service_uri(@input['service'])
       @ticket = @input['ticket']
       # optional
       @renew = @input['renew']
@@ -282,7 +296,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # required
-      @service = @input['service']
+      @service =strip_ticket_from_service_uri(@input['service'])
       @ticket = @input['ticket']
       # optional
       @pgt_url = @input['pgtUrl']
@@ -312,7 +326,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # required
-      @service = @input['service']
+      @service = strip_ticket_from_service_uri(@input['service'])
       @ticket = @input['ticket']
       # optional
       @pgt_url = @input['pgtUrl']
