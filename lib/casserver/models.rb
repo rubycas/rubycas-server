@@ -36,6 +36,8 @@ module CASServer::Models
     set_table_name 'casserver_st'
     include Consumable
     
+    belongs_to :ticket_granting_ticket, :foreign_key => :tgt_id
+    
     def matches_service?(service)
       # Remove CAS-related parameters from the service URL, since they really shoudln't
       # be there (some misbehaving clients include them in the service URL).
@@ -56,6 +58,8 @@ module CASServer::Models
   
   class TicketGrantingTicket < Ticket
     set_table_name 'casserver_tgt'
+    
+    has_many :service_tickets, :foreign_key => :tgt_id
   end
   
   class ProxyGrantingTicket < Ticket
@@ -185,6 +189,16 @@ module CASServer::Models
         drop_table :casserver_st
         drop_table :casserver_lt
       end
+    end
+  end
+  
+  class AddTgtToSt < V 0.7
+    def self.up
+      add_column :casserver_st, :tgt_id, :integer, :null => true
+    end
+    
+    def self.down
+      remove_column :casserver_st, :tgt_id, :integer
     end
   end
 end
