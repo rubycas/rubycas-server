@@ -21,7 +21,7 @@ HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DEPS = [
   ['activesupport', '>= 1.4.0'],
   ['activerecord', '>=1.15.3'],
-  ['picnic', '>=0.6.3.68']
+  ['picnic', '>=0.6.3.72']
 ]
 
 
