@@ -39,16 +39,8 @@ module CASServer::Models
     belongs_to :ticket_granting_ticket, :foreign_key => :tgt_id
     
     def matches_service?(service)
-      # Remove CAS-related parameters from the service URL, since they really shoudln't
-      # be there (some misbehaving clients include them in the service URL).
-      ['service', 'ticket', 'gateway', 'renew'].each do |p|
-        service.gsub!(Regexp.new("#{p}=[^&]*"), '')
-      end
-      
-      # We ignore the trailing slash and ? in URLs, since 
-      # "http://www.google.com/" and "http://www.google.com" are almost
-      # certainly the same service.
-      self.service.gsub(/[\/\?]$/, '') == service.gsub(/[\/\?]$/, '')
+      CASServer::CAS.clean_service_url(self.service) == 
+        CASServer::CAS.clean_service_url(service)
     end
   end
   

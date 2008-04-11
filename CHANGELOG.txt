@@ -6,10 +6,14 @@
   ticket cookies are set with an expiry datetime, so that the SSO session
   is effectively terminated once the ticket_granting_ticket_expiry period
   is reached.
-* If the 'service' URI given to the server in any request has a 'ticket'
-  parameter, the ticket will now be automatically stripped. This is to
-  avert any possible issues raised by misbehaving CAS clients (the CAS ticket
-  should never be part of the service URI).
+* Service URIs are now automatically normalized. For example, if the service 
+  URI given to the server has a 'ticket' parameter, the ticket will now be 
+  automatically stripped. This is to avert any possible issues raised by 
+  misbehaving CAS clients (the CAS ticket should never be part of the service 
+  URI). Same goes for other CAS-related parameters like 'service', 'renew',
+  and 'gateway'. Additionally, the trailing '/' and '?' characters are
+  automatically stripped from URLs, since, for example, "http://google.com/"
+  is almost certainly equivalent to "http://google.com".
 
 === 0.6.0 :: 2008-03-28
 

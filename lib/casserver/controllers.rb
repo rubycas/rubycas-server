@@ -17,7 +17,7 @@ module CASServer::Controllers
       headers['Expires'] = (Time.now - 1.year).rfc2822
       
       # optional params
-      @service = strip_ticket_from_service_uri(@input['service'])
+      @service = clean_service_url(@input['service'])
       @renew = @input['renew']
       @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
       
@@ -95,7 +95,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # 2.2.1 (optional)
-      @service = strip_ticket_from_service_uri(@input['service'])
+      @service = clean_service_url(@input['service'])
       
       # FIXME: This is a potential security/phishing hole! Maybe @warn should 
       #        be the id of a registered error string, rather than blindly
@@ -208,7 +208,7 @@ module CASServer::Controllers
       # "logout" page, we take the user back to the login page with a "you have been logged out"
       # message, allowing for an opportunity to immediately log back in. This makes it
       # easier for the user to log out and log in as someone else.
-      @service = strip_ticket_from_service_uri(@input['service'] || @input['destination'])
+      @service = clean_service_url(@input['service'] || @input['destination'])
       @continue_url = @input['url']
       
       @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
@@ -273,7 +273,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # required
-      @service = strip_ticket_from_service_uri(@input['service'])
+      @service = clean_service_url(@input['service'])
       @ticket = @input['ticket']
       # optional
       @renew = @input['renew']
@@ -296,7 +296,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # required
-      @service =strip_ticket_from_service_uri(@input['service'])
+      @service = clean_service_url(@input['service'])
       @ticket = @input['ticket']
       # optional
       @pgt_url = @input['pgtUrl']
@@ -326,7 +326,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       
       # required
-      @service = strip_ticket_from_service_uri(@input['service'])
+      @service = clean_service_url(@input['service'])
       @ticket = @input['ticket']
       # optional
       @pgt_url = @input['pgtUrl']

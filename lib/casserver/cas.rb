@@ -163,12 +163,12 @@ module CASServer::CAS
       elsif Time.now - st.created_on > CASServer::Conf.service_ticket_expiry
         error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has expired.")
         $LOG.warn("Ticket '#{ticket}' has expired.")
-      elsif st.matches_service? service
-        $LOG.info("Ticket '#{ticket}' for service '#{service}' for user '#{st.username}' successfully validated.")
-      else
+      elsif !st.matches_service? service
         error = Error.new("INVALID_SERVICE", "The ticket '#{ticket}' belonging to user '#{st.username}' is valid,"+
           " but the requested service '#{service}' does not match the service '#{st.service}' associated with this ticket.")
         $LOG.warn("#{error.code} - #{error.message}")
+      else
+        $LOG.info("Ticket '#{ticket}' for service '#{service}' for user '#{st.username}' successfully validated.")
       end
     else
       error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' not recognized.")
@@ -272,13 +272,26 @@ module CASServer::CAS
     service_with_ticket
   end
   
-  # Strips the ticket=XXXXX parameter from a service. Some clients incorrectly
-  # submit their service URI along with a ticket which can confuse the CAS
-  # client.
-  def strip_ticket_from_service_uri(service)
-    return service unless service.kind_of? String
-    url = service.gsub(/ticket=[^&]*/, '')
-    url.gsub(/\?$/, '')
+  # Strips CAS-related parameters from a service URL and normalizes it,
+  # removing trailing / and ?.
+  #
+  # For example, "http://google.com?ticket=12345" will be returned as
+  # "http://google.com". Also, "http://google.com/" would be returned as
+  # "http://google.com".
+  #
+  # Note that only the first occurance of each CAS-related parameter is
+  # removed, so that "http://google.com?ticket=12345&ticket=abcd" would be
+  # returned as "http://google.com?ticket=abcd".
+  def clean_service_url(dirty_service)
+    clean_service = dirty_service.dup
+    ['service', 'ticket', 'gateway', 'renew'].each do |p|
+      clean_service.sub(Regexp.new("#{p}=[^&]*"), '')
+    end
+    
+    clean_service.gsub(/[\/\?]$/, '')
+    
+    return clean_service
   end
+  module_function :clean_service_url
   
 end
