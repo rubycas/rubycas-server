@@ -285,10 +285,10 @@ module CASServer::CAS
   def clean_service_url(dirty_service)
     clean_service = dirty_service.dup
     ['service', 'ticket', 'gateway', 'renew'].each do |p|
-      clean_service.sub(Regexp.new("#{p}=[^&]*"), '')
+      clean_service.sub!(Regexp.new("#{p}=[^&]*"), '')
     end
     
-    clean_service.gsub(/[\/\?]$/, '')
+    clean_service.gsub!(/[\/\?]$/, '')
     
     return clean_service
   end
