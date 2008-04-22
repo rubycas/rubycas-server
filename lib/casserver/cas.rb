@@ -283,6 +283,7 @@ module CASServer::CAS
   # removed, so that "http://google.com?ticket=12345&ticket=abcd" would be
   # returned as "http://google.com?ticket=abcd".
   def clean_service_url(dirty_service)
+    return dirty_service if dirty_service.blank?
     clean_service = dirty_service.dup
     ['service', 'ticket', 'gateway', 'renew'].each do |p|
       clean_service.sub!(Regexp.new("#{p}=[^&]*"), '')
