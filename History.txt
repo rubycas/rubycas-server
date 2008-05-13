@@ -14,6 +14,10 @@
   ticket cookies are set with an expiry datetime, so that the SSO session
   is effectively terminated once the ticket_granting_ticket_expiry period
   is reached.
+* If present, the HTTP_X_FORWARDED_FOR header is used for recording the
+  client's address. This is useful when the server is running behind a reverse
+  proxy, but it should not be considered authoritative since it can be
+  easily spoofed.
 
 === 0.6.0 :: 2008-03-28
 

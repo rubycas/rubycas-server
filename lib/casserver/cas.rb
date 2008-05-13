@@ -11,7 +11,7 @@ module CASServer::CAS
     # 3.5 (login ticket)
     lt = LoginTicket.new
     lt.ticket = "LT-" + CASServer::Utils.random_string
-    lt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+    lt.client_hostname = env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
     lt.save!
     $LOG.debug("Generated login ticket '#{lt.ticket}' for client" +
       " at '#{lt.client_hostname}'")
@@ -23,7 +23,7 @@ module CASServer::CAS
     tgt = TicketGrantingTicket.new
     tgt.ticket = "TGC-" + CASServer::Utils.random_string
     tgt.username = username
-    tgt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+    tgt.client_hostname = env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
     tgt.save!
     $LOG.debug("Generated ticket granting ticket '#{tgt.ticket}' for user" +
       " '#{tgt.username}' at '#{tgt.client_hostname}'")
@@ -37,7 +37,7 @@ module CASServer::CAS
     st.service = service
     st.username = username
     st.ticket_granting_ticket = tgt
-    st.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+    st.client_hostname = env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
     st.save!
     $LOG.debug("Generated service ticket '#{st.ticket}' for service '#{st.service}'" +
       " for user '#{st.username}' at '#{st.client_hostname}'")
@@ -51,7 +51,7 @@ module CASServer::CAS
     pt.service = target_service
     pt.username = pgt.service_ticket.username
     pt.proxy_granting_ticket_id = pgt.id
-    pt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+    pt.client_hostname = env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
     pt.save!
     $LOG.debug("Generated proxy ticket '#{pt.ticket}' for target service '#{pt.service}'" +
       " for user '#{pt.username}' at '#{pt.client_hostname}' using proxy-granting" +
@@ -78,7 +78,7 @@ module CASServer::CAS
       pgt.ticket = "PGT-" + CASServer::Utils.random_string(60)
       pgt.iou = "PGTIOU-" + CASServer::Utils.random_string(57)
       pgt.service_ticket_id = st.id
-      pgt.client_hostname = env['REMOTE_HOST'] || env['REMOTE_ADDR']
+      pgt.client_hostname = env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
       
       # FIXME: The CAS protocol spec says to use 'pgt' as the parameter, but in practice
       #         the JA-SIG and Yale server implementations use pgtId. We'll go with the

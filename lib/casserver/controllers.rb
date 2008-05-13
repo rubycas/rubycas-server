@@ -397,7 +397,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       lt = generate_login_ticket
       
-      $LOG.debug("Dispensing login ticket #{lt} to host #{(env['REMOTE_HOST'] || env['REMOTE_ADDR']).inspect}")
+      $LOG.debug("Dispensing login ticket #{lt} to host #{(env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']).inspect}")
       
       @lt = lt.ticket
       
