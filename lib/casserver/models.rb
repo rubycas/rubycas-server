@@ -193,4 +193,14 @@ module CASServer::Models
       remove_column :casserver_st, :tgt_id, :integer
     end
   end
+  
+  class ChangeServiceToText < V 0.71
+    def self.up
+      change_column :casserver_st, :service, :text
+    end
+    
+    def self.down
+      change_column :casserver_st, :service, :string
+    end
+  end
 end

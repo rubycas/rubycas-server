@@ -18,6 +18,9 @@
   client's address. This is useful when the server is running behind a reverse
   proxy, but it should not be considered authoritative since it can be
   easily spoofed.
+* The 'service' field in the 'casserver_st' table has been changed from
+  VARCHAR(255) to TEXT in order to accomodate service URIs longer than 255
+  characters (fixes issue #46).
 
 === 0.6.0 :: 2008-03-28
 
