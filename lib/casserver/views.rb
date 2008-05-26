@@ -3,7 +3,9 @@
 
 # need auto_validation off to render CAS responses and to use the autocomplete='off' property on password field
 Markaby::Builder.set(:auto_validation, false)
-Markaby::Builder.set(:indent, 2)
+
+# disabled XML indentation because it was causing problems with mod_auth_cas
+#Markaby::Builder.set(:indent, 2) 
 
 module CASServer::Views
 
