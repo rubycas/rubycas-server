@@ -21,6 +21,10 @@
 * The 'service' field in the 'casserver_st' table has been changed from
   VARCHAR(255) to TEXT in order to accomodate service URIs longer than 255
   characters (fixes issue #46).
+* The CAS XML responses are no longer whitespace-formatted (i.e. Markaby's
+  auto-indentation has been turned off). Apparently the whitespace was
+  causing problems with mod_auth_cas. See:
+  http://groups.google.com/group/rubycas-server/browse_thread/thread/e482fe09999b73d3
 
 === 0.6.0 :: 2008-03-28
 
