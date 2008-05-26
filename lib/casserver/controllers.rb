@@ -138,7 +138,12 @@ module CASServer::Controllers
       credentials_are_valid = false
       begin
         $AUTH.each do |auth|
-          credentials_are_valid = auth.validate(:username => @username, :password => @password, :service => @service)
+          credentials_are_valid = auth.validate(
+            :username => @username, 
+            :password => @password, 
+            :service => @service,
+            :request => env
+          )
           break if credentials_are_valid
         end
       rescue CASServer::AuthenticatorError => e

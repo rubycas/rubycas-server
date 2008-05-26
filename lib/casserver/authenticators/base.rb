@@ -19,6 +19,7 @@ module CASServer
         @username = credentials[:username]
         @password = credentials[:password]
         @service = credentials[:service]
+        @request = credentials[:request]
       end
     end
   end
