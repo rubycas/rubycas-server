@@ -25,6 +25,9 @@
   auto-indentation has been turned off). Apparently the whitespace was
   causing problems with mod_auth_cas. See:
   http://groups.google.com/group/rubycas-server/browse_thread/thread/e482fe09999b73d3
+* Fixed logout action to work with ActiveRecord 2.1 (eager loading behaviour
+  was changed upstream forcing a change to the way we look for ProxyGrantingTickets
+  to delete on logout).
 
 === 0.6.0 :: 2008-03-28
 

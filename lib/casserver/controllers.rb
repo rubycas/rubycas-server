@@ -225,8 +225,8 @@ module CASServer::Controllers
       if tgt
         CASServer::Models::TicketGrantingTicket.transaction do
           pgts = CASServer::Models::ProxyGrantingTicket.find(:all, 
-            :conditions => ["username = ?", tgt.username],
-            :include => :service_ticket)
+            :conditions => [CASServer::Models::Base.connection.quote_table_name(CASServer::Models::ServiceTicket.table_name)+".username = ?", tgt.username],
+            :include => :service_ticket) 
           pgts.each do |pgt|
             $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
             pgt.destroy
