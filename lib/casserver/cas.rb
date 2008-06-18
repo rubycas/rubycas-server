@@ -18,15 +18,23 @@ module CASServer::CAS
     lt
   end
   
-  def generate_ticket_granting_ticket(username)
+  # Creates a TicketGrantingTicket for the given username. This is done when the user logs in
+  # for the first time to establish their SSO session (after their credentials have been validated).
+  #
+  # The optional 'extra_attributes' parameter takes a hash of additional attributes
+  # that will be sent along with the username in the CAS response to subsequent 
+  # validation requests from clients.
+  def generate_ticket_granting_ticket(username, extra_attributes = {})
     # 3.6 (ticket granting cookie/ticket)
     tgt = TicketGrantingTicket.new
     tgt.ticket = "TGC-" + CASServer::Utils.random_string
     tgt.username = username
+    tgt.extra_attributes = extra_attributes
     tgt.client_hostname = env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
     tgt.save!
     $LOG.debug("Generated ticket granting ticket '#{tgt.ticket}' for user" +
-      " '#{tgt.username}' at '#{tgt.client_hostname}'")
+      " '#{tgt.username}' at '#{tgt.client_hostname}'" + 
+      (extra_attributes.blank? ? "" : " with extra attributes #{extra_attributes.inspect}"))
     tgt
   end
   

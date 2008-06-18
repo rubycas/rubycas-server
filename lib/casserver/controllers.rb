@@ -136,6 +136,7 @@ module CASServer::Controllers
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
       
       credentials_are_valid = false
+      extra_attributes = {}
       begin
         $AUTH.each do |auth|
           credentials_are_valid = auth.validate(
@@ -144,7 +145,10 @@ module CASServer::Controllers
             :service => @service,
             :request => env
           )
-          break if credentials_are_valid
+          if credentials_are_valid
+            extra_attributes.merge!(auth.extra_attributes)
+            break 
+          end
         end
       rescue CASServer::AuthenticatorError => e
         $LOG.error(e)
@@ -154,9 +158,10 @@ module CASServer::Controllers
       
       if credentials_are_valid
         $LOG.info("Credentials for username '#{@username}' successfully validated")
+        $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
         
         # 3.6 (ticket-granting cookie)
-        tgt = generate_ticket_granting_ticket(@username)
+        tgt = generate_ticket_granting_ticket(@username, extra_attributes)
         
         if CASServer::Conf.expire_sessions
           expires = CASServer::Conf.ticket_granting_ticket_expiry.to_i.from_now
@@ -316,6 +321,7 @@ module CASServer::Controllers
           pgt = generate_proxy_granting_ticket(@pgt_url, st)
           @pgtiou = pgt.iou if pgt
         end
+        @extra_attributes = st.ticket_granting_ticket.extra_attributes || {}
       end
       
       render :service_validate
@@ -353,6 +359,8 @@ module CASServer::Controllers
           pgt = generate_proxy_granting_ticket(@pgt_url, t)
           @pgtiou = pgt.iou if pgt
         end
+        
+        @extra_attributes = t.ticket_granting_ticket.extra_attributes || {}
       end
 
      render :proxy_validate

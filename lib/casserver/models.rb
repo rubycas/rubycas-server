@@ -51,6 +51,8 @@ module CASServer::Models
   class TicketGrantingTicket < Ticket
     set_table_name 'casserver_tgt'
     
+    serialize :extra_attributes
+    
     has_many :service_tickets, :foreign_key => :tgt_id
   end
   
@@ -201,6 +203,16 @@ module CASServer::Models
     
     def self.down
       change_column :casserver_st, :service, :string
+    end
+  end
+  
+  class AddExtraAttributes < V 0.72
+    def self.up
+      add_column :casserver_tgt, :extra_attributes, :text
+    end
+    
+    def self.down
+      remove_column :casserver_tgt, :extra_attributes
     end
   end
 end

@@ -145,6 +145,9 @@ module CASServer::Views
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username.to_s.to_xs}
+          @extra_attributes.each do |key, value|
+            tag!(key) {value}
+          end
           if @pgtiou
             tag!("cas:proxyGrantingTicket") {@pgtiou.to_s.to_xs}
           end
@@ -164,6 +167,9 @@ module CASServer::Views
       tag!("cas:serviceResponse", 'xmlns:cas' => "http://www.yale.edu/tp/cas") do
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username.to_s.to_xs}
+          @extra_attributes.each do |key, value|
+            tag!(key) {value}
+          end
           if @pgtiou
             tag!("cas:proxyGrantingTicket") {@pgtiou.to_s.to_xs}
           end
