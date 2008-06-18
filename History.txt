@@ -2,6 +2,10 @@
 
 * Implemented single-sign-out functionality as specified in CAS 3.1.  See
   http://www.ja-sig.org/wiki/display/CASUM/Single+Sign+Out.
+* It is now possible to configure Authenticators to return extra attributes
+  to CAS clients alongside the username. For an example of how to do this see
+  the included SQL authenticator. Also have a look at:
+  http://groups.google.com/group/rubycas-server/browse_thread/thread/5eade3793cb590e9
 * Service URIs are now automatically normalized. For example, if the service 
   URI given to the server has a 'ticket' parameter, the ticket will now be 
   automatically stripped. This is to avert any possible issues raised by 
