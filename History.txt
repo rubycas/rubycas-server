@@ -28,6 +28,8 @@
 * Fixed logout action to work with ActiveRecord 2.1 (eager loading behaviour
   was changed upstream forcing a change to the way we look for ProxyGrantingTickets
   to delete on logout).
+* Added an MD5-password version of the SQL authenticator for Drupal and any other
+  database that stores its passwords in hashed form (thanks malcolmm).
 
 === 0.6.0 :: 2008-03-28
 

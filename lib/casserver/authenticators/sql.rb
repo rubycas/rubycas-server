@@ -7,6 +7,29 @@ rescue LoadError
   require 'active_record'
 end
 
+# Authenticates against a plain SQL table. 
+# 
+# This assumes that all of your users are stored in a table that has a 'username' 
+# column and a 'password' column. When the user logs in, CAS conects to the 
+# database and looks for a matching username/password in the users table. If a 
+# matching username and password is found, authentication is successful.
+#
+# Any database backend supported by ActiveRecord can be used.
+# 
+# Config example:
+#
+#   authenticator:
+#     class: CASServer::Authenticators::SQL
+#     database:
+#       adapter: mysql
+#       database: some_database_with_users_table
+#       username: root
+#       password: 
+#       server: localhost
+#     user_table: users
+#     username_column: username
+#     password_column: password
+#
 class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
 
   def validate(credentials)

@@ -119,6 +119,9 @@ database:
 # If you prefer to have your passwords stored in an encrypted form, have a 
 # look at the SQLEncrypted authenticator: 
 # http://code.google.com/p/rubycas-server/wiki/UsingTheSQLEncryptedAuthenticator
+#
+# If your users table stores passwords with MD5 hashing (for example as with
+# Drupal) try using the SQLMd5 version of the SQL authenticator.
 # 
 # Example:
 #
