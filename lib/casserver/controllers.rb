@@ -348,6 +348,7 @@ module CASServer::Controllers
       t, @error = validate_proxy_ticket(@service, @ticket)      
       @success = t && !@error
       
+      @extra_attributes = {}
       if @success
         @username = t.username
         
