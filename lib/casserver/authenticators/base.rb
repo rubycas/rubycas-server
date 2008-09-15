@@ -12,6 +12,7 @@ module CASServer
       def configure(options)
         raise ArgumentError, "options must be a HashWithIndifferentAccess" unless options.kind_of? HashWithIndifferentAccess
         @options = options.dup
+        @extra_attributes = {}
       end
       
       def extra_attributes
