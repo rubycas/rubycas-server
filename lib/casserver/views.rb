@@ -146,8 +146,7 @@ module CASServer::Views
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username.to_s.to_xs}
           @extra_attributes.each do |key, value|
-            v = (v.kind_of?(String) || v.kind_of?(Numeric)) ? v.to_yaml : v 
-            tag!(key) {v}
+            tag!(key) {serialize_extra_attribute(value)}
           end
           if @pgtiou
             tag!("cas:proxyGrantingTicket") {@pgtiou.to_s.to_xs}
@@ -169,7 +168,7 @@ module CASServer::Views
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username.to_s.to_xs}
           @extra_attributes.each do |key, value|
-            tag!(key) {value}
+            tag!(key) {serialize_extra_attribute(value)}
           end
           if @pgtiou
             tag!("cas:proxyGrantingTicket") {@pgtiou.to_s.to_xs}
@@ -210,25 +209,34 @@ module CASServer::Views
   end
   
   protected
-  def themes_dir
-    File.dirname(File.expand_path(__FILE__))+'../themes'
-  end
-  module_function :themes_dir
-  
-  def current_theme
-    CASServer::Conf.theme || "simple"
-  end
-  module_function :current_theme
-  
-  def organization
-    CASServer::Conf.organization || ""
-  end
-  module_function :organization
-  
-  def infoline
-    CASServer::Conf.infoline || ""
-  end
-  module_function :infoline
+    def themes_dir
+      File.dirname(File.expand_path(__FILE__))+'../themes'
+    end
+    module_function :themes_dir
+    
+    def current_theme
+      CASServer::Conf.theme || "simple"
+    end
+    module_function :current_theme
+    
+    def organization
+      CASServer::Conf.organization || ""
+    end
+    module_function :organization
+    
+    def infoline
+      CASServer::Conf.infoline || ""
+    end
+    module_function :infoline
+    
+    def serialize_extra_attribute(value)
+      if value.kind_of?(String) || value.kind_of?(Numeric)
+        value
+      else
+        "<![CDATA[#{value.to_yaml}]]>"
+      end
+    end
+    module_function :serialize_extra_attribute
 end
 
 if CASServer::Conf.custom_views_file
