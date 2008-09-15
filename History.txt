@@ -6,6 +6,8 @@
   to CAS clients alongside the username. For an example of how to do this see
   the included SQL authenticator. Also have a look at:
   http://groups.google.com/group/rubycas-server/browse_thread/thread/5eade3793cb590e9
+  Note that extra attributes of type other than String or Numeric are serialized 
+  into YAML format before being sent along to the client. 
 * Service URIs are now automatically normalized. For example, if the service 
   URI given to the server has a 'ticket' parameter, the ticket will now be 
   automatically stripped. This is to avert any possible issues raised by 

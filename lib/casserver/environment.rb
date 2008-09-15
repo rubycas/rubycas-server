@@ -21,3 +21,6 @@ rescue LoadError => e
   
   require 'picnic'
 end
+
+# used for serializing user extra_attributes (see #service_validate in views.rb)
+require 'yaml'

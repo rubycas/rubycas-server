@@ -146,7 +146,8 @@ module CASServer::Views
         tag!("cas:authenticationSuccess") do
           tag!("cas:user") {@username.to_s.to_xs}
           @extra_attributes.each do |key, value|
-            tag!(key) {value}
+            v = (v.kind_of?(String) || v.kind_of?(Numeric)) ? v.to_yaml : v 
+            tag!(key) {v}
           end
           if @pgtiou
             tag!("cas:proxyGrantingTicket") {@pgtiou.to_s.to_xs}

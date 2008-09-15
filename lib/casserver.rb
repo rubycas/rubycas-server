@@ -9,6 +9,7 @@ Dir.chdir($APP_PATH) if __FILE__ == $0
 $: << $APP_PATH + "/../vendor/isaac_0.9.1"
 require 'crypt/ISAAC'
 
+
 require 'active_support'
 require 'yaml'
 
