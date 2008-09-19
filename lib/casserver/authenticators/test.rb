@@ -14,6 +14,6 @@ class CASServer::Authenticators::Test < CASServer::Authenticators::Base
     @extra_attributes[:test_numeric] = 123.45
     @extra_attributes[:test_serialized] = {:foo => 'bar', :alpha => [1,2,3]}
     
-    return @username == "testuser" && @password == "testpassword"
+    return @password == "testpassword"
   end
 end
