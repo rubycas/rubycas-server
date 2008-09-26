@@ -137,6 +137,7 @@ module CASServer::Controllers
       
       credentials_are_valid = false
       extra_attributes = {}
+      successful_authenticator = nil
       begin
         $AUTH.each do |auth|
           credentials_are_valid = auth.validate(
@@ -147,6 +148,7 @@ module CASServer::Controllers
           )
           if credentials_are_valid
             extra_attributes.merge!(auth.extra_attributes) unless auth.extra_attributes.blank?
+            successful_authenticator = auth
             break 
           end
         end
@@ -157,7 +159,7 @@ module CASServer::Controllers
       end
       
       if credentials_are_valid
-        $LOG.info("Credentials for username '#{@username}' successfully validated")
+        $LOG.info("Credentials for username '#{@username}' successfully validated using #{successful_authenticator.class.name}.")
         $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
         
         # 3.6 (ticket-granting cookie)

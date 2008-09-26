@@ -11,6 +11,8 @@
     into YAML format before being sent along to the client.
   * Added an MD5-password version of the SQL authenticator for Drupal and any other
     database that stores its passwords in hashed form (thanks malcolmm).
+  * Added new Google authenticator for authenticating against Google/GMail
+    accounts.
        
 * Changes to existing functionality:
   * Service URIs are now automatically normalized. For example, if the service 

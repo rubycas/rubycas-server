@@ -160,6 +160,39 @@ database:
 #  extra_attributes: full_name, access_level
 #
 #
+# === Google Authentication ====================================================
+#
+# The Google authenticator allows users to log in to your CAS server using
+# their Google account credentials (i.e. the same email and password they
+# would use to log in to Google services like Gmail). This authenticator
+# requires no special configuration -- just specify its class name:
+#
+#authenticator:
+#  class: CASServer::Authenticators::Google
+#
+# Note that as with all authenticators, it is possible to use the Google 
+# authenticator alongside other authenticators. For example, CAS can first
+# attempt to validate the account with Google, and if that fails, fall back
+# to some other local authentication mechanism.
+#
+# For example:
+#
+#authenticator:
+#  -
+#    class: CASServer::Authenticators::Google
+#  -
+#    class: CASServer::Authenticators::SQL
+#    database:
+#      adapter: mysql
+#      database: some_database_with_users_table
+#      user: root
+#      password:
+#      server: localhost
+#    user_table: user
+#    username_column: username
+#    password_column: password
+#
+#
 # === ActiveDirectory Authentication ===========================================
 #
 # This method authenticates against Microsoft's Active Directory using LDAP.
@@ -198,7 +231,7 @@ database:
 # The configuration is similar, except you don't need an authenticator
 # username or password. Note that this authenticator hasn't been widely
 # tested, so it is not guaranteed to work.
-#=====
+#
 #authenticator:
 #  class: CASServer::Authenticators::ActiveDirectoryLDAP
 #  ldap:
