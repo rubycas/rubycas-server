@@ -238,7 +238,8 @@ module CASServer::CAS
     #http.use_ssl = true if uri.scheme = 'https'
     
     http.start do |conn|
-      path = uri.path || '/'
+      path = uri.path
+      path = '/' if path.empty?
       
       time = Time.now
       rand = CASServer::Utils.random_string
