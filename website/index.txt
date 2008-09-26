@@ -1,0 +1,3 @@
+h1. RubyCAS-Server
+
+Please see "http://code.google.com/p/rubycas-server/":http://code.google.com/p/rubycas-server/ for more information.
