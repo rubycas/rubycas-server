@@ -66,7 +66,7 @@ $hoe = Hoe.new(GEM_NAME, VERS) do |p|
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
   #p.extra_deps = EXTRA_DEPENDENCIES
 
-    #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
+    p.spec_extras = {:executables => ['rubycas-server', 'rubycas-server-ctl']}    # A hash of extra values to set in the gemspec.
   end
 
 CHANGES = $hoe.paragraphs_of('History.txt', 0..1).join("\\n\\n")
