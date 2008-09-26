@@ -41,7 +41,7 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     @options[:ldap][:host] ||= @options[:ldap][:server]
     @ldap.host = @options[:ldap][:host]
     @ldap.port = @options[:ldap][:port] if @options[:ldap][:port]
-    @ldap.encryption(@options[:ldap][:encryption]) if @options[:ldap][:encryption]
+    @ldap.encryption(@options[:ldap][:encryption].intern) if @options[:ldap][:encryption]
     
     begin
       if @options[:ldap][:auth_user]
