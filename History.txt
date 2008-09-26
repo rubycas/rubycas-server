@@ -1,41 +1,55 @@
 === 0.7.0 :: In Progress
 
-* Implemented single-sign-out functionality as specified in CAS 3.1.  See
-  http://www.ja-sig.org/wiki/display/CASUM/Single+Sign+Out.
-* It is now possible to configure Authenticators to return extra attributes
-  to CAS clients alongside the username. For an example of how to do this see
-  the included SQL authenticator. Also have a look at:
-  http://groups.google.com/group/rubycas-server/browse_thread/thread/5eade3793cb590e9
-  Note that extra attributes of type other than String or Numeric are serialized 
-  into YAML format before being sent along to the client. 
-* Service URIs are now automatically normalized. For example, if the service 
-  URI given to the server has a 'ticket' parameter, the ticket will now be 
-  automatically stripped. This is to avert any possible issues raised by 
-  misbehaving CAS clients (the CAS ticket should never be part of the service 
-  URI). Same goes for other CAS-related parameters like 'service', 'renew',
-  and 'gateway'. Additionally, the trailing '/' and '?' characters are
-  automatically stripped from URLs, since, for example, "http://google.com/"
-  is almost certainly equivalent to "http://google.com".
-* The expire_sessions config variable is now respected -- ticket granting
-  ticket cookies are set with an expiry datetime, so that the SSO session
-  is effectively terminated once the ticket_granting_ticket_expiry period
-  is reached.
-* If present, the HTTP_X_FORWARDED_FOR header is used for recording the
-  client's address. This is useful when the server is running behind a reverse
-  proxy, but it should not be considered authoritative since it can be
-  easily spoofed.
-* The 'service' field in the 'casserver_st' table has been changed from
-  VARCHAR(255) to TEXT in order to accomodate service URIs longer than 255
-  characters (fixes issue #46).
-* The CAS XML responses are no longer whitespace-formatted (i.e. Markaby's
-  auto-indentation has been turned off). Apparently the whitespace was
-  causing problems with mod_auth_cas. See:
-  http://groups.google.com/group/rubycas-server/browse_thread/thread/e482fe09999b73d3
-* Fixed logout action to work with ActiveRecord 2.1 (eager loading behaviour
-  was changed upstream forcing a change to the way we look for ProxyGrantingTickets
-  to delete on logout).
-* Added an MD5-password version of the SQL authenticator for Drupal and any other
-  database that stores its passwords in hashed form (thanks malcolmm).
+* New features:
+  * Implemented single-sign-out functionality as specified in CAS 3.1.  See
+    http://www.ja-sig.org/wiki/display/CASUM/Single+Sign+Out.
+  * It is now possible to configure Authenticators to return extra attributes
+    to CAS clients alongside the username. For an example of how to do this see
+    the included SQL authenticator. Also have a look at:
+    http://groups.google.com/group/rubycas-server/browse_thread/thread/5eade3793cb590e9
+    Note that extra attributes of type other than String or Numeric are serialized 
+    into YAML format before being sent along to the client.
+  * Added an MD5-password version of the SQL authenticator for Drupal and any other
+    database that stores its passwords in hashed form (thanks malcolmm).
+       
+* Changes to existing functionality:
+  * Service URIs are now automatically normalized. For example, if the service 
+    URI given to the server has a 'ticket' parameter, the ticket will now be 
+    automatically stripped. This is to avert any possible issues raised by 
+    misbehaving CAS clients (the CAS ticket should never be part of the service 
+    URI). Same goes for other CAS-related parameters like 'service', 'renew',
+    and 'gateway'. Additionally, the trailing '/' and '?' characters are
+    automatically stripped from URLs, since, for example, "http://google.com/"
+    is almost certainly equivalent to "http://google.com".
+  * The expire_sessions config variable is now respected -- ticket granting
+    ticket cookies are set with an expiry datetime, so that the SSO session
+    is effectively terminated once the ticket_granting_ticket_expiry period
+    is reached.
+  * If present, the HTTP_X_FORWARDED_FOR header is used for recording the
+    client's address. This is useful when the server is running behind a reverse
+    proxy, but it should not be considered authoritative since it can be
+    easily spoofed.
+  * The 'service' field in the 'casserver_st' table has been changed from
+    VARCHAR(255) to TEXT in order to accomodate service URIs longer than 255
+    characters (fixes issue #46).
+  * The CAS XML responses are no longer whitespace-formatted (i.e. Markaby's
+    auto-indentation has been turned off). Apparently the whitespace was
+    causing problems with mod_auth_cas. See:
+    http://groups.google.com/group/rubycas-server/browse_thread/thread/e482fe09999b73d3
+  * When used without pre-authentication, the LDAP authenticator now tries to 
+    bind by searching for the given username in the LDAP directory based on the 
+    configured username_attribute. Prior to this change the authenticator
+    attempted to bind with the LDAP server by assuming that the username credential
+    matches the user's CN. This is no longer the case.
+    
+* Bug fixes
+  * Fixed logout action to work properly with ActiveRecord 2.1 (eager loading behaviour
+    was changed upstream forcing a change to the way we look for ProxyGrantingTickets
+    to delete on logout).
+  * When running under Mongrel, the USR2 signal should now restart the server as 
+    expected -- however currently this only works when the server is running
+    in the foregaround. When daemonized, USR2 will shut down the server without
+    restarting (see issue #58).
 
 === 0.6.0 :: 2008-03-28
 
