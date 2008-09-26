@@ -57,7 +57,7 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
   
   protected
     def default_username_attribute
-      "uid"
+      "cn"
     end
   
   private
