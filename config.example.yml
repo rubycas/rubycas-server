@@ -233,12 +233,25 @@ database:
 # tested, so it is not guaranteed to work.
 #
 #authenticator:
-#  class: CASServer::Authenticators::ActiveDirectoryLDAP
+#  class: CASServer::Authenticators::LDAP
 #  ldap:
-#    server: ad.example.net
+#    server: ldap.example.net
 #    port: 389
 #    base: dc=example,dc=net
 #    filter: (objectClass=person)
+#
+# If you need more secure connections via TSL, specify the 'encryption'
+# option and change the port:
+#
+#authenticator:
+#  class: CASServer::Authenticators::LDAP
+#  ldap:
+#    server: ldap.example.net
+#    port: 636
+#    base: dc=example,dc=net
+#    filter: (objectClass=person)
+#    encryption: simple_tls
+#
 #
 #
 # === Custom Authentication ====================================================
