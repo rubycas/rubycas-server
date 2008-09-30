@@ -252,6 +252,21 @@ database:
 #    filter: (objectClass=person)
 #    encryption: simple_tls
 #
+# If you need additional data about the user passed to the client (for example,
+# their 'cn' and 'mail' attributes, you can specify the list of attributes
+# under the extra_attributes config option: 
+#
+#authenticator:
+#  class: CASServer::Authenticators::LDAP
+#  ldap:
+#    server: ldap.example.net
+#    port: 389
+#    base: dc=example,dc=net
+#    filter: (objectClass=person)
+#  extra_attributes: cn, mail
+#
+# Note that the above functionality is somewhat limited by client compatibility.
+# See the SQL authenticator notes above for more info.
 #
 #
 # === Custom Authentication ====================================================
