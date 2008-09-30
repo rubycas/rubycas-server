@@ -45,10 +45,17 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     
     begin
       if @options[:ldap][:auth_user]
-        bind_by_username_with_preauthentication
+        bind_success = bind_by_username_with_preauthentication
       else
-        bind_by_username
+        bind_success = bind_by_username
       end
+      
+      return false unless bind_success
+      
+      entry = find_user
+      extract_extra_attributes(entry)
+      
+      return true
     rescue Net::LDAP::LdapError => e
       raise CASServer::AuthenticatorError,
         "LDAP authentication failed with '#{e}'. Check your authenticator configuration."
@@ -72,12 +79,7 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     def bind_by_username
       username_attribute = options[:ldap][:username_attribute] || default_username_attribute
       
-      filter = Net::LDAP::Filter.eq(username_attribute, @username)
-      unless @options[:ldap][:filter].blank?
-        filter &= Net::LDAP::Filter.construct(@options[:ldap][:filter])
-      end
-      
-      @ldap.bind_as(:base => @options[:ldap][:base], :password => @password, :filter => filter)
+      @ldap.bind_as(:base => @options[:ldap][:base], :password => @password, :filter => user_filter)
     end
 
     # If an auth_user is specified, we will connect ("pre-authenticate") with the
@@ -96,16 +98,41 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
       
       @ldap.authenticate(@options[:ldap][:auth_user], @options[:ldap][:auth_password])
       
+      @ldap.bind_as(:base => @options[:ldap][:base], :password => @password, :filter => user_filter)
+    end
+  
+    # Combine the filter for finding the user with the optional extra filter specified in the config
+    # (if any).
+    def user_filter
       username_attribute = options[:ldap][:username_attribute] || default_username_attribute
       
-      filter = Net::LDAP::Filter.construct(@options[:ldap][:filter]) unless @options[:ldap][:filter].blank?
-      username_filter = Net::LDAP::Filter.eq(username_attribute, @username)
-      if filter
-        filter &= username_filter
-      else
-        filter = username_filter
+      filter = Net::LDAP::Filter.eq(username_attribute, @username)
+      unless @options[:ldap][:filter].blank?
+        filter &= Net::LDAP::Filter.construct(@options[:ldap][:filter])
+      end
+    end
+  
+    # Finds the user based on the user_filter (this is called after authentication).
+    # We do this to make it possible to extract extra_attributes.
+    def find_user
+      results = @ldap.search( :base => options[:ldap][:base], :filter => user_filter)
+      return results.first
+    end
+  
+    def extract_extra_attributes(ldap_entry)
+      @extra_attributes = {}
+      extra_attributes_to_extract.each do |attr|
+        v = !ldap_entry[attr].blank? && ldap_entry[attr].first
+        if v
+          @extra_attributes[attr] = v.to_s
+        end
       end
       
-      @ldap.bind_as(:base => @options[:ldap][:base], :password => @password, :filter => filter)
+      if @extra_attributes.empty?
+        $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
+      else
+        $LOG.debug("#{self.class}: Read the following extra_attributes for user #{@username.inspect}: #{@extra_attributes.inspect}")
+      end
+      ldap_entry
     end
 end
