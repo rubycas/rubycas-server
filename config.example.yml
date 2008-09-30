@@ -219,17 +219,21 @@ database:
 #    auth_user: authenticator
 #    auth_password: itsasecret
 #
-# A more complicated example, where the authenticator will use TLS encryption
-# and will pass on the 'cn' and 'mail' attributes to the client:
+# A more complicated example, where the authenticator will use TLS encryption,
+# will ignore users with disabled accounts, and will pass on the 'cn' and 'mail' 
+# attributes to CAS clients:
 #
 #authenticator:
-#  class: CASServer::Authenticators::LDAP
+#  class: CASServer::Authenticators::ActiveDirectoryLDAP
 #  ldap:
-#    server: ldap.example.net
+#    server: ad.example.net
 #    port: 636
 #    base: dc=example,dc=net
-#    filter: (objectClass=person)
+#    filter: (objectClass=person) & !(msExchHideFromAddressLists=TRUE)
+#    auth_user: authenticator
+#    auth_password: itsasecret
 #    encryption: simple_tls
+#  extra_attributes: cn, mail
 #
 # It is possible to authenticate against Active Directory without the
 # authenticator user, but this requires that users type in their CN as
