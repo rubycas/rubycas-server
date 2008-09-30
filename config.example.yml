@@ -203,9 +203,11 @@ database:
 # to be an administrative account -- it only has to be able to search for other
 # users.
 # 
-# Note that the auth_user parameter must be the user's CN (Common Name)!
-# In Active Directory, the CN is genarally the user's full name, which is not 
-# the same as their username (sAMAccountName).
+# Note that the auth_user parameter must be the user's CN (Common Name).
+# In Active Directory, the CN is genarally the user's full name, which is NOT 
+# generally the same as their username (sAMAccountName).
+#
+# For example:
 #
 #authenticator: 
 #  class: CASServer::Authenticators::ActiveDirectoryLDAP
@@ -216,6 +218,18 @@ database:
 #    filter: (objectClass=person)
 #    auth_user: authenticator
 #    auth_password: itsasecret
+#
+# A more complicated example, where the authenticator will use TLS encryption
+# and will pass on the 'cn' and 'mail' attributes to the client:
+#
+#authenticator:
+#  class: CASServer::Authenticators::LDAP
+#  ldap:
+#    server: ldap.example.net
+#    port: 636
+#    base: dc=example,dc=net
+#    filter: (objectClass=person)
+#    encryption: simple_tls
 #
 # It is possible to authenticate against Active Directory without the
 # authenticator user, but this requires that users type in their CN as
