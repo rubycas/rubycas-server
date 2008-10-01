@@ -160,27 +160,27 @@ module CASServer::CAS
     $LOG.debug("Validating service/proxy ticket '#{ticket}' for service '#{service}'")
   
     if service.nil? or ticket.nil?
-      error = Error.new("INVALID_REQUEST", "Ticket or service parameter was missing in the request.")
+      error = Error.new(:INVALID_REQUEST, "Ticket or service parameter was missing in the request.")
       $LOG.warn("#{error.code} - #{error.message}")
     elsif st = ServiceTicket.find_by_ticket(ticket)
       if st.consumed?
-        error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has already been used up.")
+        error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has already been used up.")
         $LOG.warn("#{error.code} - #{error.message}")
       elsif st.kind_of?(CASServer::Models::ProxyTicket) && !allow_proxy_tickets
-        error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
+        error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
         $LOG.warn("#{error.code} - #{error.message}")
       elsif Time.now - st.created_on > CASServer::Conf.service_ticket_expiry
-        error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' has expired.")
+        error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has expired.")
         $LOG.warn("Ticket '#{ticket}' has expired.")
       elsif !st.matches_service? service
-        error = Error.new("INVALID_SERVICE", "The ticket '#{ticket}' belonging to user '#{st.username}' is valid,"+
+        error = Error.new(:INVALID_SERVICE, "The ticket '#{ticket}' belonging to user '#{st.username}' is valid,"+
           " but the requested service '#{service}' does not match the service '#{st.service}' associated with this ticket.")
         $LOG.warn("#{error.code} - #{error.message}")
       else
         $LOG.info("Ticket '#{ticket}' for service '#{service}' for user '#{st.username}' successfully validated.")
       end
     else
-      error = Error.new("INVALID_TICKET", "Ticket '#{ticket}' not recognized.")
+      error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' not recognized.")
       $LOG.warn("#{error.code} - #{error.message}")
     end
     
@@ -197,9 +197,9 @@ module CASServer::CAS
     
     if pt.kind_of?(CASServer::Models::ProxyTicket) && !error
       if not pt.proxy_granting_ticket
-        error = Error.new("INTERNAL_ERROR", "Proxy ticket '#{pt}' belonging to user '#{pt.username}' is not associated with a proxy granting ticket.")
+        error = Error.new(:INTERNAL_ERROR, "Proxy ticket '#{pt}' belonging to user '#{pt.username}' is not associated with a proxy granting ticket.")
       elsif not pt.proxy_granting_ticket.service_ticket
-        error = Error.new("INTERNAL_ERROR", "Proxy granting ticket '#{pt.proxy_granting_ticket}'"+
+        error = Error.new(:INTERNAL_ERROR, "Proxy granting ticket '#{pt.proxy_granting_ticket}'"+
           " (associated with proxy ticket '#{pt}' and belonging to user '#{pt.username}' is not associated with a service ticket.")
       end
     end
@@ -209,17 +209,17 @@ module CASServer::CAS
   
   def validate_proxy_granting_ticket(ticket)
     if ticket.nil?
-      error = Error.new("INVALID_REQUEST", "pgt parameter was missing in the request.")
+      error = Error.new(:INVALID_REQUEST, "pgt parameter was missing in the request.")
       $LOG.warn("#{error.code} - #{error.message}")
     elsif pgt = ProxyGrantingTicket.find_by_ticket(ticket)
       if pgt.service_ticket
         $LOG.info("Proxy granting ticket '#{ticket}' belonging to user '#{pgt.service_ticket.username}' successfully validated.")
       else
-        error = Error.new("INTERNAL_ERROR", "Proxy granting ticket '#{ticket}' is not associated with a service ticket.")
+        error = Error.new(:INTERNAL_ERROR, "Proxy granting ticket '#{ticket}' is not associated with a service ticket.")
         $LOG.error("#{error.code} - #{error.message}")
       end
     else
-      error = Error.new("BAD_PGT", "Invalid proxy granting ticket '#{ticket}' (no matching ticket found in the database).")
+      error = Error.new(:BAD_PGT, "Invalid proxy granting ticket '#{ticket}' (no matching ticket found in the database).")
       $LOG.warn("#{error.code} - #{error.message}")
     end
     

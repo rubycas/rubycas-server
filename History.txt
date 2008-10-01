@@ -43,6 +43,10 @@
     configured username_attribute. Prior to this change the authenticator
     attempted to bind with the LDAP server by assuming that the username credential
     matches the user's CN. This is no longer the case.
+  * CAS responses to invalid requests (for example where required parameters
+    are missing or incorrect) will now have HTTP status code 422. Internal server
+    errors (where the server rather than the client is at fault) have error 500.
+    Previously most responses had error code 200, regardless of their contents.
     
 * Bug fixes
   * Fixed logout action to work properly with ActiveRecord 2.1 (eager loading behaviour

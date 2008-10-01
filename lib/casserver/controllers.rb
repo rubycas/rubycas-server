@@ -83,7 +83,7 @@ module CASServer::Controllers
           render :login_form
         else
           @status = 500
-          "Could not guess the CAS login URI. Please supply a submitURI parameter with your request."
+          "Could not guess the CAS login URI. Please supply a submitToURI parameter with your request."
         end
       else
         render :login
@@ -289,6 +289,8 @@ module CASServer::Controllers
       
       @username = st.username if @success
       
+      @status = response_status_from_error(@error) if @error
+      
       render :validate
     end
   end
@@ -319,6 +321,8 @@ module CASServer::Controllers
         end
         @extra_attributes = st.ticket_granting_ticket.extra_attributes || {}
       end
+      
+      @status = response_status_from_error(@error) if @error
       
       render :service_validate
     end
@@ -359,6 +363,8 @@ module CASServer::Controllers
         
         @extra_attributes = t.ticket_granting_ticket.extra_attributes || {}
       end
+      $LOG.error @error
+      @status = response_status_from_error(@error) if @error
 
      render :proxy_validate
     end
@@ -382,6 +388,8 @@ module CASServer::Controllers
         @pt = generate_proxy_ticket(@target_service, pgt)
       end
       
+      @status = response_status_from_error(@error) if @error
+      
       render :proxy
     end
   end
@@ -397,7 +405,7 @@ module CASServer::Controllers
     def get
       CASServer::Utils::log_controller_action(self.class, @input)
       $LOG.error("Tried to use login ticket dispenser with get method!")
-      @status = 500
+      @status = 422
       "To generate a login ticket, you must make a POST request."
     end
     
@@ -429,4 +437,16 @@ module CASServer::Controllers
       end
     end
   end
+  
+  def response_status_from_error(error)
+    case error.code.to_s
+    when /^INVALID_/, 'BAD_PGT'
+      422
+    when 'INTERNAL_ERROR'
+      500
+    else
+      500
+    end
+  end
+  module_function :response_status_from_error
 end
