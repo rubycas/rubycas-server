@@ -97,12 +97,6 @@ module CASServer::Controllers
       # 2.2.1 (optional)
       @service = clean_service_url(@input['service'])
       
-      # FIXME: This is a potential security/phishing hole! Maybe @warn should 
-      #        be the id of a registered error string, rather than blindly
-      #        printing whatever message the client wants printed... although
-      #        I can't figure out if this is even used at all anymore. 
-      @warn = @input['warn']
-      
       # 2.2.2 (required)
       @username = @input['username']
       @password = @input['password']

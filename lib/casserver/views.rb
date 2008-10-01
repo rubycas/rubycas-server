@@ -89,7 +89,6 @@ module CASServer::Views
           td(:id => "submit-container") do
             input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
             input(:type => "hidden", :id => "service", :name => "service", :value => @service)
-            input(:type => "hidden", :id => "warn", :name => "warn", :value => @warn)
             input(:type => "submit", :class => "button", :accesskey => "l", :value => "LOGIN", :tabindex => "4", :id => "login-submit")
           end
         end
