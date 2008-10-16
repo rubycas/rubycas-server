@@ -1,12 +1,14 @@
-$: << File.dirname(File.expand_path(__FILE__))
-require 'casserver/environment'
+unless $APP_PATH
+  $APP_PATH = File.dirname(File.expand_path(__FILE__))
+  $: << $APP_PATH
+end
 
-$APP_PATH ||= File.dirname(File.expand_path(__FILE__))
+load "#{$APP_PATH}/lib/casserver/environment.rb"
 
 # change to current directory when invoked on its own
 Dir.chdir($APP_PATH) if __FILE__ == $0
 
-$: << $APP_PATH + "/../vendor/isaac_0.9.1"
+$: << $APP_PATH + "/vendor/isaac_0.9.1"
 require 'crypt/ISAAC'
 
 
@@ -44,11 +46,11 @@ unless $CONF[:authenticator]
   exit 1
 end
 
-require 'casserver/utils'
-require 'casserver/models'
-require 'casserver/cas'
-require 'casserver/views'
-require 'casserver/controllers'
+require "casserver/utils.rb"
+require "casserver/models.rb"
+require "casserver/cas.rb"
+require "casserver/views.rb"
+require "casserver/controllers.rb"
 
 if $CONF[:authenticator].instance_of? Array
   $CONF[:authenticator].each_index do |auth_index| 
@@ -73,6 +75,7 @@ rescue NameError
       else
         # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
         auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
+        
         require 'casserver/'+auth_rb
       end
       $AUTH << authenticator[:class].constantize.new

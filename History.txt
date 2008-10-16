@@ -56,6 +56,8 @@
     expected -- however currently this only works when the server is running
     in the foregaround. When daemonized, USR2 will shut down the server without
     restarting (see issue #58).
+  * Fixed activerecord/activesupport gem load problems, hopefully once and for all
+    (however picnic-0.7.0 is now required).
 
 === 0.6.0 :: 2008-03-28
 
