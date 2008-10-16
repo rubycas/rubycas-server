@@ -18,6 +18,7 @@ lib/casserver.rb
 lib/casserver/authenticators/active_directory_ldap.rb
 lib/casserver/authenticators/base.rb
 lib/casserver/authenticators/client_certificate.rb
+lib/casserver/authenticators/google.rb
 lib/casserver/authenticators/ldap.rb
 lib/casserver/authenticators/ntlm.rb
 lib/casserver/authenticators/open_id.rb
