@@ -363,7 +363,7 @@ module CASServer::Controllers
         
         @extra_attributes = t.ticket_granting_ticket.extra_attributes || {}
       end
-      $LOG.error @error
+      
       @status = response_status_from_error(@error) if @error
 
      render :proxy_validate
