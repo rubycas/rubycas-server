@@ -302,6 +302,9 @@ module CASServer::CAS
     clean_service.gsub!(/[\/\?]$/, '')
     clean_service.gsub!(' ', '+')
     
+    $LOG.debug("Cleaned dirty service URL #{dirty_service.inspect} to #{clean_service.inspect}") if
+      dirty_service != clean_service
+      
     return clean_service
   end
   module_function :clean_service_url
