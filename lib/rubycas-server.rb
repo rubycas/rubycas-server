@@ -1,1 +1,1 @@
-require 'lib/casserver'
+require 'casserver'
