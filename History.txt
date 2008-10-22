@@ -47,6 +47,10 @@
     are missing or incorrect) will now have HTTP status code 422. Internal server
     errors (where the server rather than the client is at fault) have error 500.
     Previously most responses had error code 200, regardless of their contents.
+  * Any spaces in the service URL passed to the server will now be automatically
+    converted to + characters. This is necessary for the string to pass URL
+    validation, although it is still the best practice to ensure that the client
+    passes only valid, correctly encoded URLs.
     
 * Bug fixes
   * Fixed logout action to work properly with ActiveRecord 2.1 (eager loading behaviour

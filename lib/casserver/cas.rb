@@ -283,7 +283,7 @@ module CASServer::CAS
   end
   
   # Strips CAS-related parameters from a service URL and normalizes it,
-  # removing trailing / and ?.
+  # removing trailing / and ?. Also converts any spaces to +.
   #
   # For example, "http://google.com?ticket=12345" will be returned as
   # "http://google.com". Also, "http://google.com/" would be returned as
@@ -300,6 +300,7 @@ module CASServer::CAS
     end
     
     clean_service.gsub!(/[\/\?]$/, '')
+    clean_service.gsub!(' ', '+')
     
     return clean_service
   end
