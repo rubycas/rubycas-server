@@ -10,7 +10,7 @@ DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 EXTRA_DEPENDENCIES = [
   'activesupport',
   'activerecord',
-  ['picnic', '>= 0.6.99']
+  ['picnic', '>= 0.7.0']
 ]    # An array of rubygem dependencies [name, version]
 
 @config_file = "~/.rubyforge/user-config.yml"
@@ -36,7 +36,7 @@ ENV['NODOT'] = '1'
 
 REV = nil
 # UNCOMMENT IF REQUIRED:
-REV = YAML.load(`svn info`)['Revision']
+#REV = YAML.load(`svn info`)['Revision']
 VERS = CASServer::VERSION::STRING + (REV ? ".#{REV}" : "")
 RDOC_OPTS = ['--quiet', '--title', 'rubycas-server documentation',
     "--opname", "index.html",
