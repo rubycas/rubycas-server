@@ -1,0 +1,56 @@
+# Russian translation for Rubycas server.
+# Copyright (C) Matt Zukowski
+# This file is distributed under the same license as the rubycas-server package.
+# Antono Vasiljev <antono.vasiljev@gmail.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rubycas-server\n"
+"POT-Creation-Date: 2008-10-29 20:55+0200\n"
+"PO-Revision-Date: 2008-10-30 00:46+0200\n"
+"Last-Translator: Antono Vasiljev <antono.vasiljev@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: lib/casserver/controllers.rb:33
+msgid "You are currently logged in as '%s'. If this is not you, please log in below."
+msgstr "Вы авторизированы как '%s'."
+
+#: lib/casserver/controllers.rb:38
+msgid "The client and server are unable to negotiate authentication. Please try logging in again later."
+msgstr "Клиент и сервер не могут провести проверку прав. Попробуйте войти позже."
+
+#: lib/casserver/controllers.rb:55
+msgid "The server cannot fulfill this gateway request because no service parameter was given."
+msgstr "Этот сервер не может выполнить этот запрос, поскольку не были указаны праметры сервиса."
+
+#: lib/casserver/controllers.rb:60 lib/casserver/controllers.rb:196
+msgid "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."
+msgstr "Сервис, указанный вашим браузером, неверен. Свяжитесь с вашим системным администратором."
+
+#: lib/casserver/controllers.rb:89
+msgid "Could not guess the CAS login URI. Please supply a submitToURI parameter with your request."
+msgstr "Не возможно угадать адрес входа на CAS. Пожалуйста, передайте с запросом параметр submitToURI."
+
+#: lib/casserver/controllers.rb:185
+msgid "You have successfully logged in."
+msgstr "Вы успешно вошли."
+
+#: lib/casserver/controllers.rb:201
+msgid "Incorrect username or password."
+msgstr "Неверное имя пользователя или пароль."
+
+#: lib/casserver/controllers.rb:260
+msgid "You have successfully logged out."
+msgstr "Вы успешно вышли."
+
+#: lib/casserver/controllers.rb:263
+msgid " Please click on the following link to continue:"
+msgstr " Перейдите по ссылке чтобы продолжить: "
+
+#: lib/casserver/controllers.rb:413
+msgid "To generate a login ticket, you must make a POST request."
+msgstr "Чтобы сгенерировать входной билет вы должны делать POST запрос."
