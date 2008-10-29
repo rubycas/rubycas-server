@@ -6,3 +6,4 @@ config.yml
 *~
 *.pidaproject
 *.log
+*.mo
