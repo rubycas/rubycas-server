@@ -1,6 +1,6 @@
 === 0.7.0 :: In Progress
 
-* New features:
+* New functionality:
   * Implemented single-sign-out functionality as specified in CAS 3.3.  See
     http://www.ja-sig.org/wiki/display/CASUM/Single+Sign+Out.
   * It is now possible to configure Authenticators to return extra attributes
