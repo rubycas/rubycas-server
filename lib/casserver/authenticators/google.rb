@@ -2,6 +2,7 @@ require 'casserver/authenticators/base'
 require 'uri'
 require 'net/http'
 require 'net/https'
+require 'timeout'
 
 # Validates Google accounts against Google's authentication service -- in other 
 # words, this authenticator allows users to log in to CAS using their
@@ -23,20 +24,30 @@ class CASServer::Authenticators::Google < CASServer::Authenticators::Base
     url = URI.parse('https://www.google.com/accounts/ClientLogin')
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
-    res = http.start do |conn|
-      req = Net::HTTP::Post.new(url.path)
-      req.set_form_data(auth_data,'&')
-      conn.request(req)
-    end
     
-    case res
-    when Net::HTTPSuccess
-      true
-    when Net::HTTPForbidden
-      false
-    else
-      $LOG.error("Unexpected response from Google while validating credentials: #{res.inspect} ==> #{res.body}.")
-      raise CASServer::AuthenticatorError, "Unexpected response received from Google while validating credentials."
+    # TODO: make the timeout configurable
+    wait_seconds = 10
+    begin
+      timeout(wait_seconds) do
+        res = http.start do |conn|
+          req = Net::HTTP::Post.new(url.path)
+          req.set_form_data(auth_data,'&')
+          conn.request(req)
+        end
+        
+        case res
+        when Net::HTTPSuccess
+          true
+        when Net::HTTPForbidden
+          false
+        else
+          $LOG.error("Unexpected response from Google while validating credentials: #{res.inspect} ==> #{res.body}.")
+          raise CASServer::AuthenticatorError, "Unexpected response received from Google while validating credentials."
+        end
+      end
+    rescue Timeout::Error
+      $LOG.error("Google did not respond to the credential validation request. We waited for #{wait_seconds.inspect} seconds before giving up.")
+      raise CASServer::AuthenticatorError, "Timeout while waiting for Google to validate credentials."
     end
 
   end
