@@ -64,11 +64,11 @@ module CASServer::Views
   # Just the login form.
   def login_form
     form(:method => "post", :action => @form_action || '/login', :id => "login-form",
-        :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='Please wait...'; submitbutton.disabled=true; return true;") do
+        :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='#{_("Please wait...")}'; submitbutton.disabled=true; return true;") do
       table(:id => "form-layout") do
         tr do
           td(:id => "username-label-container") do
-            label(:id => "username-label", :for => "username") { "Username" }
+            label(:id => "username-label", :for => "username") { _( "Username" ) }
           end
           td(:id => "username-container") do
             input(:type => "text", :id => "username", :name => "username",
@@ -77,7 +77,7 @@ module CASServer::Views
         end
         tr do
           td(:id => "password-label-container") do
-            label(:id => "password-label", :for => "password") { "Password" }
+            label(:id => "password-label", :for => "password") { _( "Password" ) }
           end
           td(:id => "password-container") do
             input(:type => "password", :id => "password", :name => "password", 
