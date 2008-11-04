@@ -14,7 +14,7 @@ module CASServer::Views
     if @use_layout
       xhtml_strict do
         head do 
-          title { "#{organization} Central Login" }
+          title { "#{organization} #{_(' Central Login')}" }
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/cas.css")
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/#{current_theme}/theme.css")
         end
@@ -38,7 +38,7 @@ module CASServer::Views
         td(:colspan => 2) do
           div(:id => "headline-container") do
             strong organization
-            text " Central Login"
+            text _(" Central Login")
           end
         end
       end
@@ -89,7 +89,7 @@ module CASServer::Views
           td(:id => "submit-container") do
             input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
             input(:type => "hidden", :id => "service", :name => "service", :value => @service)
-            input(:type => "submit", :class => "button", :accesskey => "l", :value => "LOGIN", :tabindex => "4", :id => "login-submit")
+            input(:type => "submit", :class => "button", :accesskey => "l", :value => _("LOGIN"), :tabindex => "4", :id => "login-submit")
           end
         end
         tr do
@@ -108,7 +108,7 @@ module CASServer::Views
         td(:colspan => 2) do
           div(:id => "headline-container") do
             strong organization
-            text " Central Login"
+            text _(" Central Login")
           end
         end
       end
