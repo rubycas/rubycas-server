@@ -64,7 +64,7 @@ module CASServer::Views
   # Just the login form.
   def login_form
     form(:method => "post", :action => @form_action || '/login', :id => "login-form",
-        :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='#{_("Please wait...")}'; submitbutton.disabled=true; return true;") do
+        :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='#{ _("Please wait...") }'; submitbutton.disabled=true; return true;") do
       table(:id => "form-layout") do
         tr do
           td(:id => "username-label-container") do
