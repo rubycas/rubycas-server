@@ -7,9 +7,6 @@ README.txt
 Rakefile
 bin/rubycas-server
 bin/rubycas-server-ctl
-casserver.db
-casserver.log
-casserver_db.log
 config.example.yml
 config/hoe.rb
 config/requirements.rb

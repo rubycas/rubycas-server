@@ -132,7 +132,7 @@ database:
 #    database: some_database_with_users_table
 #    username: root
 #    password: 
-#    server: localhost
+#    host: localhost
 #  user_table: users
 #  username_column: username
 #  password_column: password
@@ -187,7 +187,7 @@ database:
 #      database: some_database_with_users_table
 #      user: root
 #      password:
-#      server: localhost
+#      host: localhost
 #    user_table: user
 #    username_column: username
 #    password_column: password
@@ -212,7 +212,7 @@ database:
 #authenticator: 
 #  class: CASServer::Authenticators::ActiveDirectoryLDAP
 #  ldap:
-#    server: ad.example.net
+#    host: ad.example.net
 #    port: 389
 #    base: dc=example,dc=net
 #    filter: (objectClass=person)
@@ -226,7 +226,7 @@ database:
 #authenticator:
 #  class: CASServer::Authenticators::ActiveDirectoryLDAP
 #  ldap:
-#    server: ad.example.net
+#    host: ad.example.net
 #    port: 636
 #    base: dc=example,dc=net
 #    filter: (objectClass=person) & !(msExchHideFromAddressLists=TRUE)
@@ -253,7 +253,7 @@ database:
 #authenticator:
 #  class: CASServer::Authenticators::LDAP
 #  ldap:
-#    server: ldap.example.net
+#    host: ldap.example.net
 #    port: 389
 #    base: dc=example,dc=net
 #    filter: (objectClass=person)
@@ -264,7 +264,7 @@ database:
 #authenticator:
 #  class: CASServer::Authenticators::LDAP
 #  ldap:
-#    server: ldap.example.net
+#    host: ldap.example.net
 #    port: 636
 #    base: dc=example,dc=net
 #    filter: (objectClass=person)
@@ -277,7 +277,7 @@ database:
 #authenticator:
 #  class: CASServer::Authenticators::LDAP
 #  ldap:
-#    server: ldap.example.net
+#    host: ldap.example.net
 #    port: 389
 #    base: dc=example,dc=net
 #    filter: (objectClass=person)
@@ -321,7 +321,7 @@ database:
 #  -
 #    class: CASServer::Authenticators::ActiveDirectoryLDAP
 #    ldap:
-#      server: ad.example.net
+#      host: ad.example.net
 #      port: 389
 #      base: dc=example,dc=net
 #      filter: (objectClass=person)
@@ -332,7 +332,7 @@ database:
 #      database: some_database_with_users_table
 #      user: root
 #      password:
-#      server: localhost
+#      host: localhost
 #    user_table: user
 #    username_column: username
 #    password_column: password
