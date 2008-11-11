@@ -1,1 +1,9 @@
 .svn
+config.yml
+*.db
+*.sqlite3
+*.swp
+*~
+*.pidaproject
+*.log
+*.mo
