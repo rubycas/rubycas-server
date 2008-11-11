@@ -1,15 +1,11 @@
 require 'uri'
 require 'net/https'
-require "gettext"
 
 # Encapsulates CAS functionality. This module is meant to be included in
 # the CASServer::Controllers module.
 module CASServer::CAS
 
   include CASServer::Models
-
-  include GetText
-  bindtextdomain("rubycas-server", :path => File.join($APP_PATH, "/locale"))
 
   def generate_login_ticket
     # 3.5 (login ticket)
