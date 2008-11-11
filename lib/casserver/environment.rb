@@ -19,10 +19,11 @@ else
   require 'rubygems'
   
   # make things backwards-compatible for rubygems < 0.9.0
-  if Object.method_defined?(:require_gem)
+  if respond_to?(:require_gem)
+    puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
     alias gem require_gem
   end
-  
+ 
   require 'picnic'
 end
 
