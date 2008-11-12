@@ -90,4 +90,4 @@ msgstr "Hasło"
 
 #: lib/casserver/views.rb:92
 msgid "LOGIN"
-msgstr "Zaloguj się"
+msgstr "ZALOGUJ"
