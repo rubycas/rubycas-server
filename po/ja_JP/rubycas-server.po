@@ -1,0 +1,92 @@
+# Japanese translations for RubyCAS-Server package
+# RubyCAS-Server パッケージに対する英訳.
+# Copyright (C) 2008 THE RubyCAS-Server'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the RubyCAS-Server package.
+# Matt Zukowski <mzukowski@urbacon.net>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: RubyCAS-Server \n"
+"POT-Creation-Date: 2008-11-12 11:43-0500\n"
+"PO-Revision-Date: 2008-11-12 13:04-0500\n"
+"Last-Translator: Matt Zukowski <mzukowski@urbacon.net>\n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# THIS IS MACHINE-TRANSLATED AND PROBABLY MAKES VERY LITTLE SENSE IN JAPANESE :)
+# HELP IN CORRECTING THIS WOULD BE GREATLY APPRECIATED.
+# この機械的に翻訳すると、おそらくほとんど意味です日本語 :)
+# これを修正するのに役立つ高く評価されるだろう。
+
+#: lib/casserver/controllers.rb:32
+msgid ""
+"You are currently logged in as '%s'. If this is not you, please log in below."
+msgstr ""
+"現在ログインしている'%s' 。この場合は、ログインしてください..の下ではない"
+
+#: lib/casserver/controllers.rb:37
+msgid ""
+"The client and server are unable to negotiate authentication. Please try "
+"logging in again later."
+msgstr ""
+"クライアントとサーバーは認証が交渉することはできません。再度保存してくださいにログインしてください。"
+
+#: lib/casserver/controllers.rb:54
+msgid ""
+"The server cannot fulfill this gateway request because no service parameter "
+"was given."
+msgstr ""
+"これはサービスのパラメータを指定されたサーバーは、このゲートウェイの要求を満たすことはできません。"
+
+#: lib/casserver/controllers.rb:59 lib/casserver/controllers.rb:195
+msgid ""
+"The target service your browser supplied appears to be invalid. Please "
+"contact your system administrator for help."
+msgstr ""
+"お使いのブラウザは、ターゲットのサービス提供は無効であることが表示されます。助けを求めるお客様のシステム管理者に連絡してください。"
+
+#: lib/casserver/controllers.rb:88
+msgid ""
+"Could not guess the CAS login URI. Please supply a submitToURI parameter "
+"with your request."
+msgstr ""
+"ログイン情報をCASのURIを推測することができませんでした。お客様のリクエストをしてくださいsubmitToURIパラメータを供給します。"
+
+#: lib/casserver/controllers.rb:184
+msgid "You have successfully logged in."
+msgstr ""
+
+#: lib/casserver/controllers.rb:200
+msgid "Incorrect username or password."
+msgstr "を正常にログインしている"
+
+#: lib/casserver/controllers.rb:259
+msgid "You have successfully logged out."
+msgstr "を正常にログアウトしています。"
+
+#: lib/casserver/controllers.rb:262
+msgid " Please click on the following link to continue:"
+msgstr " 継続するには、以下のリンクをクリックしてください："
+
+#: lib/casserver/controllers.rb:412
+msgid "To generate a login ticket, you must make a POST request."
+msgstr "チケットを生成するにはログインすると、 POST要求する必要があります。"
+
+#: lib/casserver/views.rb:41 lib/casserver/views.rb:111
+msgid " Central Login"
+msgstr " 中央ログイン"
+
+#: lib/casserver/views.rb:71
+msgid "Username"
+msgstr "ユーザー名"
+
+#: lib/casserver/views.rb:80
+msgid "Password"
+msgstr "パスワード"
+
+#: lib/casserver/views.rb:92
+msgid "LOGIN"
+msgstr "ログイン"
