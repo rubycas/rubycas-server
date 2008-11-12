@@ -19,22 +19,32 @@ module CASServer
               lang = $~[1] unless @env.HTTP_USER_AGENT.blank?
     @cookies['lang'] = lang
     
+    # TODO: Need to confirm that this method of splitting the accepted
+    #       language string is correct.
     if lang =~ /[,;\|]/
       langs = lang.split(/[,;\|]/)
     else
       langs = [lang]
     end
     
+    # TODO: This method of selecting the desired language might not be
+    #       standards-compliant. For example, http://www.w3.org/TR/ltli/
+    #       suggests that de-de and de-*-DE might be acceptable identifiers
+    #       for selecting various wildcards. The algorithm below does not
+    #       currently support anything like this.
+    
     available = available_locales
     
-    #puts "AVAILABLE: #{available.inspect}"
-    #puts "NEED ONE OF: #{langs.inspect}"
+    # Try to pick a locale exactly matching the desired identifier, otherwise
+    # fall back to locale without region (i.e. given "en-US; de-DE", we would
+    # first look for "en-US", then "en", then "de-DE", then "de").
+    
     chosen_lang = langs.each do |l| 
       a = available.find{|a| a == l || a =~ Regexp.new("#{l}-\w*")}
       break a if a
     end
-    #puts "CHOSEN: #{chosen_lang.inspect}"
-  
+    
+    
     chosen_lang = "en" if chosen_lang.blank?
     
     return chosen_lang
