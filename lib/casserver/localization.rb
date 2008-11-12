@@ -19,6 +19,8 @@ module CASServer
               lang = $~[1] unless @env.HTTP_USER_AGENT.blank?
     @cookies['lang'] = lang
     
+    lang.gsub!('_','-')
+    
     # TODO: Need to confirm that this method of splitting the accepted
     #       language string is correct.
     if lang =~ /[,;\|]/
@@ -39,11 +41,15 @@ module CASServer
     # fall back to locale without region (i.e. given "en-US; de-DE", we would
     # first look for "en-US", then "en", then "de-DE", then "de").
     
-    chosen_lang = langs.each do |l| 
+    chosen_lang = nil
+    langs.each do |l| 
       a = available.find{|a| a == l || a =~ Regexp.new("#{l}-\w*")}
-      break a if a
+      puts "A: #{a.inspect}"
+      if a
+        chosen_lang = a
+        break
+      end
     end
-    
     
     chosen_lang = "en" if chosen_lang.blank?
     
