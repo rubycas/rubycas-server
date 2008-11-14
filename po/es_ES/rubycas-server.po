@@ -1,0 +1,90 @@
+# Spanish translations for RubyCAS-Server package
+# Traducciones al espa ol para el paquete RubyCAS-Server.
+# Copyright (C) 2008 THE RubyCAS-Server'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the RubyCAS-Server package.
+# Matt Zukowski <mzukowski@urbacon.net>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: RubyCAS-Server \n"
+"POT-Creation-Date: 2008-11-12 11:43-0500\n"
+"PO-Revision-Date: 2008-11-12 12:30-0500\n"
+"Last-Translator: Matt Zukowski <mzukowski@urbacon.net>\n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/casserver/controllers.rb:32
+msgid ""
+"You are currently logged in as '%s'. If this is not you, please log in below."
+msgstr ""
+"Usted está conectado como '%s'. Si no lo es usted, por favor, acceda a continuación."
+
+#: lib/casserver/controllers.rb:37
+msgid ""
+"The client and server are unable to negotiate authentication. Please try "
+"logging in again later."
+msgstr ""
+"El cliente y el servidor no están en condiciones de negociar la autenticación. Por favor, "
+"intente acceder de nuevo más tarde."
+
+#: lib/casserver/controllers.rb:54
+msgid ""
+"The server cannot fulfill this gateway request because no service parameter "
+"was given."
+msgstr "El servidor no puede cumplir con esta petición, porque no fue parámetro de "
+"servicio prestado."
+
+#: lib/casserver/controllers.rb:59 lib/casserver/controllers.rb:195
+msgid ""
+"The target service your browser supplied appears to be invalid. Please "
+"contact your system administrator for help."
+msgstr ""
+"El objetivo de su navegador de servicios ofrecidos parece ser nula. Por favor, "
+"póngase en contacto con el administrador del sistema para obtener ayuda."
+
+#: lib/casserver/controllers.rb:88
+msgid ""
+"Could not guess the CAS login URI. Please supply a submitToURI parameter "
+"with your request."
+msgstr ""
+"No podía adivinar el URI de acceso CAS. Suministro submitToURI un parámetro "
+"con su solicitud."
+
+#: lib/casserver/controllers.rb:184
+msgid "You have successfully logged in."
+msgstr "Inicio de sesión satisfactorio."
+
+#: lib/casserver/controllers.rb:200
+msgid "Incorrect username or password."
+msgstr "Incorrecto nombre de usuario o contraseña."
+
+#: lib/casserver/controllers.rb:259
+msgid "You have successfully logged out."
+msgstr "Cierre de sesión satisfactorio."
+
+#: lib/casserver/controllers.rb:262
+msgid " Please click on the following link to continue:"
+msgstr " Por favor, haga clic en el vínculo siguiente para continuar:"
+
+#: lib/casserver/controllers.rb:412
+msgid "To generate a login ticket, you must make a POST request."
+msgstr "Para generar un ticket de acceso, usted debe hacer una petición POST."
+
+#: lib/casserver/views.rb:41 lib/casserver/views.rb:111
+msgid " Central Login"
+msgstr " Servicio de Autenticación Central"
+
+#: lib/casserver/views.rb:71
+msgid "Username"
+msgstr "Usuario"
+
+#: lib/casserver/views.rb:80
+msgid "Password"
+msgstr "Contraseña"
+
+#: lib/casserver/views.rb:92
+msgid "LOGIN"
+msgstr "INICIAR SESIÓN"

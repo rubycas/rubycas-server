@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: rubycas-server \n"
+"POT-Creation-Date: 2008-11-12 11:43-0500\n"
+"PO-Revision-Date: 2008-10-29 20:55+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: lib/casserver/controllers.rb:32
+msgid ""
+"You are currently logged in as '%s'. If this is not you, please log in below."
+msgstr ""
+
+#: lib/casserver/controllers.rb:37
+msgid ""
+"The client and server are unable to negotiate authentication. Please try "
+"logging in again later."
+msgstr ""
+
+#: lib/casserver/controllers.rb:54
+msgid ""
+"The server cannot fulfill this gateway request because no service parameter "
+"was given."
+msgstr ""
+
+#: lib/casserver/controllers.rb:59 lib/casserver/controllers.rb:195
+msgid ""
+"The target service your browser supplied appears to be invalid. Please "
+"contact your system administrator for help."
+msgstr ""
+
+#: lib/casserver/controllers.rb:88
+msgid ""
+"Could not guess the CAS login URI. Please supply a submitToURI parameter "
+"with your request."
+msgstr ""
+
+#: lib/casserver/controllers.rb:184
+msgid "You have successfully logged in."
+msgstr ""
+
+#: lib/casserver/controllers.rb:200
+msgid "Incorrect username or password."
+msgstr ""
+
+#: lib/casserver/controllers.rb:259
+msgid "You have successfully logged out."
+msgstr ""
+
+#: lib/casserver/controllers.rb:262
+msgid " Please click on the following link to continue:"
+msgstr ""
+
+#: lib/casserver/controllers.rb:412
+msgid "To generate a login ticket, you must make a POST request."
+msgstr ""
+
+#: lib/casserver/views.rb:41 lib/casserver/views.rb:111
+msgid " Central Login"
+msgstr ""
+
+#: lib/casserver/views.rb:71
+msgid "Username"
+msgstr ""
+
+#: lib/casserver/views.rb:80
+msgid "Password"
+msgstr ""
+
+#: lib/casserver/views.rb:92
+msgid "LOGIN"
+msgstr ""

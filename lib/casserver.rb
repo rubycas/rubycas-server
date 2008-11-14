@@ -51,6 +51,7 @@ require "casserver/models.rb"
 require "casserver/cas.rb"
 require "casserver/views.rb"
 require "casserver/controllers.rb"
+require "casserver/localization.rb"
 
 if $CONF[:authenticator].instance_of? Array
   $CONF[:authenticator].each_index do |auth_index| 

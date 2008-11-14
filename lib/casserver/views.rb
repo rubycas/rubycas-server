@@ -14,7 +14,7 @@ module CASServer::Views
     if @use_layout
       xhtml_strict do
         head do 
-          title { "#{organization} Central Login" }
+          title { "#{organization} #{_(' Central Login')}" }
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/cas.css")
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/#{current_theme}/theme.css")
         end
@@ -38,7 +38,7 @@ module CASServer::Views
         td(:colspan => 2) do
           div(:id => "headline-container") do
             strong organization
-            text " Central Login"
+            text _(" Central Login")
           end
         end
       end
@@ -64,11 +64,11 @@ module CASServer::Views
   # Just the login form.
   def login_form
     form(:method => "post", :action => @form_action || '/login', :id => "login-form",
-        :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='Please wait...'; submitbutton.disabled=true; return true;") do
+        :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='#{ _("Please wait...") }'; submitbutton.disabled=true; return true;") do
       table(:id => "form-layout") do
         tr do
           td(:id => "username-label-container") do
-            label(:id => "username-label", :for => "username") { "Username" }
+            label(:id => "username-label", :for => "username") { _( "Username" ) }
           end
           td(:id => "username-container") do
             input(:type => "text", :id => "username", :name => "username",
@@ -77,7 +77,7 @@ module CASServer::Views
         end
         tr do
           td(:id => "password-label-container") do
-            label(:id => "password-label", :for => "password") { "Password" }
+            label(:id => "password-label", :for => "password") { _( "Password" ) }
           end
           td(:id => "password-container") do
             input(:type => "password", :id => "password", :name => "password", 
@@ -89,7 +89,7 @@ module CASServer::Views
           td(:id => "submit-container") do
             input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
             input(:type => "hidden", :id => "service", :name => "service", :value => @service)
-            input(:type => "submit", :class => "button", :accesskey => "l", :value => "LOGIN", :tabindex => "4", :id => "login-submit")
+            input(:type => "submit", :class => "button", :accesskey => "l", :value => _("LOGIN"), :tabindex => "4", :id => "login-submit")
           end
         end
         tr do
@@ -108,7 +108,7 @@ module CASServer::Views
         td(:colspan => 2) do
           div(:id => "headline-container") do
             strong organization
-            text " Central Login"
+            text _(" Central Login")
           end
         end
       end
