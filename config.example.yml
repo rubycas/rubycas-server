@@ -367,6 +367,15 @@ infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-
 # Custom views file.  Overrides methodes in lib/casserver/views.rb
 #custom_views_file: /path/to/custom/views.rb
 
+# Default gui language. 
+# Used if not mentioned other via GET parameter "lang".
+# This parameter is optional. default: en
+# Format same as in linux locale (langagecode_COUNTRYCODE): 
+#
+#   ru_RU - Russian, Russia
+#   eo_AQ - Esperanto, Antarctica 
+#   
+#language: en
 
 ##### LOGGING ##################################################################
 
