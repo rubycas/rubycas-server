@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (c) 2007 Urbacon Ltd.
+# Copyright (c) 2008 Urbacon Ltd.
 #
 # System startup script for the RubyCAS-Server
 #
