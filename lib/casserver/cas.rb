@@ -251,16 +251,21 @@ module CASServer::CAS
 </samlp:LogoutRequest>}
     )
     
-    http.start do |conn|
-      response = conn.request(req)
-            
-      if response.kind_of? Net::HTTPSuccess
-        $LOG.info "Logout notification successfully posted to #{st.service.inspect}."
-        return true
-      else
-        $LOG.error "Service #{st.service.inspect} responed to logout notification with code '#{response.code}'!"
-        return false
+    begin
+      http.start do |conn|
+        response = conn.request(req)
+              
+        if response.kind_of? Net::HTTPSuccess
+          $LOG.info "Logout notification successfully posted to #{st.service.inspect}."
+          return true
+        else
+          $LOG.error "Service #{st.service.inspect} responed to logout notification with code '#{response.code}'!"
+          return false
+        end
       end
+    rescue => e
+      $LOG.error "Failed to send logout notification to service #{st.service.inspect} due to #{e}"
+          return false
     end
   end
   
