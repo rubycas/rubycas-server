@@ -9,9 +9,9 @@ rescue LoadError
   require 'active_record'
 end
 
-# This is a of the SQL authenticator and it works nice with RestfulAuthentication. 
+# This is a version of the SQL authenticator that works nicely with RestfulAuthentication. 
 # Passwords are encrypted the same way as it done in RestfulAuthentication. 
-# Before use you MUST configure rest_auth_digest_streches and rest_auth_site_key in 
+# Before use you this, you MUST configure rest_auth_digest_streches and rest_auth_site_key in 
 # config. 
 #
 # Using this authenticator requires restful authentication plugin on rails (client) side.
