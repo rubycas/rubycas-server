@@ -10,7 +10,7 @@ DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 EXTRA_DEPENDENCIES = [
   'activesupport',
   'activerecord',
-  'ruby-gettext',
+  'gettext',
   ['picnic', '>= 0.7.0']
 ]    # An array of rubygem dependencies [name, version]
 
@@ -35,9 +35,9 @@ end
 
 ENV['NODOT'] = '1'
 
-REV = nil
+#REV = nil
 # UNCOMMENT IF REQUIRED:
-#REV = YAML.load(`svn info`)['Revision']
+REV = YAML.load(`svn info`)['Revision']
 VERS = CASServer::VERSION::STRING + (REV ? ".#{REV}" : "")
 RDOC_OPTS = ['--quiet', '--title', 'rubycas-server documentation',
     "--opname", "index.html",
@@ -65,10 +65,10 @@ $hoe = Hoe.new(GEM_NAME, VERS) do |p|
 
   # == Optional
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  #p.extra_deps = EXTRA_DEPENDENCIES
+  p.extra_deps = EXTRA_DEPENDENCIES
 
-    p.spec_extras = {:executables => ['rubycas-server', 'rubycas-server-ctl']}    # A hash of extra values to set in the gemspec.
-  end
+  p.spec_extras = {:executables => ['rubycas-server', 'rubycas-server-ctl']}    # A hash of extra values to set in the gemspec.
+end
 
 CHANGES = $hoe.paragraphs_of('History.txt', 0..1).join("\\n\\n")
 PATH    = (RUBYFORGE_PROJECT == GEM_NAME) ? RUBYFORGE_PROJECT : "#{RUBYFORGE_PROJECT}"
