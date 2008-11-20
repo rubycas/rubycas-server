@@ -367,6 +367,31 @@ infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-
 # Custom views file.  Overrides methodes in lib/casserver/views.rb
 #custom_views_file: /path/to/custom/views.rb
 
+##### LOCALIZATION (L10N) #######################################################
+# The server will attempt to detect the user's locale and show text in the 
+# appropriate language based on:
+#
+#   1. The 'lang' URL parameter (if any)
+#   2. The 'lang' cookie (if any)
+#   3. The HTTP_ACCEPT_LANGUAGE header supplied by the user's browser.
+#   4. The HTTP_USER_AGENT header supplied by the user's browser.
+#
+# If the locale cannot be established based on one of the above checks (in the 
+# shown order), then the below 'default_locale' option will be used.
+#
+# The format is the same as standard linux locales (langagecode_COUNTRYCODE): 
+#
+#   ru_RU - Russian, Russia
+#   eo_AQ - Esperanto, Antarctica 
+#   
+# It will also work if you leave out the region (i.e. just "ru" for Russian,
+# "eo" for Esperanto).
+#
+# If you are interested in contributing new translations or have corrections
+# to the existing translations, see 
+# http://code.google.com/p/rubycas-server/wiki/HowToContribueTranslations
+#
+default_locale: en
 
 ##### LOGGING ##################################################################
 

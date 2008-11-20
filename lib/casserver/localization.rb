@@ -12,7 +12,7 @@ module CASServer
   end
   
   def determine_locale
-    lang = "en"
+    lang = ($CONF[:default_locale] || "en")
     lang = @input['lang'] unless @input['lang'].blank? 
     lang ||= @cookies['lang'] unless @cookies['lang'].blank? 
     lang ||= @env.HTTP_ACCEPT_LANGUAGE unless @env.HTTP_ACCEPT_LANGUAGE.blank?
