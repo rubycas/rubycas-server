@@ -20,30 +20,30 @@ msgstr ""
 msgid ""
 "You are currently logged in as '%s'. If this is not you, please log in below."
 msgstr ""
-"Sie sind derzeit angemeldet als '%s'. Ist dies nicht Sie, melden Sie sich bitte unten."
+"Sie sind derzeit angemeldet als '%s'. Sollten dies nicht Sie sein, melden Sie sich bitte unten an."
 
 #: lib/casserver/controllers.rb:37
 msgid ""
 "The client and server are unable to negotiate authentication. Please try "
 "logging in again later."
 msgstr ""
-"Der Client und-Server sind nicht in der Lage zu verhandeln Authentifizierung. Bitte versuchen "
-"Sie, sich zu einem späteren Zeitpunkt erneut."
+"Client und Server sind nicht in der Lage eine Authentifizierung auszuhandeln. Bitte versuchen "
+"Sie, sich zu einem späteren Zeitpunkt erneut anzumelden."
 
 #: lib/casserver/controllers.rb:54
 msgid ""
 "The server cannot fulfill this gateway request because no service parameter "
 "was given."
 msgstr ""
-"Der Server kann nicht erfüllt dieses Gateway Antrag, da keine Service-Parameter "
-"wurde."
+"Der Server kann diese Gateway-Anfrage nicht erfüllen, da keine Service-Parameter übergeben "
+"wurden."
 
 #: lib/casserver/controllers.rb:59 lib/casserver/controllers.rb:195
 msgid ""
 "The target service your browser supplied appears to be invalid. Please "
 "contact your system administrator for help."
 msgstr ""
-"Das Ziel Service Ihres Browsers geliefert scheint ungültig zu sein. Bitte "
+"Das Ziel-Service, welches Ihr Browsers geliefert hat, scheint ungültig zu sein. Bitte "
 "wenden Sie sich an Ihren Systemadministrator, um Hilfe zu erhalten."
 
 #: lib/casserver/controllers.rb:88
@@ -51,8 +51,8 @@ msgid ""
 "Could not guess the CAS login URI. Please supply a submitToURI parameter "
 "with your request."
 msgstr ""
-"Der CAS-Login-URI konnte nicht die erraten werden. Bitte geben Sie ein submitToURI Parameter "
-"mit Ihrer Anfrage."
+"Der CAS-Login-URI konnte nicht erraten werden. Bitte ergänzen Sie Ihre Anfrage "
+" um einen submitToURI Parameter."
 
 #: lib/casserver/controllers.rb:184
 msgid "You have successfully logged in."
@@ -72,11 +72,11 @@ msgstr " Bitte klicken Sie auf den folgenden Link, um fortzufahren:"
 
 #: lib/casserver/controllers.rb:412
 msgid "To generate a login ticket, you must make a POST request."
-msgstr "Um eine Login-Ticket, müssen Sie eine POST-Anfrage."
+msgstr "Für die Generierung eines Login-Tickets, ist eine POST-Anfrage erforderlich."
 
 #: lib/casserver/views.rb:41 lib/casserver/views.rb:111
 msgid " Central Login"
-msgstr " Mittel-Login"
+msgstr " Zentrales Login"
 
 #: lib/casserver/views.rb:71
 msgid "Username"

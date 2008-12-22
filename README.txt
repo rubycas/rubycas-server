@@ -1,6 +1,7 @@
 = RubyCAS-Server
 
-*Copyright*:: 2008 Urbacon Ltd.
+*Copyright*:: Portions contributed by Matt Zukowski are copyright (c) 2008 Urbacon Ltd.
+              Other portions are copyright of their respective authors.
 *Authors*::   See http://github.com/gunark/rubycas-server/commits/
 *Homepage*::  http://rubycas-server.googlecode.com
 

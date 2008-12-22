@@ -1,3 +1,17 @@
+=== 0.8.0 :: In Progress...
+
+* NEW:
+  * Support for localization via Ruby-GetText. [antono]
+  * New SQL authenticator (sql_rest_auth) compatible with the
+    restful_authentication Rails plugin. [antono]
+
+* FIXED:
+  * Fixed weird problems with loading controllers when using older versions of 
+    activesupport and/or rubygems.
+  * Failure to connect to a service during a single sign out request is now
+    handled gracefully.
+  * Required gem dependencies have been re-enabled in the gemspec.
+
 === 0.7.1 :: 2008-11-10
 
 * Fixed dependency loading problems introduced by upstream changes in RubyGems 
@@ -5,7 +19,7 @@
 
 === 0.7.0 :: 2008-11-04
 
-* New functionality:
+* NEW:
   * Implemented single-sign-out functionality as specified in CAS 3.3.  See
     http://www.ja-sig.org/wiki/display/CASUM/Single+Sign+Out.
   * It is now possible to configure Authenticators to return extra attributes
@@ -19,7 +33,7 @@
   * Added new Google authenticator for authenticating against Google/GMail
     accounts.
        
-* Changes to existing functionality:
+* CHANGED:
   * Service URIs are now automatically normalized. For example, if the service 
     URI given to the server has a 'ticket' parameter, the ticket will now be 
     automatically stripped. This is to avert any possible issues raised by 
@@ -53,7 +67,7 @@
     errors (where the server rather than the client is at fault) have error 500.
     Previously most responses had error code 200, regardless of their contents.
     
-* Bug fixes
+* FIXED:
   * Fixed logout action to work properly with ActiveRecord 2.1 (eager loading behaviour
     was changed upstream forcing a change to the way we look for ProxyGrantingTickets
     to delete on logout).
