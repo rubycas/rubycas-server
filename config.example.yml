@@ -247,8 +247,8 @@ database:
 #
 # This is a more general version of the ActiveDirectory authenticator.
 # The configuration is similar, except you don't need an authenticator
-# username or password. Note that this authenticator hasn't been widely
-# tested, so it is not guaranteed to work.
+# username or password. The following example has been reported to work 
+# for a basic OpenLDAP setup.
 #
 #authenticator:
 #  class: CASServer::Authenticators::LDAP
@@ -256,10 +256,14 @@ database:
 #    host: ldap.example.net
 #    port: 389
 #    base: dc=example,dc=net
+#    username_attribute: uid
 #    filter: (objectClass=person)
 #
 # If you need more secure connections via TSL, specify the 'encryption'
-# option and change the port:
+# option and change the port. This example also forces the authenticator
+# to connect using a special "authenticator" user with the given
+# username and password (see the ActiveDirectoryLDAP authenticator
+# explanation above):
 #
 #authenticator:
 #  class: CASServer::Authenticators::LDAP
@@ -269,6 +273,8 @@ database:
 #    base: dc=example,dc=net
 #    filter: (objectClass=person)
 #    encryption: simple_tls
+#    auth_user: cn=admin,dc=example,dc=net
+#    auth_password: secret
 #
 # If you need additional data about the user passed to the client (for example,
 # their 'cn' and 'mail' attributes, you can specify the list of attributes
