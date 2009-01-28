@@ -37,7 +37,7 @@ ENV['NODOT'] = '1'
 
 #REV = nil
 # UNCOMMENT IF REQUIRED:
-REV = YAML.load(`svn info`)['Revision']
+REV = Time.now.strftime('%y%m%d%H%M')
 VERS = CASServer::VERSION::STRING + (REV ? ".#{REV}" : "")
 RDOC_OPTS = ['--quiet', '--title', 'rubycas-server documentation',
     "--opname", "index.html",
