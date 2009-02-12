@@ -47,8 +47,8 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::Base
     # XXX: this constants MUST be defined in config. 
     # For more details # look at restful-authentication docs.
     #
-    REST_AUTH_DIGEST_STRETCHES = CASServer::Conf.rest_auth_digest_streches
-    REST_AUTH_SITE_KEY         = CASServer::Conf.rest_auth_site_key
+    REST_AUTH_DIGEST_STRETCHES = $CONF.rest_auth_digest_streches
+    REST_AUTH_SITE_KEY         = $CONF.rest_auth_site_key
 
     def self.included(mod)
       raise "#{self} should be inclued in an ActiveRecord class!" unless mod.respond_to?(:before_save)

@@ -1,1 +1,1 @@
-require 'casserver'
+require File.dirname(__FILE__)+'/casserver'

@@ -1,4 +1,4 @@
-require 'camping/db'
+require 'camping/ar'
 
 module CASServer::Models
   

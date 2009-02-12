@@ -1,7 +1,7 @@
 # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec
 # under http://www.ja-sig.org/products/cas/overview/protocol/index.html
 
-require 'cas'
+require 'casserver/cas'
 
 module CASServer::Controllers
 
@@ -73,8 +73,8 @@ module CASServer::Controllers
       # The optional 'submitToURI' parameter can be given to explicitly set the
       # action for the form, otherwise the server will try to guess this for you.
       if @input.has_key? 'onlyLoginForm'
-        if env['HTTP_HOST']
-          guessed_login_uri = "http#{env['HTTPS'] && env['HTTPS'] == 'on' ? 's' : ''}://#{env['REQUEST_URI']}#{self / '/login'}"
+        if @env['HTTP_HOST']
+          guessed_login_uri = "http#{@env['HTTPS'] && @env['HTTPS'] == 'on' ? 's' : ''}://#{@env['REQUEST_URI']}#{self / '/login'}"
         else
           guessed_login_uri = nil
         end
@@ -124,9 +124,9 @@ module CASServer::Controllers
       @lt = generate_login_ticket.ticket
       
       if $CONF[:authenticator].instance_of? Array
-        $AUTH.each_index {|auth_index| $AUTH[auth_index].configure(CASServer::Conf.authenticator[auth_index])}
+        $AUTH.each_index {|auth_index| $AUTH[auth_index].configure($CONF.authenticator[auth_index])}
       else
-        $AUTH[0].configure(CASServer::Conf.authenticator)
+        $AUTH[0].configure($CONF.authenticator)
       end
 
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
@@ -140,7 +140,7 @@ module CASServer::Controllers
             :username => @username, 
             :password => @password, 
             :service => @service,
-            :request => env
+            :request => @env
           )
           if credentials_are_valid
             extra_attributes.merge!(auth.extra_attributes) unless auth.extra_attributes.blank?
@@ -161,17 +161,17 @@ module CASServer::Controllers
         # 3.6 (ticket-granting cookie)
         tgt = generate_ticket_granting_ticket(@username, extra_attributes)
         
-        if CASServer::Conf.expire_sessions
-          expires = CASServer::Conf.ticket_granting_ticket_expiry.to_i.from_now
+        if $CONF.expire_sessions
+          expires = $CONF.ticket_granting_ticket_expiry.to_i.from_now
           expiry_info = " It will expire on #{expires}."
         else
           expiry_info = " It will not expire."
         end
         
-        if CASServer::Conf.expire_sessions
+        if $CONF.expire_sessions
           @cookies[:tgt] = {
             :value => tgt.to_s, 
-            :expires => Time.now + CASServer::Conf.ticket_granting_ticket_expiry
+            :expires => Time.now + $CONF.ticket_granting_ticket_expiry
           }
         else
           @cookies[:tgt] = tgt.to_s
@@ -236,7 +236,7 @@ module CASServer::Controllers
             pgt.destroy
           end
           
-          if CASServer::Conf.enable_single_sign_out
+          if $CONF.enable_single_sign_out
             $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
             tgt.service_tickets.each do |st|
               send_logout_notification_for_service_ticket(st)
@@ -418,7 +418,7 @@ module CASServer::Controllers
       CASServer::Utils::log_controller_action(self.class, @input)
       lt = generate_login_ticket
       
-      $LOG.debug("Dispensing login ticket #{lt} to host #{(env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']).inspect}")
+      $LOG.debug("Dispensing login ticket #{lt} to host #{(@env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']).inspect}")
       
       @lt = lt.ticket
       
@@ -429,13 +429,17 @@ module CASServer::Controllers
   class Themes < R '/themes/(.+)'         
     MIME_TYPES = {'.css' => 'text/css', '.js' => 'text/javascript', 
                   '.jpg' => 'image/jpeg'}
-    PATH = CASServer::Conf.themes_dir || File.expand_path(File.dirname(__FILE__))+'/../themes'
+    PATH = $CONF.themes_dir || File.expand_path(File.dirname(__FILE__))+'/../themes'
 
-    def get(path)@headers['Content-Type'] = MIME_TYPES[path[/\.\w+$/, 0]] || "text/plain"
+    def get(path)
+      headers['Content-Type'] = MIME_TYPES[path[/\.\w+$/, 0]] || "text/plain"
       unless path.include? ".." # prevent directory traversal attacks
-        @headers['X-Sendfile'] = "#{PATH}/#{path}"
+        headers['X-Sendfile'] = "#{PATH}/#{path}"
+        data = File.read(headers['X-Sendfile']) 
+        headers['Content-Length'] = data.size.to_s # Rack Camping adapter chokes without this
+        return data
       else
-        @status = "403"
+        status = "403"
         "403 - Invalid path"
       end
     end

@@ -9,11 +9,11 @@ module CASServer
       # TODO: verify the certificate's validity
       # example of how to do this is here: http://pablotron.org/download/ruri-20050331.rb
       
-      cert_path = CASServer::Conf.ssl_cert
-      key_path = CASServer::Conf.ssl_key || CASServer::Conf.ssl_cert
+      cert_path = $CONF.ssl_cert
+      key_path = $CONF.ssl_key || $CONF.ssl_cert
         # look for the key in the ssl_cert if no ssl_key is specified
       
-      webrick_options = {:BindAddress => "0.0.0.0", :Port => CASServer::Conf.port}
+      webrick_options = {:BindAddress => "0.0.0.0", :Port => $CONF.port}
       
       unless cert_path.nil? && key_path.nil?
         raise "'#{cert_path}' is not a valid ssl certificate. Your 'ssl_cert' configuration" +
@@ -41,9 +41,9 @@ module CASServer
       end
       
       CASServer.create
-      s.mount "#{CASServer::Conf.uri_path}", WEBrick::CampingHandler, CASServer
+      s.mount "#{$CONF.uri_path}", WEBrick::CampingHandler, CASServer
       
-      puts "\n** CASServer is running at http#{webrick_options[:SSLEnable] ? 's' : ''}://#{Socket.gethostname}:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'\n\n"
+      puts "\n** CASServer is running at http#{webrick_options[:SSLEnable] ? 's' : ''}://#{Socket.gethostname}:#{$CONF.port}#{$CONF.uri_path} and logging to '#{$CONF.log[:file]}'\n\n"
     
       # This lets Ctrl+C shut down your server
       trap(:INT) do
@@ -79,19 +79,19 @@ module CASServer
       
       CASServer.create
       
-      puts "\n** CASServer is starting. Look in '#{CASServer::Conf.log[:file]}' for further notices."
+      puts "\n** CASServer is starting. Look in '#{$CONF.log[:file]}' for further notices."
       
-      settings = {:host => "0.0.0.0", :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME}
+      settings = {:host => "0.0.0.0", :log_file => $CONF.log[:file], :cwd => $CASSERVER_HOME}
       
       # need to close all IOs before daemonizing
       $LOG.close if $DAEMONIZE
       
       begin
         config = Mongrel::Configurator.new settings  do
-          daemonize :log_file => CASServer::Conf.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
+          daemonize :log_file => $CONF.log[:file], :cwd => $CASSERVER_HOME if $DAEMONIZE
           
-          listener :port => CASServer::Conf.port do
-            uri CASServer::Conf.uri_path, :handler => Mongrel::Camping::CampingHandler.new(CASServer)
+          listener :port => $CONF.port do
+            uri $CONF.uri_path, :handler => Mongrel::Camping::CampingHandler.new(CASServer)
             setup_signals
           end
         end
@@ -112,7 +112,7 @@ module CASServer
         end
       end
       
-      puts "\n** CASServer is running at http://localhost:#{CASServer::Conf.port}#{CASServer::Conf.uri_path} and logging to '#{CASServer::Conf.log[:file]}'"
+      puts "\n** CASServer is running at http://localhost:#{$CONF.port}#{$CONF.uri_path} and logging to '#{$CONF.log[:file]}'"
       config.join
 
       clear_pid_file
@@ -137,7 +137,7 @@ module CASServer
     
     private
     def check_log_writable
-      log_file = CASServer::Conf.log['file']
+      log_file = $CONF.log['file']
       begin
         f = open(log_file, 'w')
       rescue

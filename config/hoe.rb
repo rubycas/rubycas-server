@@ -11,7 +11,7 @@ EXTRA_DEPENDENCIES = [
   'activesupport',
   'activerecord',
   'gettext',
-  ['picnic', '>= 0.7.0']
+  ['picnic', '>= 0.7.999']
 ]    # An array of rubygem dependencies [name, version]
 
 @config_file = "~/.rubyforge/user-config.yml"

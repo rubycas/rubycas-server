@@ -8,6 +8,7 @@ Rakefile
 bin/rubycas-server
 bin/rubycas-server-ctl
 config.example.yml
+config.ru
 config/hoe.rb
 config/requirements.rb
 custom_views.example.rb
@@ -54,8 +55,6 @@ locale/fr_FR/LC_MESSAGES/rubycas-server.mo
 locale/ja_JP/LC_MESSAGES/rubycas-server.mo
 locale/pl_PL/LC_MESSAGES/rubycas-server.mo
 locale/ru_RU/LC_MESSAGES/rubycas-server.mo
-misc/basic_cas_single_signon_mechanism_diagram.png
-misc/basic_cas_single_signon_mechanism_diagram.svg
 po/de_DE/rubycas-server.po
 po/es_ES/rubycas-server.po
 po/fr_FR/rubycas-server.po
@@ -63,6 +62,7 @@ po/ja_JP/rubycas-server.po
 po/pl_PL/rubycas-server.po
 po/ru_RU/rubycas-server.po
 po/rubycas-server.pot
+public/restart.txt
 resources/init.d.sh
 script/console
 script/destroy
@@ -81,8 +81,4 @@ vendor/isaac_0.9.1/crypt/ISAAC.rb
 vendor/isaac_0.9.1/isaac.gemspec
 vendor/isaac_0.9.1/setup.rb
 vendor/isaac_0.9.1/test/TC_ISAAC.rb
-website/index.html
-website/index.txt
-website/javascripts/rounded_corners_lite.inc.js
-website/stylesheets/screen.css
-website/template.html.erb
+

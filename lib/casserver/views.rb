@@ -214,17 +214,17 @@ module CASServer::Views
     module_function :themes_dir
     
     def current_theme
-      CASServer::Conf.theme || "simple"
+      $CONF.theme || "simple"
     end
     module_function :current_theme
     
     def organization
-      CASServer::Conf.organization || ""
+      $CONF.organization || ""
     end
     module_function :organization
     
     def infoline
-      CASServer::Conf.infoline || ""
+      $CONF.infoline || ""
     end
     module_function :infoline
     
@@ -238,6 +238,6 @@ module CASServer::Views
     module_function :serialize_extra_attribute
 end
 
-if CASServer::Conf.custom_views_file
-  require CASServer::Conf.custom_views_file
+if $CONF.custom_views_file
+  require $CONF.custom_views_file
 end
