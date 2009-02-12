@@ -62,7 +62,6 @@ po/ja_JP/rubycas-server.po
 po/pl_PL/rubycas-server.po
 po/ru_RU/rubycas-server.po
 po/rubycas-server.pot
-public/restart.txt
 resources/init.d.sh
 script/console
 script/destroy
