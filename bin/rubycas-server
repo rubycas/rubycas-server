@@ -21,7 +21,7 @@ require 'picnic/cli'
 cli = Picnic::Cli.new(
   'rubycas-server',
   :app_module => 'CASServer',
-  :app_file => File.expand_path(File.dirname(File.expand_path($0))+"/../lib/casserver.rb")
+  :app_file => File.expand_path(File.dirname(File.expand_path(__FILE__))+"/../lib/casserver.rb")
 )
 
 cli.handle_cli_input
