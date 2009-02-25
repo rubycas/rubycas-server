@@ -11,7 +11,7 @@ module CASServer::Controllers
 
     # 2.1.1
     def get
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       
       # make sure there's no caching
       headers['Pragma'] = 'no-cache'
@@ -19,11 +19,11 @@ module CASServer::Controllers
       headers['Expires'] = (Time.now - 1.year).rfc2822
       
       # optional params
-      @service = clean_service_url(@input['service'])
-      @renew = @input['renew']
-      @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
+      @service = clean_service_url(input['service'])
+      @renew = input['renew']
+      @gateway = input['gateway'] == 'true' || input['gateway'] == '1'
       
-      if tgc = @cookies[:tgt]
+      if tgc = cookies['tgt']
         tgt, tgt_error = validate_ticket_granting_ticket(tgc)
       end
       
@@ -32,7 +32,7 @@ module CASServer::Controllers
           :message => _("You are currently logged in as '%s'. If this is not you, please log in below.") % tgt.username }
       end
 
-      if @input['redirection_loop_intercepted']
+      if input['redirection_loop_intercepted']
         @message = {:type => 'mistake', 
           :message => _("The client and server are unable to negotiate authentication. Please try logging in again later.")}
       end
@@ -72,14 +72,14 @@ module CASServer::Controllers
       # embed the login form in some external page (as an IFRAME, or otherwise).
       # The optional 'submitToURI' parameter can be given to explicitly set the
       # action for the form, otherwise the server will try to guess this for you.
-      if @input.has_key? 'onlyLoginForm'
+      if input.has_key? 'onlyLoginForm'
         if @env['HTTP_HOST']
           guessed_login_uri = "http#{@env['HTTPS'] && @env['HTTPS'] == 'on' ? 's' : ''}://#{@env['REQUEST_URI']}#{self / '/login'}"
         else
           guessed_login_uri = nil
         end
 
-        @form_action = @input['submitToURI'] || guessed_login_uri
+        @form_action = input['submitToURI'] || guessed_login_uri
         
         if @form_action
           render :login_form
@@ -94,15 +94,15 @@ module CASServer::Controllers
     
     # 2.2
     def post
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       
       # 2.2.1 (optional)
-      @service = clean_service_url(@input['service'])
+      @service = clean_service_url(input['service'])
       
       # 2.2.2 (required)
-      @username = @input['username']
-      @password = @input['password']
-      @lt = @input['lt']
+      @username = input['username']
+      @password = input['password']
+      @lt = input['lt']
       
       # Remove leading and trailing widespace from username.
       @username.strip! if @username
@@ -169,15 +169,15 @@ module CASServer::Controllers
         end
         
         if $CONF.expire_sessions
-          @cookies[:tgt] = {
+          cookies['tgt'] = {
             :value => tgt.to_s, 
             :expires => Time.now + $CONF.ticket_granting_ticket_expiry
           }
         else
-          @cookies[:tgt] = tgt.to_s
+          cookies['tgt'] = tgt.to_s
         end
         
-        $LOG.debug("Ticket granting cookie '#{@cookies[:tgt].inspect}' granted to '#{@username.inspect}'. #{expiry_info}")
+        $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to '#{@username.inspect}'. #{expiry_info}")
                 
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
@@ -211,20 +211,20 @@ module CASServer::Controllers
     
     # 2.3.1
     def get
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       
       # The behaviour here is somewhat non-standard. Rather than showing just a blank
       # "logout" page, we take the user back to the login page with a "you have been logged out"
       # message, allowing for an opportunity to immediately log back in. This makes it
       # easier for the user to log out and log in as someone else.
-      @service = clean_service_url(@input['service'] || @input['destination'])
-      @continue_url = @input['url']
+      @service = clean_service_url(input['service'] || input['destination'])
+      @continue_url = input['url']
       
-      @gateway = @input['gateway'] == 'true' || @input['gateway'] == '1'
+      @gateway = input['gateway'] == 'true' || input['gateway'] == '1'
       
-      tgt = CASServer::Models::TicketGrantingTicket.find_by_ticket(@cookies[:tgt])
+      tgt = CASServer::Models::TicketGrantingTicket.find_by_ticket(cookies['tgt'])
       
-      @cookies.delete :tgt
+      cookies.delete 'tgt'
       
       if tgt
         CASServer::Models::TicketGrantingTicket.transaction do
@@ -279,13 +279,13 @@ module CASServer::Controllers
   
     # 2.4.1
     def get
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       
       # required
-      @service = clean_service_url(@input['service'])
-      @ticket = @input['ticket']
+      @service = clean_service_url(input['service'])
+      @ticket = input['ticket']
       # optional
-      @renew = @input['renew']
+      @renew = input['renew']
       
       st, @error = validate_service_ticket(@service, @ticket)      
       @success = st && !@error
@@ -304,14 +304,14 @@ module CASServer::Controllers
   
     # 2.5.1
     def get
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       
       # required
-      @service = clean_service_url(@input['service'])
-      @ticket = @input['ticket']
+      @service = clean_service_url(input['service'])
+      @ticket = input['ticket']
       # optional
-      @pgt_url = @input['pgtUrl']
-      @renew = @input['renew']
+      @pgt_url = input['pgtUrl']
+      @renew = input['renew']
       
       st, @error = validate_service_ticket(@service, @ticket)      
       @success = st && !@error
@@ -337,14 +337,14 @@ module CASServer::Controllers
   
     # 2.6.1
     def get
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       
       # required
-      @service = clean_service_url(@input['service'])
-      @ticket = @input['ticket']
+      @service = clean_service_url(input['service'])
+      @ticket = input['ticket']
       # optional
-      @pgt_url = @input['pgtUrl']
-      @renew = @input['renew']
+      @pgt_url = input['pgtUrl']
+      @renew = input['renew']
       
       @proxies = []
       
@@ -378,11 +378,11 @@ module CASServer::Controllers
   
     # 2.7
     def get
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       
       # required
-      @ticket = @input['pgt']
-      @target_service = @input['targetService']
+      @ticket = input['pgt']
+      @target_service = input['targetService']
       
       pgt, @error = validate_proxy_granting_ticket(@ticket)
       @success = pgt && !@error
@@ -406,7 +406,7 @@ module CASServer::Controllers
     include CASServer::CAS
     
     def get
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       $LOG.error("Tried to use login ticket dispenser with get method!")
       @status = 422
       _("To generate a login ticket, you must make a POST request.")
@@ -415,7 +415,7 @@ module CASServer::Controllers
     # Renders a page with a login ticket (and only the login ticket)
     # in the response body.
     def post
-      CASServer::Utils::log_controller_action(self.class, @input)
+      CASServer::Utils::log_controller_action(self.class, input)
       lt = generate_login_ticket
       
       $LOG.debug("Dispensing login ticket #{lt} to host #{(@env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']).inspect}")
