@@ -56,6 +56,7 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     end
     
     def encrypt(str)
+      generate_encryption_salt unless encryption_salt
       Digest::SHA256.hexdigest("#{encryption_salt}::#{str}")
     end
     
