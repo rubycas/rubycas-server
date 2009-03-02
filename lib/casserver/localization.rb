@@ -3,7 +3,7 @@ require "gettext/cgi"
 
 module CASServer
   include GetText
-  bindtextdomain("rubycas-server", :path => File.join(File.dirname(File.expand_path(__FILE__)), "../locale"))
+  bindtextdomain("rubycas-server", :path => File.join(File.dirname(File.expand_path(__FILE__)), "../../locale"))
   
   def service(*a)
     GetText.locale = determine_locale
@@ -57,6 +57,6 @@ module CASServer
   end
   
   def available_locales
-    (Dir.glob(File.join(File.dirname(File.expand_path(__FILE__)), "../locale/[a-z]*")).map{|path| File.basename(path)} << "en").uniq.collect{|l| l.gsub('_','-')}
+    (Dir.glob(File.join(File.dirname(File.expand_path(__FILE__)), "../../locale/[a-z]*")).map{|path| File.basename(path)} << "en").uniq.collect{|l| l.gsub('_','-')}
   end
 end
