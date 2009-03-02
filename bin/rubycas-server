@@ -13,7 +13,7 @@ else
     alias gem require_gem
   end
  
-  gem 'picnic'
+  require 'picnic'
 end
 
 require 'picnic/cli'
