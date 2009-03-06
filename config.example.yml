@@ -2,68 +2,150 @@
 # ---> Be sure to use spaces instead of tabs for indentation. YAML is 
 #      white-space sensitive!
 
-##### SERVER ###################################################################
+##### SERVER SETUP ################################################################
 
-# Under what environment are you running the CAS server? The following methods
-# are currently supported:
+# There are several ways to run RubyCAS-Server:
 #
-# webrick -- run as a stand-alone webrick server; this is the default method
-# mongrel -- run as a stand-alone mongrel server; fast, but you'll need to 
-#            install mongrel and run it behind an https reverse proxy like Pound 
-#            or Apache 2.2's mod_proxy)
-# cgi     -- slow, but simple to set up if you're already familliar with 
-#            deploying CGI scripts
-# fastcgi -- see http://www.fastcgi.com (e.g. under Apache you can use this with 
-#            mod_fastcgi)
+# webrick   -- stand-alone WEBrick server; should work out-of-the-box; this is 
+#              the default method, but probably not suited for high-traffic usage
+# mongrel   -- stand-alone Mongrel server; fast, but you'll need to  install  
+#              and compile Mongrel and run it behind an https reverse proxy like 
+#              Pound or Apache 2.2's mod_proxy (since Mongrel cannot serve out
+#              over SSL on its own).
+# passenger -- served out by Apache via the mod_rails/mod_rack module
+#              (see http://www.modrails.com/)
 #
-# The cgi and fastcgi methods have not been thoroughly tested! 
-# Please report any problems to the authors.
-# 
-# IMPORTANT: If you use mongrel, you will need to run the server behind a 
-#            reverse proxy (Pound, Apache 2.2 with mod_proxy, etc.) since 
-#            mongrel does not support SSL/HTTPS. See the RubyCAS-Server install 
-#            docs for more info.
+# The following are exampe configurations for each of these three methods:
+#
 
-### webrick example
+
+###
+### WEBrick example
+###
+# WEBrick is a simple, all-Ruby web server. This is the easiest method for running
+# RubyCAS-Server. All you need is an SSL certificate (enter its path under the
+# ssl_cert option). WEBrick is fine for sites with low to medium traffic, but for
+# high-performance scenarios you may want to look into deploying using Mongrel
+# or Passenger.
 
 server: webrick
 port: 443
 ssl_cert: /path/to/your/ssl.pem
 
-# If private key is separate from cert
+# If your private key is separate from cert
+
 #ssl_key: /path/to/your/private_key.pem
 
+
 # By default the login page will be available at the root path 
-# (e.g. https://example.foo/). The uri_path option lets you serve it from a 
-# different path (e.g. https://example.foo/cas).
+# (e.g. https://login.example.net/). The uri_path option lets you serve it from a 
+# different path (e.g. https://login.example.net/cas).
+
 #uri_path: /cas
 
-# Bind the server to a specific address. Use 0.0.0.0 to listen on all
-# available interfaces.
+
+# This lets you bind the server to a specific address. Use 0.0.0.0 to listen on
+# all available interfaces (this is the default).
+
 #bind_address: 0.0.0.0
 
-### mongrel example (since mongrel doesn't support SSL on its own, you will have
-###  to run this behind an https reverse proxy)
+
+###
+### Mongrel example 
+###
+# Mongrel is much faster than WEBrick, but there are two caveats:
+#  1. Since Mongrel can't serve out encrypted HTTP on its own (and CAS requires this),
+#     you will have to set up a reverse proxy like Pound or Apache's mod_proxy and
+#     route through it requests to the Mongrel server. So for example,
+#     your Pound server will receive all of the requests to RubyCAS-Server on port 443,
+#     and forward them to the Mongrel server listening on port 11011.
+#  2. Some of Mongrel's components are compiled into native binaries, so if you are 
+#     installing on Linux, make sure you have all of the standard build tools
+#     available. The binaries should be automatically compiled for you when you
+#     install the mogrel gem (if you're runnings Windows, pre-compiled
+#     binaries will be downloaded and installed, so don't worry about this).
 
 #server: mongrel
 #port: 110011
 
+
 # By default the login page will be available at the root path 
-# (e.g. https://example.foo/). The uri_path option lets you serve it from a 
-# different path (e.g. https://example.foo/cas).
+# (e.g. https://login.example.net/). The uri_path option lets you serve it from a 
+# different path (e.g. https://login.example.net/cas).
+
 #uri_path: /cas
 
+
 # Bind the server to a specific address. Use 0.0.0.0 to listen on all
-# available interfaces.
+# available interfaces (this is the default).
+
 #bind_address: 0.0.0.0
 
-### cgi example (you'll need to serve this via an SSL-capable server like Apache)
+### Reverse proxy configuration examples
+# If you're using mod_proxy, your Apache vhost config should look something like this:
+#
+#  Listen 443
+#  <VirtualHost *:443>
+#    ServerAdmin admin@example.net
+#    ServerName login.example.net
+#  
+#    SSLEngine On
+#    SSLCertificateFile /etc/apache2/ssl.crt/example.pem
+#  
+#    # Don't do forward proxying, we only want reverse proxying
+#    ProxyRequests Off
+#  
+#    <Proxy balancer://rubycas>
+#      Order allow,deny
+#      Allow from all
+#      BalancerMember http://127.0.0.1:11011
+#    </Proxy>
+#  </VirtualHost>
+#
+# For Pound, the config should be something like:
+#
+#  ListenHTTPS
+#    Address 0.0.0.0
+#    Port    11011
+#    Cert    "/etc/ssl/example.pem"
+#  
+#    Service
+#      BackEnd
+#        Address localhost
+#        Port    443
+#      End
+#    End
+#  End
 
-#server: cgi
 
-### fastcgi example (you'll need to serve this via an SSL-capable server like Apache)
+###
+### Phusion Passenger (running under Apache configured for SSL)
+###
 
-#server: fastcgi
+# No additional configuration is requried to run RubyCAS-Server under
+# passsenger. Just follow the normal instructions for a Passenger app
+# (see http://www.modrails.com/).
+#
+# Here's an example Apache vhost config for RubyCAS-Server and Passenger:
+#
+#  Listen 442
+#  <VirtualHost *:442>
+#     ServerAdmin admin@example.net
+#     ServerName login.example.net
+#
+#     SSLEngine On
+#     SSLCertificateFile /etc/apache2/ssl.crt/example.pem
+#
+#     RailsAutoDetect off
+#
+#     DocumentRoot /usr/lib/ruby/gems/1.8/gems/rubycas-server-0.8.0/public
+#
+#     <Directory "/usr/lib/ruby/gems/1.8/gems/rubycas-server-0.8.0/public">
+#       AllowOverride all
+#       Allow from all
+#     </Directory>
+#  </VirtualHost>
+#
 
 
 ##### DATABASE #################################################################
@@ -85,6 +167,7 @@ database:
   password: 
   host: localhost
 
+
 #
 # Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else 
 # supported by ActiveRecord.
@@ -92,7 +175,7 @@ database:
 # With SQLite3 (which does not require a separate database server), your 
 # configuration would look something like the following (don't forget to install 
 # the sqlite3-ruby gem beforehand!):
-#
+
 #database:
 #  adapter: sqlite3
 #  dbfile: /var/lib/casserver.db
@@ -102,17 +185,17 @@ database:
 
 # Configure how username/passwords are validated.
 #
-# !!! YOU MUST CONFIGURE ONE OF THESE AUTHENTICATION METHODS !!!
+# !!! YOU MUST CONFIGURE AT LEAST ONE OF THESE AUTHENTICATION METHODS !!!
 #
-# Currently there are three built-in methods for authentication:
-# SQL, ActiveDirectory, and LDAP. If none of these work for you, it is 
-# relatively easy to write your own custom Authenticator class.
+# There are several built-in methods for authentication:
+# SQL, ActiveDirectory, LDAP, and GoogleAccounts. If none of these work for you, 
+# it is relatively easy to write your own custom Authenticator class (see below).
 #
 # === SQL Authentication =======================================================
 #
 # The simplest method is to validate against a SQL database. This assumes
 # that all of your users are stored in a table that has a 'username' column
-# and a 'password' column. When the user logs in, CAS conects to this database
+# and a 'password' column. When the user logs in, CAS connects to this database
 # and looks for a matching username/password in the users table. If a matching
 # username and password is found, authentication is successful.
 #
@@ -138,7 +221,7 @@ database:
 #  password_column: password
 #
 # When replying to a CAS client's validation request, the server will normally
-# provide the client with the authenticated user's username. However it is now
+# provide the client with the authenticated user's username. However it is
 # possible for the server to provide the client with additional attributes.
 # You can configure the SQL authenticator to provide data from additional
 # columns in the users table by listing the names of the columns under the 
@@ -178,10 +261,8 @@ database:
 # For example:
 #
 #authenticator:
-#  -
-#    class: CASServer::Authenticators::Google
-#  -
-#    class: CASServer::Authenticators::SQL
+#  - class: CASServer::Authenticators::Google
+#  - class: CASServer::Authenticators::SQL
 #    database:
 #      adapter: mysql
 #      database: some_database_with_users_table
@@ -196,16 +277,16 @@ database:
 # === ActiveDirectory Authentication ===========================================
 #
 # This method authenticates against Microsoft's Active Directory using LDAP.
-# You must enter your ActiveDirectory server, and base DN. The port number
+# You must configure the ActiveDirectory server, and base DN. The port number
 # and LDAP filter are optional. You must also enter a CN and password
-# for an "authenticator" user. The authenticator users this account to
-# log in to the ActiveDirectory server and search LDAP. This does not have
-# to be an administrative account -- it only has to be able to search for other
+# for a special "authenticator" user. This account is used to log in to
+# the ActiveDirectory server and search LDAP. This does not have to be an
+# administrative account -- it only has to be able to search for other
 # users.
 # 
 # Note that the auth_user parameter must be the user's CN (Common Name).
-# In Active Directory, the CN is genarally the user's full name, which is NOT 
-# generally the same as their username (sAMAccountName).
+# In Active Directory, the CN is genarally the user's full name, which is usually
+# NOT the same as their username (sAMAccountName).
 #
 # For example:
 #
