@@ -69,13 +69,6 @@ ssl_cert: /path/to/your/ssl.pem
 #port: 110011
 
 
-# By default the login page will be available at the root path 
-# (e.g. https://login.example.net/). The uri_path option lets you serve it from a 
-# different path (e.g. https://login.example.net/cas).
-
-#uri_path: /cas
-
-
 # Bind the server to a specific address. Use 0.0.0.0 to listen on all
 # available interfaces (this is the default).
 
