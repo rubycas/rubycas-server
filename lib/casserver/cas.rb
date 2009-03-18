@@ -264,7 +264,7 @@ module CASServer::CAS
           return false
         end
       end
-    rescue => e
+    rescue Exception => e
       $LOG.error "Failed to send logout notification to service #{st.service.inspect} due to #{e}"
           return false
     end

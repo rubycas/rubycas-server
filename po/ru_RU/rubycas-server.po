@@ -86,6 +86,3 @@ msgstr "Пароль"
 #: lib/casserver/views.rb:92
 msgid "LOGIN"
 msgstr "Войти"
-
-#~ msgid "Please wait..."
-#~ msgstr "Подождите..."

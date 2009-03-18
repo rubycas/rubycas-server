@@ -110,6 +110,8 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
       unless @options[:ldap][:filter].blank?
         filter &= Net::LDAP::Filter.construct(@options[:ldap][:filter])
       end
+
+      filter
     end
   
     # Finds the user based on the user_filter (this is called after authentication).
