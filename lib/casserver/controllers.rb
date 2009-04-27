@@ -292,7 +292,7 @@ module CASServer::Controllers
       
       @username = st.username if @success
       
-      @status = response_status_from_error(@error) if @error
+      @status = CASServer::Controllers.response_status_from_error(@error) if @error
       
       render :validate
     end
@@ -325,7 +325,7 @@ module CASServer::Controllers
         @extra_attributes = st.ticket_granting_ticket.extra_attributes || {}
       end
       
-      @status = response_status_from_error(@error) if @error
+      @status = CASServer::Controllers.response_status_from_error(@error) if @error
       
       render :service_validate
     end
@@ -367,7 +367,7 @@ module CASServer::Controllers
         @extra_attributes = t.ticket_granting_ticket.extra_attributes || {}
       end
       
-      @status = response_status_from_error(@error) if @error
+      @status = CASServer::Controllers.response_status_from_error(@error) if @error
 
      render :proxy_validate
     end
@@ -391,7 +391,7 @@ module CASServer::Controllers
         @pt = generate_proxy_ticket(@target_service, pgt)
       end
       
-      @status = response_status_from_error(@error) if @error
+      @status = CASServer::Controllers.response_status_from_error(@error) if @error
       
       render :proxy
     end
