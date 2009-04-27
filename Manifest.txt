@@ -28,7 +28,6 @@ lib/casserver/authenticators/test.rb
 lib/casserver/cas.rb
 lib/casserver/conf.rb
 lib/casserver/controllers.rb
-lib/casserver/environment.rb
 lib/casserver/localization.rb
 lib/casserver/models.rb
 lib/casserver/postambles.rb
