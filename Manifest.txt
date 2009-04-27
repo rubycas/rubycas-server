@@ -3,7 +3,7 @@ History.txt
 LICENSE.txt
 Manifest.txt
 PostInstall.txt
-README.rdoc
+README.txt
 Rakefile
 bin/rubycas-server
 bin/rubycas-server-ctl
@@ -28,6 +28,7 @@ lib/casserver/authenticators/test.rb
 lib/casserver/cas.rb
 lib/casserver/conf.rb
 lib/casserver/controllers.rb
+lib/casserver/load_picnic.rb
 lib/casserver/localization.rb
 lib/casserver/models.rb
 lib/casserver/postambles.rb
@@ -59,6 +60,7 @@ po/es_ES/rubycas-server.po
 po/fr_FR/rubycas-server.po
 po/ja_JP/rubycas-server.po
 po/pl_PL/rubycas-server.po
+po/pt_BR/rubycas-server.po
 po/ru_RU/rubycas-server.po
 po/rubycas-server.pot
 resources/init.d.sh
