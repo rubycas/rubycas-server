@@ -3,7 +3,7 @@ History.txt
 LICENSE.txt
 Manifest.txt
 PostInstall.txt
-README.txt
+README.rdoc
 Rakefile
 bin/rubycas-server
 bin/rubycas-server-ctl
