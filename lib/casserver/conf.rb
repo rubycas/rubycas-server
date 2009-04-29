@@ -33,7 +33,7 @@ unless $CONF[:authenticator]
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	"
-  raise Picnic::ConfigError, err
+  raise Picnic::Config::Error, err
 end
 
 begin
