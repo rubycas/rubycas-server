@@ -22,6 +22,20 @@ else
 end
 
 $AUTH = []
+
+unless $CONF[:authenticator]
+  err =  "
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    You have not yet defined an authenticator for your CAS server!
+    Please consult the documentation and make the necessary changes to
+    your config file.
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	"
+  raise Picnic::ConfigError, err
+end
+
 begin
   # attempt to instantiate the authenticator
   if $CONF[:authenticator].instance_of? Array
@@ -54,18 +68,6 @@ rescue NameError
 
     $AUTH << $CONF[:authenticator][:class].constantize.new
   end
-end
-
-unless $CONF[:authenticator]
-  $stderr.puts
-  $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  $stderr.puts
-  $stderr.puts "You have not yet defined an authenticator for your CAS server!"
-  $stderr.puts "Please consult your config file for details (most likely in"
-  $stderr.puts "/etc/rubycas-server/config.yml)."
-  $stderr.puts
-  $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  exit 1
 end
 
 
