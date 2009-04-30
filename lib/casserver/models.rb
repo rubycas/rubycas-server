@@ -198,7 +198,12 @@ module CASServer::Models
   
   class ChangeServiceToText < V 0.71
     def self.up
-      change_column :casserver_st, :service, :text
+      # using change_column to change the column type from :string to :text
+      # doesn't seem to work, at least under MySQL, so we drop and re-create
+      # the column instead
+      remove_column :casserver_st, :service
+      say "WARNING: All existing service tickets are being deleted."
+      add_column :casserver_st, :service, :text
     end
     
     def self.down
