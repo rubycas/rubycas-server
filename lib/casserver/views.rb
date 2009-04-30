@@ -17,6 +17,8 @@ module CASServer::Views
           title { "#{organization} #{_(' Central Login')}" }
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/cas.css")
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/#{current_theme}/theme.css")
+          link(:rel => "icon", :type => "image/png", :href => "/themes/#{current_theme}/favicon.png") if
+            File.exists?("#{$APP_ROOT}/public/themes/#{current_theme}/favicon.png")
         end
         body(:onload => "if (document.getElementById('username')) document.getElementById('username').focus()") do
           self << yield 
