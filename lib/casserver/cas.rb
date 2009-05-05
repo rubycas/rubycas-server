@@ -305,7 +305,7 @@ module CASServer::CAS
     return dirty_service if dirty_service.blank?
     clean_service = dirty_service.dup
     ['service', 'ticket', 'gateway', 'renew'].each do |p|
-      clean_service.sub!(Regexp.new("#{p}=[^&]*"), '')
+      clean_service.sub!(Regexp.new("&?#{p}=[^&]*"), '')
     end
     
     clean_service.gsub!(/[\/\?]$/, '')
