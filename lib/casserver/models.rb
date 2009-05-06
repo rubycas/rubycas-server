@@ -81,8 +81,7 @@ module CASServer::Models
     
     has_many :granted_service_tickets, 
       :class_name => 'CASServer::Models::ServiceTicket',
-      :foreign_key => :granted_by_tgt_id,
-      :dependent => :destroy
+      :foreign_key => :granted_by_tgt_id
   end
   
   class ProxyGrantingTicket < Ticket

@@ -236,16 +236,16 @@ module CASServer::Controllers
             pgt.destroy
           end
           
-          if $CONF.enable_single_sign_out
-            $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
-            tgt.granted_service_tickets.each do |st|
-              send_logout_notification_for_service_ticket(st)
-              # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails? 
-              #       (the above method returns false if the POST results in a non-200 HTTP response).
-              $LOG.debug "Deleting #{st.class.name.demodulize} #{st.ticket.inspect}."
-              st.destroy
-            end
+          
+          $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
+          tgt.granted_service_tickets.each do |st|
+            send_logout_notification_for_service_ticket(st) if $CONF.enable_single_sign_out
+            # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails?
+            #       (the above method returns false if the POST results in a non-200 HTTP response).
+            $LOG.debug "Deleting #{st.class.name.demodulize} #{st.ticket.inspect} for service #{st.service}."
+            st.destroy
           end
+
           
           $LOG.debug("Deleting #{tgt.class.name.demodulize} '#{tgt}' for user '#{tgt.username}'")
           tgt.destroy
