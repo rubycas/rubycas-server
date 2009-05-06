@@ -69,7 +69,7 @@ module CASServer::Models
   end
   
   class ProxyTicket < ServiceTicket
-    has_one :granted_by_pgt, 
+    belongs_to :granted_by_pgt,
       :class_name => 'CASServer::Models::ProxyGrantingTicket',
       :foreign_key => :granted_by_pgt_id
   end
