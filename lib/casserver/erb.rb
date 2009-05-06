@@ -3,7 +3,7 @@ module CASServer::Views
   begin
     require 'erubis'
     ERB = Erubis::Eruby
-  rescue
+  rescue LoadError
     require 'erb'
   end
 
