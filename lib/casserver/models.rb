@@ -7,6 +7,26 @@ module CASServer::Models
       self.consumed = Time.now
       self.save!
     end
+
+    def self.included(mod)
+      mod.extend(ClassMethods)
+    end
+
+    module ClassMethods
+      def cleanup(max_lifetime, max_unconsumed_lifetime)
+        transaction do
+          conditions = ["created_on < ? OR (consumed IS NULL AND created_on < ?)", 
+                          Time.now - max_lifetime,
+                          Time.now - max_unconsumed_lifetime]
+          expired_tickets_count = count(:conditions => conditions)
+
+          $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
+            "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
+
+          destroy_all(conditions)
+        end
+      end
+    end
   end
   
   class Ticket < Base
@@ -14,12 +34,12 @@ module CASServer::Models
       ticket
     end
     
-    def self.cleanup_expired(expiry_time)
+    def self.cleanup(max_lifetime)
       transaction do
-        conditions = ["created_on < ?", Time.now - expiry_time]
+        conditions = ["created_on < ?", Time.now - max_lifetime]
         expired_tickets_count = count(:conditions => conditions)
           
-        $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.split('::').last}"+
+        $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
           "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
       
         destroy_all(conditions)

@@ -120,7 +120,7 @@ module CASServer::CAS
       if lt.consumed?
         error = "The login ticket you provided has already been used up. Please try logging in again."
         $LOG.warn("Login ticket '#{ticket}' previously used up")
-      elsif Time.now - lt.created_on < $CONF.login_ticket_expiry
+      elsif Time.now - lt.created_on < $CONF.maximum_unused_login_ticket_lifetime
         $LOG.info("Login ticket '#{ticket}' successfully validated")
       else
         error = "Your login ticket has expired. Please try logging in again."
@@ -170,7 +170,7 @@ module CASServer::CAS
       elsif st.kind_of?(CASServer::Models::ProxyTicket) && !allow_proxy_tickets
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
         $LOG.warn("#{error.code} - #{error.message}")
-      elsif Time.now - st.created_on > $CONF.service_ticket_expiry
+      elsif Time.now - st.created_on > $CONF.maximum_unused_service_ticket_lifetime
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has expired.")
         $LOG.warn("Ticket '#{ticket}' has expired.")
       elsif !st.matches_service? service

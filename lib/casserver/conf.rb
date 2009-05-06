@@ -1,10 +1,8 @@
 
 conf_defaults = {
-  :expire_sessions => false,
-  :login_ticket_expiry => 5.minutes,
-  :service_ticket_expiry => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
-  :proxy_granting_ticket_expiry => 48.hours,
-  :ticket_granting_ticket_expiry => 48.hours,
+  :maximum_unused_login_ticket_lifetime => 5.minutes,
+  :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
+  :maximum_session_lifetime => 1.month, # all tickets are deleted after this period of time
   :log => {:file => 'casserver.log', :level => 'DEBUG'},
   :uri_path => "/"
 }
@@ -69,7 +67,6 @@ rescue NameError
     $AUTH << $CONF[:authenticator][:class].constantize.new
   end
 end
-
 
 $CONF[:static] = {
   :urls => "/themes",
