@@ -426,24 +426,24 @@ module CASServer::Controllers
     end
   end
   
-  class Themes < R '/themes/(.+)'         
-    MIME_TYPES = {'.css' => 'text/css', '.js' => 'text/javascript', 
-                  '.jpg' => 'image/jpeg'}
-    PATH = $CONF.themes_dir || File.expand_path(File.dirname(__FILE__))+'/../themes'
-
-    def get(path)
-      headers['Content-Type'] = MIME_TYPES[path[/\.\w+$/, 0]] || "text/plain"
-      unless path.include? ".." # prevent directory traversal attacks
-        headers['X-Sendfile'] = "#{PATH}/#{path}"
-        data = File.read(headers['X-Sendfile']) 
-        headers['Content-Length'] = data.size.to_s # Rack Camping adapter chokes without this
-        return data
-      else
-        status = "403"
-        "403 - Invalid path"
-      end
-    end
-  end
+#  class Themes < R '/themes/(.+)'
+#    MIME_TYPES = {'.css' => 'text/css', '.js' => 'text/javascript',
+#                  '.jpg' => 'image/jpeg'}
+#    PATH = $CONF.themes_dir || File.expand_path(File.dirname(__FILE__))+'/../themes'
+#
+#    def get(path)
+#      headers['Content-Type'] = MIME_TYPES[path[/\.\w+$/, 0]] || "text/plain"
+#      unless path.include? ".." # prevent directory traversal attacks
+#        headers['X-Sendfile'] = "#{PATH}/#{path}"
+#        data = File.read(headers['X-Sendfile'])
+#        headers['Content-Length'] = data.size.to_s # Rack Camping adapter chokes without this
+#        return data
+#      else
+#        status = "403"
+#        "403 - Invalid path"
+#      end
+#    end
+#  end
   
   def response_status_from_error(error)
     case error.code.to_s

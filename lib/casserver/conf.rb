@@ -71,9 +71,8 @@ rescue NameError
 end
 
 
-$CONF[:public_dir] = {
-  :path => "/themes",
-  :dir  => File.expand_path(File.dirname(__FILE__))+"/themes"
+$CONF[:static] = {
+  :urls => "/themes",
+  :root  => "#{$APP_ROOT}/public"
 }
-
 
