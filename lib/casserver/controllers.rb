@@ -228,15 +228,6 @@ module CASServer::Controllers
       
       if tgt
         CASServer::Models::TicketGrantingTicket.transaction do
-          pgts = CASServer::Models::ProxyGrantingTicket.find(:all, 
-            :conditions => [CASServer::Models::Base.connection.quote_table_name(CASServer::Models::ServiceTicket.table_name)+".username = ?", tgt.username],
-            :include => :service_ticket) 
-          pgts.each do |pgt|
-            $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
-            pgt.destroy
-          end
-          
-          
           $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
           tgt.granted_service_tickets.each do |st|
             send_logout_notification_for_service_ticket(st) if $CONF.enable_single_sign_out
@@ -246,6 +237,13 @@ module CASServer::Controllers
             st.destroy
           end
 
+          pgts = CASServer::Models::ProxyGrantingTicket.find(:all,
+            :conditions => [CASServer::Models::Base.connection.quote_table_name(CASServer::Models::ServiceTicket.table_name)+".username = ?", tgt.username],
+            :include => :service_ticket)
+          pgts.each do |pgt|
+            $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
+            pgt.destroy
+          end
           
           $LOG.debug("Deleting #{tgt.class.name.demodulize} '#{tgt}' for user '#{tgt.username}'")
           tgt.destroy
