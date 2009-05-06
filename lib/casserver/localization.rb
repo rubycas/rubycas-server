@@ -12,14 +12,32 @@ module CASServer
   end
   
   def determine_locale
-    lang = ($CONF[:default_locale] || "en")
-    lang = @input['lang'] unless @input['lang'].blank? 
-    lang ||= @cookies['lang'] unless @cookies['lang'].blank? 
-    lang ||= @env.HTTP_ACCEPT_LANGUAGE unless @env.HTTP_ACCEPT_LANGUAGE.blank?
-    lang ||= @env.HTTP_USER_AGENT =~ /[^a-z]([a-z]{2}(-[a-z]{2})?)[^a-z]/i && 
-              lang = $~[1] unless @env.HTTP_USER_AGENT.blank?
-    @cookies['lang'] = lang
-    
+
+    source = nil
+    lang = case
+    when !input['lang'].blank?
+      source = "'lang' request variable"
+      cookies['lang'] = input['lang']
+      input['lang']
+    when !cookies['lang'].blank?
+      source = "'lang' cookie"
+      cookies['lang']
+    when !@env['HTTP_ACCEPT_LANGUAGE'].blank?
+      source = "'HTTP_ACCEPT_LANGUAGE' header"
+      lang = @env['HTTP_ACCEPT_LANGUAGE']
+    when !@env['HTTP_USER_AGENT'].blank? && @env['HTTP_USER_AGENT'] =~ /[^a-z]([a-z]{2}(-[a-z]{2})?)[^a-z]/i
+      source = "'HTTP_USER_AGENT' header"
+      $~[1]
+    when !$CONF['default_locale'].blank?
+      source = "'default_locale' config option"
+      $CONF[:default_locale]
+    else
+      source = "default"
+      "en"
+    end
+
+    $LOG.debug "Detected locale is #{lang.inspect} (from #{source})"
+
     lang.gsub!('_','-')
     
     # TODO: Need to confirm that this method of splitting the accepted
@@ -52,6 +70,8 @@ module CASServer
     end
     
     chosen_lang = "en" if chosen_lang.blank?
+
+    $LOG.debug "Chosen locale is #{chosen_lang.inspect}"
     
     return chosen_lang
   end

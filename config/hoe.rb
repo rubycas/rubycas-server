@@ -10,6 +10,7 @@ DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 EXTRA_DEPENDENCIES = [
   'activesupport',
   'activerecord',
+  'locale',
   'gettext',
   ['picnic', '>= 0.8.1']
 ]    # An array of rubygem dependencies [name, version]
