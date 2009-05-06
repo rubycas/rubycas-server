@@ -238,7 +238,7 @@ module CASServer::Controllers
           
           if $CONF.enable_single_sign_out
             $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
-            tgt.service_tickets.each do |st|
+            tgt.granted_service_tickets.each do |st|
               send_logout_notification_for_service_ticket(st)
               # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails? 
               #       (the above method returns false if the POST results in a non-200 HTTP response).
@@ -322,7 +322,7 @@ module CASServer::Controllers
           pgt = generate_proxy_granting_ticket(@pgt_url, st)
           @pgtiou = pgt.iou if pgt
         end
-        @extra_attributes = st.ticket_granting_ticket.extra_attributes || {}
+        @extra_attributes = st.granted_by_tgt.extra_attributes || {}
       end
       
       @status = CASServer::Controllers.response_status_from_error(@error) if @error
@@ -356,7 +356,7 @@ module CASServer::Controllers
         @username = t.username
         
         if t.kind_of? CASServer::Models::ProxyTicket
-          @proxies << t.proxy_granting_ticket.service_ticket.service
+          @proxies << t.granted_by_pgt.service_ticket.service
         end
           
         if @pgt_url
@@ -364,7 +364,7 @@ module CASServer::Controllers
           @pgtiou = pgt.iou if pgt
         end
         
-        @extra_attributes = t.ticket_granting_ticket.extra_attributes || {}
+        @extra_attributes = t.granted_by_tgt.extra_attributes || {}
       end
       
       @status = CASServer::Controllers.response_status_from_error(@error) if @error

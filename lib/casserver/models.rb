@@ -36,7 +36,11 @@ module CASServer::Models
     set_table_name 'casserver_st'
     include Consumable
     
-    belongs_to :ticket_granting_ticket, :foreign_key => :tgt_id
+    belongs_to :granted_by_tgt, 
+      :class_name => 'CASServer::Models::TicketGrantingTicket',
+      :foreign_key => :granted_by_tgt_id
+    has_one :proxy_granting_ticket,
+      :foreign_key => :created_by_st_id
     
     def matches_service?(service)
       CASServer::CAS.clean_service_url(self.service) == 
@@ -45,7 +49,9 @@ module CASServer::Models
   end
   
   class ProxyTicket < ServiceTicket
-    belongs_to :proxy_granting_ticket
+    has_one :granted_by_pgt, 
+      :class_name => 'CASServer::Models::ProxyGrantingTicket',
+      :foreign_key => :granted_by_pgt_id
   end
   
   class TicketGrantingTicket < Ticket
@@ -53,13 +59,19 @@ module CASServer::Models
     
     serialize :extra_attributes
     
-    has_many :service_tickets, :foreign_key => :tgt_id
+    has_many :granted_service_tickets, 
+      :class_name => 'CASServer::Models::ServiceTicket',
+      :foreign_key => :granted_by_tgt_id,
+      :dependent => :destroy
   end
   
   class ProxyGrantingTicket < Ticket
     set_table_name 'casserver_pgt'
     belongs_to :service_ticket
-    has_many :proxy_tickets, :dependent => :destroy
+    has_many :granted_proxy_tickets, 
+      :class_name => 'CASServer::Models::ProxyTicket',
+      :foreign_key => :granted_by_pgt_id,
+      :dependent => :destroy
   end
   
   class Error
@@ -218,6 +230,18 @@ module CASServer::Models
     
     def self.down
       remove_column :casserver_tgt, :extra_attributes
+    end
+  end
+
+  class RenamePgtForeignKeys < V 0.80
+    def self.up
+      rename_column :casserver_st,  :proxy_granting_ticket_id,  :granted_by_pgt_id
+      rename_column :casserver_st,  :tgt_id,                    :granted_by_tgt_id
+    end
+
+    def self.down
+      rename_column :casserver_st,  :granted_by_pgt_id,         :proxy_granting_ticket_id
+      rename_column :casserver_st,  :granted_by_tgt_id,         :tgt_id
     end
   end
 end

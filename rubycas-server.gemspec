@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rubycas-server}
-  s.version = "0.8.0.20090430"
+  s.version = "0.8.0.20090506"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Zukowski"]
-  s.date = %q{2009-04-27}
+  s.date = %q{2009-05-06}
   s.description = %q{Provides single sign-on authentication for web applications using the CAS protocol.}
   s.email = ["matt@zukowski.ca"]
   s.executables = ["rubycas-server", "rubycas-server-ctl"]
