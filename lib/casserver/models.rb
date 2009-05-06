@@ -89,8 +89,7 @@ module CASServer::Models
     belongs_to :service_ticket
     has_many :granted_proxy_tickets, 
       :class_name => 'CASServer::Models::ProxyTicket',
-      :foreign_key => :granted_by_pgt_id,
-      :dependent => :destroy
+      :foreign_key => :granted_by_pgt_id
   end
   
   class Error
