@@ -447,6 +447,10 @@ infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-
 # Custom views file.  Overrides methodes in lib/casserver/views.rb
 #custom_views_file: /path/to/custom/views.rb
 
+# use erb for view template, see rubycas-server/lib/casserver/template/erb for example
+# e.g. /usr/lib/ruby/gems/1.8/gems/rubycas-server-0.8.0/lib/casserver/template/erb
+template_erb_dir:
+
 ##### LOCALIZATION (L10N) #######################################################
 # The server will attempt to detect the user's locale and show text in the 
 # appropriate language based on:

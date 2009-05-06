@@ -1,0 +1,23 @@
+<table id="login-box">
+  <tr>
+    <td colspan="2">
+      <div id="headline-container">
+        <strong><%= organization %></strong><%= _(" Central Login") %>
+      </div>
+    </td>
+  </tr>
+  <% if @message %>
+  <tr>
+    <td colspan="2" id="messagebox-container">
+      <div class="messagebox <%= @message[:type] %>">
+        <%= @message[:message] %>
+      </div>
+      <% if @continue_url %>
+      <p>
+        <a href="<%= @continue_url %>"><%= @continue_url %></a>
+      </p>
+      <% end %>
+    </td>
+  </tr>
+  <% end %>
+</table>
