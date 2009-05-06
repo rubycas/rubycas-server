@@ -28,6 +28,9 @@ require "casserver/controllers"
 require "casserver/localization"
 
 def CASServer.create
+  $LOG.info "Creating RubyCAS-Server with pid #{Process.pid}."
+
+
   CASServer::Models::Base.establish_connection($CONF.database)
   CASServer::Models.create_schema
 
