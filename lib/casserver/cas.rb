@@ -123,7 +123,7 @@ module CASServer::CAS
       elsif Time.now - lt.created_on < $CONF.maximum_unused_login_ticket_lifetime
         $LOG.info("Login ticket '#{ticket}' successfully validated")
       else
-        error = "Your login ticket has expired. Please try logging in again."
+        error = "You took too long to log in (your login ticket has expired). Please try logging in again."
         $LOG.warn("Expired login ticket '#{ticket}'")
       end
     else
