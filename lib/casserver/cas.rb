@@ -45,7 +45,7 @@ module CASServer::CAS
     st.ticket = "ST-" + CASServer::Utils.random_string
     st.service = service
     st.username = username
-    st.ticket_granting_ticket = tgt
+    st.granted_by_tgt_id = tgt.id
     st.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     st.save!
     $LOG.debug("Generated service ticket '#{st.ticket}' for service '#{st.service}'" +
@@ -59,8 +59,8 @@ module CASServer::CAS
     pt.ticket = "PT-" + CASServer::Utils.random_string
     pt.service = target_service
     pt.username = pgt.service_ticket.username
-    pt.proxy_granting_ticket_id = pgt.id
-    pt.ticket_granting_ticket = pgt.service_ticket.ticket_granting_ticket
+    pt.granted_by_pgt_id = pgt.id
+    pt.granted_by_tgt_id = pgt.service_ticket.granted_by_tgt.id
     pt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     pt.save!
     $LOG.debug("Generated proxy ticket '#{pt.ticket}' for target service '#{pt.service}'" +
@@ -120,10 +120,10 @@ module CASServer::CAS
       if lt.consumed?
         error = "The login ticket you provided has already been used up. Please try logging in again."
         $LOG.warn("Login ticket '#{ticket}' previously used up")
-      elsif Time.now - lt.created_on < $CONF.login_ticket_expiry
+      elsif Time.now - lt.created_on < $CONF.maximum_unused_login_ticket_lifetime
         $LOG.info("Login ticket '#{ticket}' successfully validated")
       else
-        error = "Your login ticket has expired. Please try logging in again."
+        error = "You took too long to log in (your login ticket has expired). Please try logging in again."
         $LOG.warn("Expired login ticket '#{ticket}'")
       end
     else
@@ -170,7 +170,7 @@ module CASServer::CAS
       elsif st.kind_of?(CASServer::Models::ProxyTicket) && !allow_proxy_tickets
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
         $LOG.warn("#{error.code} - #{error.message}")
-      elsif Time.now - st.created_on > $CONF.service_ticket_expiry
+      elsif Time.now - st.created_on > $CONF.maximum_unused_service_ticket_lifetime
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has expired.")
         $LOG.warn("Ticket '#{ticket}' has expired.")
       elsif !st.matches_service? service
@@ -197,10 +197,10 @@ module CASServer::CAS
     pt, error = validate_service_ticket(service, ticket, true)
     
     if pt.kind_of?(CASServer::Models::ProxyTicket) && !error
-      if not pt.proxy_granting_ticket
+      if not pt.granted_by_pgt
         error = Error.new(:INTERNAL_ERROR, "Proxy ticket '#{pt}' belonging to user '#{pt.username}' is not associated with a proxy granting ticket.")
-      elsif not pt.proxy_granting_ticket.service_ticket
-        error = Error.new(:INTERNAL_ERROR, "Proxy granting ticket '#{pt.proxy_granting_ticket}'"+
+      elsif not pt.granted_by_pgt.service_ticket
+        error = Error.new(:INTERNAL_ERROR, "Proxy granting ticket '#{pt.granted_by_pgt}'"+
           " (associated with proxy ticket '#{pt}' and belonging to user '#{pt.username}' is not associated with a service ticket.")
       end
     end

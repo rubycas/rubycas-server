@@ -161,23 +161,23 @@ module CASServer::Controllers
         # 3.6 (ticket-granting cookie)
         tgt = generate_ticket_granting_ticket(@username, extra_attributes)
         
-        if $CONF.expire_sessions
-          expires = $CONF.ticket_granting_ticket_expiry.to_i.from_now
+        if $CONF.maximum_session_lifetime
+          expires = $CONF.maximum_session_lifetime.to_i.from_now
           expiry_info = " It will expire on #{expires}."
         else
           expiry_info = " It will not expire."
         end
         
-        if $CONF.expire_sessions
+        if $CONF.maximum_session_lifetime
           cookies['tgt'] = {
             :value => tgt.to_s, 
-            :expires => Time.now + $CONF.ticket_granting_ticket_expiry
+            :expires => Time.now + $CONF.maximum_session_lifetime
           }
         else
           cookies['tgt'] = tgt.to_s
         end
         
-        $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to '#{@username.inspect}'. #{expiry_info}")
+        $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
                 
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
@@ -228,23 +228,21 @@ module CASServer::Controllers
       
       if tgt
         CASServer::Models::TicketGrantingTicket.transaction do
-          pgts = CASServer::Models::ProxyGrantingTicket.find(:all, 
+          $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
+          tgt.granted_service_tickets.each do |st|
+            send_logout_notification_for_service_ticket(st) if $CONF.enable_single_sign_out
+            # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails?
+            #       (the above method returns false if the POST results in a non-200 HTTP response).
+            $LOG.debug "Deleting #{st.class.name.demodulize} #{st.ticket.inspect} for service #{st.service}."
+            st.destroy
+          end
+
+          pgts = CASServer::Models::ProxyGrantingTicket.find(:all,
             :conditions => [CASServer::Models::Base.connection.quote_table_name(CASServer::Models::ServiceTicket.table_name)+".username = ?", tgt.username],
-            :include => :service_ticket) 
+            :include => :service_ticket)
           pgts.each do |pgt|
             $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
             pgt.destroy
-          end
-          
-          if $CONF.enable_single_sign_out
-            $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
-            tgt.service_tickets.each do |st|
-              send_logout_notification_for_service_ticket(st)
-              # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails? 
-              #       (the above method returns false if the POST results in a non-200 HTTP response).
-              $LOG.debug "Deleting #{st.class.name.demodulize} #{st.ticket.inspect}."
-              st.destroy
-            end
           end
           
           $LOG.debug("Deleting #{tgt.class.name.demodulize} '#{tgt}' for user '#{tgt.username}'")
@@ -322,7 +320,7 @@ module CASServer::Controllers
           pgt = generate_proxy_granting_ticket(@pgt_url, st)
           @pgtiou = pgt.iou if pgt
         end
-        @extra_attributes = st.ticket_granting_ticket.extra_attributes || {}
+        @extra_attributes = st.granted_by_tgt.extra_attributes || {}
       end
       
       @status = CASServer::Controllers.response_status_from_error(@error) if @error
@@ -356,7 +354,7 @@ module CASServer::Controllers
         @username = t.username
         
         if t.kind_of? CASServer::Models::ProxyTicket
-          @proxies << t.proxy_granting_ticket.service_ticket.service
+          @proxies << t.granted_by_pgt.service_ticket.service
         end
           
         if @pgt_url
@@ -364,7 +362,7 @@ module CASServer::Controllers
           @pgtiou = pgt.iou if pgt
         end
         
-        @extra_attributes = t.ticket_granting_ticket.extra_attributes || {}
+        @extra_attributes = t.granted_by_tgt.extra_attributes || {}
       end
       
       @status = CASServer::Controllers.response_status_from_error(@error) if @error
