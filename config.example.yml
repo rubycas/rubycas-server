@@ -429,7 +429,7 @@ database:
 # Custom themes are not well supported yet, but will be in the near future. In 
 # the meantime, if you want to create a custom theme, you can create a 
 # subdirectory under the CASServer's themes dir (for example, 
-# '/usr/lib/ruby/1.8/gems/casserver-xxx/lib/themes', if you installed CASServer 
+# '/usr/lib/ruby/1.8/gems/casserver-xxx/public/themes', if you installed CASServer 
 # on Linux as a gem). A theme is basically just a theme.css file that overrides 
 # the themes/cas.css styles along with a collection of image files
 # like logo.png and bg.png.
