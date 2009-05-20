@@ -67,8 +67,24 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::Base
       user = results.first
       tokens = [@password, (not salt_column.nil?) && user.send(salt_column) || nil].compact
       crypted = user.send(password_column)
-      
-      
+
+      unless @options[:extra_attributes].blank?
+        if results.size > 1
+          $LOG.warn("#{self.class}: Unable to extract extra_attributes because multiple matches were found for #{@username.inspect}")
+        else
+          
+          @extra_attributes = {}
+          extra_attributes_to_extract.each do |col|
+            @extra_attributes[col] = user.send(col)
+          end
+          
+          if @extra_attributes.empty?
+            $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
+          else
+            $LOG.debug("#{self.class}: Read the following extra_attributes for user #{@username.inspect}: #{@extra_attributes.inspect}")
+          end
+        end
+      end
 
       return encryptor.matches?(crypted, tokens)
     else
