@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: rubycas-server \n"
-"POT-Creation-Date: 2008-11-12 11:43-0500\n"
+"POT-Creation-Date: 2009-05-06 18:16-0400\n"
 "PO-Revision-Date: 2008-11-12 11:03-0500\n"
 "Last-Translator: Matt Zukowski <mzukowski@urbacon.net>\n"
 "Language-Team: Polish\n"
@@ -16,6 +16,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
+
+#: lib/casserver/cas.rb:117
+msgid ""
+"Your login request did not include a login ticket. There may be a problem "
+"with the authentication system."
+msgstr ""
+
+#: lib/casserver/cas.rb:121
+msgid ""
+"The login ticket you provided has already been used up. Please try logging "
+"in again."
+msgstr ""
+
+#: lib/casserver/cas.rb:126
+msgid "You took too long to enter your credentials. Please try again."
+msgstr ""
+
+#: lib/casserver/cas.rb:130
+msgid ""
+"The login ticket you provided is invalid. There may be a problem with the "
+"authentication system."
+msgstr ""
 
 #: lib/casserver/controllers.rb:32
 msgid ""
@@ -62,32 +84,32 @@ msgstr "Jesteś zalogowany."
 
 #: lib/casserver/controllers.rb:200
 msgid "Incorrect username or password."
-msgstr "Niepoprawna użytkownik lub hasło."
+msgstr "Niepoprawny użytkownik lub hasło."
 
-#: lib/casserver/controllers.rb:259
+#: lib/casserver/controllers.rb:257
 msgid "You have successfully logged out."
 msgstr "Jesteś wylogowany."
 
-#: lib/casserver/controllers.rb:262
+#: lib/casserver/controllers.rb:260
 msgid " Please click on the following link to continue:"
 msgstr " Proszę kliknąć na poniższy link, aby kontynuować:"
 
-#: lib/casserver/controllers.rb:412
+#: lib/casserver/controllers.rb:410
 msgid "To generate a login ticket, you must make a POST request."
 msgstr "Aby wygenerować login bilet, musisz złożyć żądanie POST."
 
-#: lib/casserver/views.rb:41 lib/casserver/views.rb:111
+#: lib/casserver/views.rb:43 lib/casserver/views.rb:113
 msgid " Central Login"
 msgstr " Centralna Usługa Uwierzytelniania"
 
-#: lib/casserver/views.rb:71
+#: lib/casserver/views.rb:73
 msgid "Username"
 msgstr "Użytkownik"
 
-#: lib/casserver/views.rb:80
+#: lib/casserver/views.rb:82
 msgid "Password"
 msgstr "Hasło"
 
-#: lib/casserver/views.rb:92
+#: lib/casserver/views.rb:94
 msgid "LOGIN"
 msgstr "ZALOGUJ"

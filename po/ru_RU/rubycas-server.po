@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: rubycas-server \n"
-"POT-Creation-Date: 2008-11-12 11:43-0500\n"
+"POT-Creation-Date: 2009-05-06 18:16-0400\n"
 "PO-Revision-Date: 2008-11-04 12:32+0200\n"
 "Last-Translator: Antono Vasiljev <antono.vasiljev@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -14,6 +14,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: lib/casserver/cas.rb:117
+msgid ""
+"Your login request did not include a login ticket. There may be a problem "
+"with the authentication system."
+msgstr ""
+
+#: lib/casserver/cas.rb:121
+msgid ""
+"The login ticket you provided has already been used up. Please try logging "
+"in again."
+msgstr ""
+
+#: lib/casserver/cas.rb:126
+msgid "You took too long to enter your credentials. Please try again."
+msgstr ""
+
+#: lib/casserver/cas.rb:130
+msgid ""
+"The login ticket you provided is invalid. There may be a problem with the "
+"authentication system."
+msgstr ""
 
 #: lib/casserver/controllers.rb:32
 msgid ""
@@ -59,30 +81,30 @@ msgstr "Вы успешно вошли."
 msgid "Incorrect username or password."
 msgstr "Неверное имя пользователя или пароль."
 
-#: lib/casserver/controllers.rb:259
+#: lib/casserver/controllers.rb:257
 msgid "You have successfully logged out."
 msgstr "Вы успешно вышли."
 
-#: lib/casserver/controllers.rb:262
+#: lib/casserver/controllers.rb:260
 msgid " Please click on the following link to continue:"
 msgstr " Перейдите по ссылке чтобы продолжить: "
 
-#: lib/casserver/controllers.rb:412
+#: lib/casserver/controllers.rb:410
 msgid "To generate a login ticket, you must make a POST request."
 msgstr "Чтобы сгенерировать входной билет вы должны делать POST запрос."
 
-#: lib/casserver/views.rb:41 lib/casserver/views.rb:111
+#: lib/casserver/views.rb:43 lib/casserver/views.rb:113
 msgid " Central Login"
 msgstr " Центральный вход"
 
-#: lib/casserver/views.rb:71
+#: lib/casserver/views.rb:73
 msgid "Username"
 msgstr "Логин"
 
-#: lib/casserver/views.rb:80
+#: lib/casserver/views.rb:82
 msgid "Password"
 msgstr "Пароль"
 
-#: lib/casserver/views.rb:92
+#: lib/casserver/views.rb:94
 msgid "LOGIN"
 msgstr "Войти"

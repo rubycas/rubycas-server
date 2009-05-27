@@ -114,21 +114,21 @@ module CASServer::CAS
   
     success = false
     if ticket.nil?
-      error = "Your login request did not include a login ticket. There may be a problem with the authentication system."
-      $LOG.warn("Missing login ticket.")
+      error = _("Your login request did not include a login ticket. There may be a problem with the authentication system.")
+      $LOG.warn "Missing login ticket."
     elsif lt = LoginTicket.find_by_ticket(ticket)
       if lt.consumed?
-        error = "The login ticket you provided has already been used up. Please try logging in again."
-        $LOG.warn("Login ticket '#{ticket}' previously used up")
+        error = _("The login ticket you provided has already been used up. Please try logging in again.")
+        $LOG.warn "Login ticket '#{ticket}' previously used up"
       elsif Time.now - lt.created_on < $CONF.maximum_unused_login_ticket_lifetime
-        $LOG.info("Login ticket '#{ticket}' successfully validated")
+        $LOG.info "Login ticket '#{ticket}' successfully validated"
       else
-        error = "You took too long to log in (your login ticket has expired). Please try logging in again."
-        $LOG.warn("Expired login ticket '#{ticket}'")
+        error = _("You took too long to enter your credentials. Please try again.")
+        $LOG.warn "Expired login ticket '#{ticket}'"
       end
     else
-      error = "The login ticket you provided is invalid. Please try logging in again."
-      $LOG.warn("Invalid login ticket '#{ticket}'")
+      error = _("The login ticket you provided is invalid. There may be a problem with the authentication system.")
+      $LOG.warn "Invalid login ticket '#{ticket}'"
     end
     
     lt.consume! if lt
@@ -141,13 +141,13 @@ module CASServer::CAS
   
     if ticket.nil?
       error = "No ticket granting ticket given."
-      $LOG.debug(error)
+      $LOG.debug error
     elsif tgt = TicketGrantingTicket.find_by_ticket(ticket)
       if $CONF.expire_sessions && Time.now - tgt.created_on > $CONF.ticket_granting_ticket_expiry
         error = "Your session has expired. Please log in again."
-        $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' expired.")
+        $LOG.info "Ticket granting ticket '#{ticket}' for user '#{tgt.username}' expired."
       else
-        $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated.")
+        $LOG.info "Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated."
       end
     else
       error = "Invalid ticket granting ticket '#{ticket}' (no matching ticket found in the database)."
@@ -158,25 +158,25 @@ module CASServer::CAS
   end
 
   def validate_service_ticket(service, ticket, allow_proxy_tickets = false)
-    $LOG.debug("Validating service/proxy ticket '#{ticket}' for service '#{service}'")
+    $LOG.debug "Validating service/proxy ticket '#{ticket}' for service '#{service}'"
   
     if service.nil? or ticket.nil?
       error = Error.new(:INVALID_REQUEST, "Ticket or service parameter was missing in the request.")
-      $LOG.warn("#{error.code} - #{error.message}")
+      $LOG.warn "#{error.code} - #{error.message}"
     elsif st = ServiceTicket.find_by_ticket(ticket)
       if st.consumed?
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has already been used up.")
-        $LOG.warn("#{error.code} - #{error.message}")
+        $LOG.warn "#{error.code} - #{error.message}"
       elsif st.kind_of?(CASServer::Models::ProxyTicket) && !allow_proxy_tickets
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
-        $LOG.warn("#{error.code} - #{error.message}")
+        $LOG.warn "#{error.code} - #{error.message}"
       elsif Time.now - st.created_on > $CONF.maximum_unused_service_ticket_lifetime
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has expired.")
-        $LOG.warn("Ticket '#{ticket}' has expired.")
+        $LOG.warn "Ticket '#{ticket}' has expired."
       elsif !st.matches_service? service
         error = Error.new(:INVALID_SERVICE, "The ticket '#{ticket}' belonging to user '#{st.username}' is valid,"+
           " but the requested service '#{service}' does not match the service '#{st.service}' associated with this ticket.")
-        $LOG.warn("#{error.code} - #{error.message}")
+        $LOG.warn "#{error.code} - #{error.message}"
       else
         $LOG.info("Ticket '#{ticket}' for service '#{service}' for user '#{st.username}' successfully validated.")
       end
@@ -308,7 +308,8 @@ module CASServer::CAS
       clean_service.sub!(Regexp.new("&?#{p}=[^&]*"), '')
     end
     
-    clean_service.gsub!(/[\/\?]$/, '')
+    clean_service.gsub!(/[\/\?&]$/, '') # remove trailing ?, /, or &
+    clean_service.gsub!('?&', '?')
     clean_service.gsub!(' ', '+')
     
     $LOG.debug("Cleaned dirty service URL #{dirty_service.inspect} to #{clean_service.inspect}") if
