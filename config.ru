@@ -1,3 +1,12 @@
+# This is the Rackup initialization script for running RubyCAS-Server under Passenger/Rack.
+#
+# This file doesn't really have anything to do with your server's "configuration",
+# and you almost certainly don't need to modify it. Instead, a config file should
+# have been created for you (probably under /etc/rubycas-server/config.yml) -- this
+# is the file you'll want to modify. If for some reason the configuration file
+# was not created for you, have a look at the config.example.yml template and
+# go from there.
+
 require 'rubygems'
 require 'rack'
 
