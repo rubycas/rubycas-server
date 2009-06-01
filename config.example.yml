@@ -66,7 +66,7 @@ ssl_cert: /path/to/your/ssl.pem
 #     binaries will be downloaded and installed, so don't worry about this).
 
 #server: mongrel
-#port: 110011
+#port: 11011
 
 
 # Bind the server to a specific address. Use 0.0.0.0 to listen on all
