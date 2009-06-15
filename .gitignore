@@ -8,3 +8,6 @@ config.yml
 *.log
 *.mo
 ssl
+custom/*
+public/themes/konvenit/
+.DS_Store
