@@ -34,7 +34,10 @@ ssl_cert: /path/to/your/ssl.pem
 
 # If your private key is separate from cert
 
-#ssl_key: /path/to/your/private_key.pem
+# if you are using the rake task "generate_ssl_certificate" use the following settings:
+
+#  ssl_cert: ssl/cert.pem
+#  ssl_key: ssl/key.pem
 
 
 # By default the login page will be available at the root path 
