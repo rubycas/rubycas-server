@@ -32,13 +32,14 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     CASUser.set_table_name @options[:user_table] || "users"
     
     username_column = @options[:username_column] || "username"
+    encrypt_function = @options[:encrypt_function] || 'user.encrypted_password == Digest::SHA256.hexdigest("#{user.encryption_salt}::#{@password}")'
     
     results = CASUser.find(:all, :conditions => ["#{username_column} = ?", @username])
     
     if results.size > 0
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
       user = results.first
-      return user.encrypted_password == user.encrypt(@password)
+      return eval(encrypt_function)
     else
       return false
     end

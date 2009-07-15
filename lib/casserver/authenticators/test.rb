@@ -1,7 +1,7 @@
 require 'casserver/authenticators/base'
 
 # Dummy authenticator used for testing. 
-# Accepts "testuser" for username and "testpassword" for password; otherwise authentication fails.
+# Accepts any username as valid as long as the password is "testpassword"; otherwise authentication fails.
 # Raises an AuthenticationError when username is "do_error" (this is useful to test the Exception
 # handling functionality).
 class CASServer::Authenticators::Test < CASServer::Authenticators::Base

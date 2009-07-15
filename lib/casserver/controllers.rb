@@ -256,8 +256,7 @@ module CASServer::Controllers
       
       @message = {:type => 'confirmation', :message => _("You have successfully logged out.")}
       
-      @message[:message] << 
-        _(" Please click on the following link to continue:") if @continue_url
+      @message[:message] +=_(" Please click on the following link to continue:") if @continue_url
       
       @lt = generate_login_ticket
       
