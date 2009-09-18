@@ -37,9 +37,9 @@ end
 begin
   # attempt to instantiate the authenticator
   if $CONF[:authenticator].instance_of? Array
-    $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize.new}
+    $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize}
   else
-    $AUTH << $CONF[:authenticator][:class].constantize.new
+    $AUTH << $CONF[:authenticator][:class].constantize
   end
 rescue NameError
   if $CONF[:authenticator].instance_of? Array
@@ -52,7 +52,7 @@ rescue NameError
         auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
         require 'casserver/'+auth_rb
       end
-      $AUTH << authenticator[:class].constantize.new
+      $AUTH << authenticator[:class].constantize
     end
   else
     if $CONF[:authenticator][:source]
@@ -64,7 +64,7 @@ rescue NameError
       require 'casserver/'+auth_rb
     end
 
-    $AUTH << $CONF[:authenticator][:class].constantize.new
+    $AUTH << $CONF[:authenticator][:class].constantize
   end
 end
 

@@ -1,4 +1,4 @@
-require 'casserver/authenticators/base'
+require 'casserver/authenticators/sql'
 
 # These were pulled directly from Authlogic, and new ones can be added
 # just by including new Crypto Providers
@@ -40,21 +40,19 @@ end
 #   salt_column: password_salt
 #   encryptor: BCrypt
 #
-class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::Base
+class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
 
   def validate(credentials)
     read_standard_credentials(credentials)
     
     raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
-    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
     
-    CASUser.establish_connection @options[:database]
-    CASUser.set_table_name @options[:user_table] || "users"
+    user_model = establish_database_connection_if_necessary
     
     username_column = @options[:username_column] || "login"
     password_column = @options[:password_column] || "crypted_password"
     salt_column = @options[:salt_column]
-    results = CASUser.find(:all, :conditions => ["#{username_column} = ?", @username])
+    results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
 
     begin
       encryptor = eval("Authlogic::CryptoProviders::" + @options[:encryptor] || "Sha512")
@@ -90,8 +88,5 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::Base
     else
       return false
     end
-  end
-
-  class CASUser < ActiveRecord::Base
   end
 end

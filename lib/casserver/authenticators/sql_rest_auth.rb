@@ -1,4 +1,4 @@
-require 'casserver/authenticators/base'
+require 'casserver/authenticators/sql_encrypted'
 
 require 'digest/sha1'
 
@@ -18,20 +18,18 @@ end
 #
 # * git://github.com/technoweenie/restful-authentication.git
 #
-class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::Base
+class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEncrypted
 
   def validate(credentials)
     read_standard_credentials(credentials)
     
     raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
-    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
-    
-    CASUser.establish_connection @options[:database]
-    CASUser.set_table_name @options[:user_table] || "users"
+
+    user_model = establish_database_connection_if_necessary
     
     username_column = @options[:username_column] || "email"
     
-    results = CASUser.find(:all, :conditions => ["#{username_column} = ?", @username])
+    results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
     
     if results.size > 0
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
@@ -69,9 +67,5 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::Base
       end
       digest
     end      
-  end
-  
-  class CASUser < ActiveRecord::Base
-    include EncryptedPassword
   end
 end
