@@ -42,6 +42,13 @@ lib/casserver/version.rb
 lib/casserver/views.rb
 lib/rubycas-server.rb
 lib/rubycas-server/version.rb
+locale/de_DE/LC_MESSAGES/rubycas-server.mo
+locale/es_ES/LC_MESSAGES/rubycas-server.mo
+locale/fr_FR/LC_MESSAGES/rubycas-server.mo
+locale/ja_JP/LC_MESSAGES/rubycas-server.mo
+locale/pl_PL/LC_MESSAGES/rubycas-server.mo
+locale/pt_BR/LC_MESSAGES/rubycas-server.mo
+locale/ru_RU/LC_MESSAGES/rubycas-server.mo
 po/de_DE/rubycas-server.po
 po/es_ES/rubycas-server.po
 po/fr_FR/rubycas-server.po
