@@ -123,19 +123,18 @@ module CASServer::Controllers
       # generate another login ticket to allow for re-submitting the form after a post
       @lt = generate_login_ticket.ticket
 
-      if $CONF[:authenticator].instance_of? Array
-        $AUTH.each_index {|auth_index| $AUTH[auth_index].configure($CONF.authenticator[auth_index])}
-      else
-        $AUTH[0].configure($CONF.authenticator)
-      end
-
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{$AUTH}")
 
       credentials_are_valid = false
       extra_attributes = {}
       successful_authenticator = nil
       begin
-        $AUTH.each do |auth|
+        auth_index = 0
+        $AUTH.each do |auth_class|
+          auth = auth_class.new
+
+          auth.configure($CONF.authenticator[auth_index].merge(:auth_index => auth_index))
+
           credentials_are_valid = auth.validate(
             :username => @username,
             :password => @password,
@@ -147,6 +146,8 @@ module CASServer::Controllers
             successful_authenticator = auth
             break
           end
+
+          auth_index += 1
         end
       rescue CASServer::AuthenticatorError => e
         $LOG.error(e)

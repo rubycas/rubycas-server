@@ -16,6 +16,8 @@
     handled gracefully.
   * Required gem dependencies have been re-enabled in the gemspec.
   * Authlogic authenticator files added to gemspec. [rajiv]
+  * Authenticators are now instantiated on a per-request basis (rather than
+    once at startup) to ensure thread safety.
 
 === 0.7.1 :: 2008-11-10
 

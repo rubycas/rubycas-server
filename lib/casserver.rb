@@ -31,7 +31,7 @@ def CASServer.create
   $LOG.info "Creating RubyCAS-Server with pid #{Process.pid}."
 
 
-  CASServer::Models::Base.establish_connection($CONF.database)
+  CASServer::Models::Base.establish_connection($CONF.database) unless CASServer::Models::Base.connected?
   CASServer::Models.create_schema
 
   #TODO: these warnings should eventually be deleted

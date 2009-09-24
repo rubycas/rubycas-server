@@ -26,15 +26,13 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     read_standard_credentials(credentials)
 
     raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
-    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
 
-    CASUser.establish_connection @options[:database]
-    CASUser.set_table_name @options[:user_table] || "users"
+    user_model = establish_database_connection_if_necessary
 
     username_column = @options[:username_column] || "username"
     encrypt_function = @options[:encrypt_function] || 'user.encrypted_password == Digest::SHA256.hexdigest("#{user.encryption_salt}::#{@password}")'
 
-    results = CASUser.find(:all, :conditions => ["#{username_column} = ?", @username])
+    results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
 
     if results.size > 0
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
@@ -71,7 +69,24 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     end
   end
 
-  class CASUser < ActiveRecord::Base
-    include EncryptedPassword
+  protected
+  def establish_database_connection_if_necessary
+    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
+
+    user_model_name = "CASUser_#{@options[:auth_index]}"
+    if self.class.const_defined?(user_model_name)
+      user_model = self.class.const_get(user_model_name)
+    else
+      self.class.class_eval %{
+        class #{user_model_name} < ActiveRecord::Base
+          include EncryptedPassword
+        end
+      }
+      user_model = self.class.const_get(user_model_name)
+      user_model.set_table_name @options[:user_table] || "users"
+      user_model.establish_connection(options[:database])
+    end
+
+    user_model
   end
 end
