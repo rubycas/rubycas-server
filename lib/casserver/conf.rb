@@ -40,6 +40,7 @@ begin
     $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize}
   else
     $AUTH << $CONF[:authenticator][:class].constantize
+    $CONF[:authenticator] = [$CONF[:authenticator]]
   end
 rescue NameError
   if $CONF[:authenticator].instance_of? Array
@@ -65,6 +66,7 @@ rescue NameError
     end
 
     $AUTH << $CONF[:authenticator][:class].constantize
+    $CONF[:authenticator] = [$CONF[:authenticator]]
   end
 end
 
