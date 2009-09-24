@@ -186,29 +186,29 @@ module CASServer::Controllers
       end
 
       render :login
+    end
 
-      private
-      def setup_cookie_tgt tgt
-        expires = if $CONF.maximum_session_lifetime
-                     $CONF.maximum_session_lifetime.to_i.from_now
-                  else
-                     nil
-                  end
+    private
+    def setup_cookie_tgt tgt
+      expires = if $CONF.maximum_session_lifetime
+                   $CONF.maximum_session_lifetime.to_i.from_now
+                else
+                   nil
+                end
 
-        cookies['tgt'] = if expires
-                           expiry_info = " It will expire on #{expires}."
+      cookies['tgt'] = if expires
+                         expiry_info = " It will expire on #{expires}."
 
-                           { :value   => tgt.to_s,
-                             :expires => expires   }
+                         { :value   => tgt.to_s,
+                           :expires => expires   }
 
-                         else
-                           expiry_info = " It will not expire."
+                       else
+                         expiry_info = " It will not expire."
 
-                           tgt.to_s
-                         end
+                         tgt.to_s
+                       end
 
-        $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
-      end
+      $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
     end
   end
 
