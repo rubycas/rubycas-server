@@ -159,7 +159,8 @@ module CASServer::Controllers
         $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
 
         # 3.6 (ticket-granting cookie)
-        tgt = setup_cookie_tgt
+        tgt = generate_ticket_granting_ticket(@username, extra_attributes)
+        setup_cookie_tgt(tgt)
 
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
@@ -186,9 +187,7 @@ module CASServer::Controllers
       render :login
 
       private
-      def setup_cookie_tgt
-        tgt = generate_ticket_granting_ticket(@username, extra_attributes)
-
+      def setup_cookie_tgt tgt
         expires = if $CONF.maximum_session_lifetime
                      $CONF.maximum_session_lifetime.to_i.from_now
                   else
@@ -208,8 +207,6 @@ module CASServer::Controllers
                          end
 
         $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
-
-        return tgt
       end
     end
   end
