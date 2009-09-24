@@ -28,11 +28,11 @@ require 'casserver'
 CASServer.create
 
 if $CONF.uri_path
-	map($CONF.uri_path) do
+  map($CONF.uri_path) do
     # FIXME: this probably isn't the smartest way of remapping the themes dir to uri_path/themes
     use Rack::Static, $CONF[:static] if $CONF[:static]
-		run CASServer
-	end
+    run CASServer
+  end
 else
-	run CASServer
+  run CASServer
 end

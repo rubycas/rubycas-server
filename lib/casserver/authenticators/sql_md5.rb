@@ -9,7 +9,7 @@ require 'digest/md5'
 # Drupal, you should use 'name' for the :username_column config option, and
 # 'pass' for the :password_column.
 class CASServer::Authenticators::SQLMd5 < CASServer::Authenticators::SQL
-  
+
   protected
     def read_standard_credentials(credentials)
       super

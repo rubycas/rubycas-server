@@ -15,15 +15,15 @@ rescue LoadError
   require 'active_record'
 end
 
-# This is a version of the SQL authenticator that works nicely with Authlogic. 
-# Passwords are encrypted the same way as it done in Authlogic. 
-# Before use you this, you MUST configure rest_auth_digest_streches and rest_auth_site_key in 
-# config. 
+# This is a version of the SQL authenticator that works nicely with Authlogic.
+# Passwords are encrypted the same way as it done in Authlogic.
+# Before use you this, you MUST configure rest_auth_digest_streches and rest_auth_site_key in
+# config.
 #
 # Using this authenticator requires restful authentication plugin on rails (client) side.
 #
 # * git://github.com/binarylogic/authlogic.git
-# 
+#
 # Usage:
 
 # authenticator:
@@ -44,13 +44,13 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::Base
 
   def validate(credentials)
     read_standard_credentials(credentials)
-    
+
     raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
     raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
-    
+
     CASUser.establish_connection @options[:database]
     CASUser.set_table_name @options[:user_table] || "users"
-    
+
     username_column = @options[:username_column] || "login"
     password_column = @options[:password_column] || "crypted_password"
     salt_column = @options[:salt_column]
@@ -72,12 +72,12 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::Base
         if results.size > 1
           $LOG.warn("#{self.class}: Unable to extract extra_attributes because multiple matches were found for #{@username.inspect}")
         else
-          
+
           @extra_attributes = {}
           extra_attributes_to_extract.each do |col|
             @extra_attributes[col] = user.send(col)
           end
-          
+
           if @extra_attributes.empty?
             $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
           else

@@ -14,73 +14,73 @@ task :generate_ssl_certificate do
 
     # Establish working directory.
 
-    dir			= .
+    dir      = .
 
     [ ca ]
-    default_ca		= CA_default
+    default_ca    = CA_default
 
     [ CA_default ]
-    serial			= $dir/serial
-    database		= $dir/index.txt
-    new_certs_dir		= $dir/newcerts
-    certificate		= $dir/cacert.pem
-    private_key		= $dir/private/cakey.pem
-    default_days		= 365
-    default_md		= md5
-    preserve		= no
-    email_in_dn		= no
-    nameopt			= default_ca
-    certopt			= default_ca
-    policy			= policy_match
+    serial      = $dir/serial
+    database    = $dir/index.txt
+    new_certs_dir    = $dir/newcerts
+    certificate    = $dir/cacert.pem
+    private_key    = $dir/private/cakey.pem
+    default_days    = 365
+    default_md    = md5
+    preserve    = no
+    email_in_dn    = no
+    nameopt      = default_ca
+    certopt      = default_ca
+    policy      = policy_match
 
     [ policy_match ]
-    countryName		= match
-    stateOrProvinceName	= match
-    organizationName	= match
-    organizationalUnitName	= optional
-    commonName		= supplied
-    emailAddress		= optional
+    countryName    = match
+    stateOrProvinceName  = match
+    organizationName  = match
+    organizationalUnitName  = optional
+    commonName    = supplied
+    emailAddress    = optional
 
     [ req ]
-    default_bits		= 1024			# Size of keys
-    default_keyfile		= key.pem		# name of generated keys
-    default_md		= md5			# message digest algorithm
-    string_mask		= nombstr		# permitted characters
-    distinguished_name	= req_distinguished_name
-    req_extensions		= v3_req
+    default_bits    = 1024      # Size of keys
+    default_keyfile    = key.pem    # name of generated keys
+    default_md    = md5      # message digest algorithm
+    string_mask    = nombstr    # permitted characters
+    distinguished_name  = req_distinguished_name
+    req_extensions    = v3_req
 
     [ req_distinguished_name ]
-    # Variable name		  Prompt string
-    #----------------------	  ----------------------------------
-    0.organizationName	= Organization Name (company)
-    organizationalUnitName	= Organizational Unit Name (department, division)
-    emailAddress		= Email Address
-    emailAddress_max	= 40
-    localityName		= Locality Name (city, district)
-    stateOrProvinceName	= State or Province Name (full name)
-    countryName		= Country Name (2 letter code)
-    countryName_min		= 2
-    countryName_max		= 2
-    commonName		= Common Name (hostname, IP, or your name)
-    commonName_max		= 64
+    # Variable name      Prompt string
+    #----------------------    ----------------------------------
+    0.organizationName  = Organization Name (company)
+    organizationalUnitName  = Organizational Unit Name (department, division)
+    emailAddress    = Email Address
+    emailAddress_max  = 40
+    localityName    = Locality Name (city, district)
+    stateOrProvinceName  = State or Province Name (full name)
+    countryName    = Country Name (2 letter code)
+    countryName_min    = 2
+    countryName_max    = 2
+    commonName    = Common Name (hostname, IP, or your name)
+    commonName_max    = 64
 
     # Default values for the above, for consistency and less typing.
-    # Variable name			  Value
-    #------------------------------	  ------------------------------
-    0.organizationName_default	= The Sample Company
-    localityName_default		= Metropolis
-    stateOrProvinceName_default	= New York
-    countryName_default		= US
-    commonName_default		= localhost
+    # Variable name        Value
+    #------------------------------    ------------------------------
+    0.organizationName_default  = The Sample Company
+    localityName_default    = Metropolis
+    stateOrProvinceName_default  = New York
+    countryName_default    = US
+    commonName_default    = localhost
 
     [ v3_ca ]
-    basicConstraints	= CA:TRUE
-    subjectKeyIdentifier	= hash
-    authorityKeyIdentifier	= keyid:always,issuer:always
+    basicConstraints  = CA:TRUE
+    subjectKeyIdentifier  = hash
+    authorityKeyIdentifier  = keyid:always,issuer:always
 
     [ v3_req ]
-    basicConstraints	= CA:FALSE
-    subjectKeyIdentifier	= hash
+    basicConstraints  = CA:FALSE
+    subjectKeyIdentifier  = hash
     EOF
   end
 

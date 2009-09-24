@@ -9,13 +9,13 @@ body {
 h1, h2, h3, h4, h5, h6 {
   color: #444;
 }
-h1 { 
+h1 {
   font-family: sans-serif;
   font-weight: normal;
   font-size: 4em;
   line-height: 0.8em;
   letter-spacing: -0.1ex;
-	margin: 5px;
+  margin: 5px;
 }
 li {
   padding: 0;
@@ -24,7 +24,7 @@ li {
 }
 a {
   color: #5E5AFF;
-	background-color: #DAC;
+  background-color: #DAC;
   font-weight: normal;
   text-decoration: underline;
 }
@@ -55,11 +55,11 @@ table {
   color: #ff8;
   background-color: #111;
   padding: 2px 10px 2px 10px;
-	border-style: dashed;
+  border-style: dashed;
 }
 
 th {
-	color: #fff;
+  color: #fff;
 }
 
 td {
@@ -67,15 +67,15 @@ td {
 }
 
 .success {
-	color: #0CC52B;
+  color: #0CC52B;
 }
 
 .failed {
-	color: #E90A1B;
+  color: #E90A1B;
 }
 
 .unknown {
-	color: #995000;
+  color: #995000;
 }
 pre, code {
   font-family: monospace;
@@ -105,7 +105,7 @@ pre, code {
   color: #141331;
   padding: 15px 20px 10px 20px;
   margin: 0 auto;
-	margin-top: 15px;
+  margin-top: 15px;
   border: 3px solid #141331;
 }
 
@@ -114,25 +114,25 @@ pre, code {
   font-size: 4em;
   line-height: 0.8em;
   letter-spacing: -0.1ex;
-	margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 #version p {
   text-decoration: none;
-	color: #141331;
-	background-color: #B3ABFF;
-	margin: 0;
-	padding: 0;
+  color: #141331;
+  background-color: #B3ABFF;
+  margin: 0;
+  padding: 0;
 }
 
 #version a {
   text-decoration: none;
-	color: #141331;
-	background-color: #B3ABFF;
+  color: #141331;
+  background-color: #B3ABFF;
 }
 
 .clickable {
-	cursor:	pointer; 
-	cursor:	hand;
+  cursor:  pointer;
+  cursor:  hand;
 }
 

@@ -9,7 +9,7 @@ require 'casserver/authenticators/base'
 # fall back to some other authentication mechanism.
 #
 # Here's an example of how to use two chained authenticators in the config.yml
-# file. The server will first use the ClientCertificate authenticator, and 
+# file. The server will first use the ClientCertificate authenticator, and
 # only fall back to the SQL authenticator of the first one fails:
 #
 # authenticator:
@@ -30,17 +30,17 @@ require 'casserver/authenticators/base'
 class CASServer::Authenticators::ClientCertificate < CASServer::Authenticators::Base
   def validate(credentials)
     read_standard_credentials(credentials)
-    
+
     @client_cert = credentials[:request]['SSL_CLIENT_CERT']
-    
+
     # note that I haven't actually tested to see if SSL_CLIENT_CERT gets
     # filled with data when a client cert is provided, but this should be
     # the case at least in theory :)
-    
+
     return false if @client_cert.blank?
-    
+
     # IMPLEMENT SSL CERTIFICATE VALIDATION CODE HERE
-    
+
     return true # if SSL certificate is valid, false otherwise
   end
 end

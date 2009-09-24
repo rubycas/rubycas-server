@@ -30,7 +30,7 @@ unless $CONF[:authenticator]
     your config file.
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	"
+  "
   raise Picnic::Config::Error, err
 end
 

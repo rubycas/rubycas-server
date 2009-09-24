@@ -7,7 +7,7 @@ elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FIL
 else
   puts "Loading picnic from rubygems..."
   require 'rubygems'
-  
+
   begin
     # Try to load dev version of picnic if available (for example 'zuk-picnic' from Github)
     gem /^.*?-picnic$/
