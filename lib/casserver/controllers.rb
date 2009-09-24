@@ -159,25 +159,7 @@ module CASServer::Controllers
         $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
 
         # 3.6 (ticket-granting cookie)
-        tgt = generate_ticket_granting_ticket(@username, extra_attributes)
-
-        if $CONF.maximum_session_lifetime
-          expires = $CONF.maximum_session_lifetime.to_i.from_now
-          expiry_info = " It will expire on #{expires}."
-        else
-          expiry_info = " It will not expire."
-        end
-
-        if $CONF.maximum_session_lifetime
-          cookies['tgt'] = {
-            :value => tgt.to_s,
-            :expires => Time.now + $CONF.maximum_session_lifetime
-          }
-        else
-          cookies['tgt'] = tgt.to_s
-        end
-
-        $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
+        tgt = setup_cookie_tgt
 
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
@@ -202,6 +184,31 @@ module CASServer::Controllers
       end
 
       render :login
+
+      private
+      def setup_cookie_tgt
+        tgt = generate_ticket_granting_ticket(@username, extra_attributes)
+
+        if $CONF.maximum_session_lifetime
+          expires = $CONF.maximum_session_lifetime.to_i.from_now
+          expiry_info = " It will expire on #{expires}."
+        else
+          expiry_info = " It will not expire."
+        end
+
+        if $CONF.maximum_session_lifetime
+          cookies['tgt'] = {
+            :value => tgt.to_s,
+            :expires => Time.now + $CONF.maximum_session_lifetime
+          }
+        else
+          cookies['tgt'] = tgt.to_s
+        end
+
+        $LOG.debug("Ticket granting cookie '#{cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
+
+        return tgt
+      end
     end
   end
 
