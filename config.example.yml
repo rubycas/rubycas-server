@@ -545,6 +545,11 @@ log:
 
 #maximum_session_lifetime: 172800
 
+# This would provide an additional checkbox for user to
+# indicate if (s)he want to be remembered on the browser.
+
+#remember_me_session_lifetime: 864000
+
 
 # If you want the usernames entered on the login page to be automatically
 # downcased (converted to lowercase), enable the following option. When this

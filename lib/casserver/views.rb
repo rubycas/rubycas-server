@@ -87,6 +87,12 @@ module CASServer::Views
           end
         end
         tr do
+          td(:id => 'remember-me-containter', :colspan => "2") do
+            label(:id => "remember-me-label", :for => "remember-me"){ _( "Remeber me on this computer" ) }
+            input(:type => "checkbox", :id => "remember-me", :name => "remember-me")
+          end
+        end if $CONF['remember_me_session_life_time']
+        tr do
           td{}
           td(:id => "submit-container") do
             input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)

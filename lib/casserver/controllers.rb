@@ -190,10 +190,13 @@ module CASServer::Controllers
 
     private
     def setup_cookie_tgt tgt
-      expires = if $CONF.maximum_session_lifetime
-                   $CONF.maximum_session_lifetime.to_i.from_now
+      expires = if    $CONF.remember_me_session_lifetime && input['remember-me']
+                      $CONF.remember_me_session_lifetime.to_i.from_now
+
+                elsif $CONF.maximum_session_lifetime
+                      $CONF.maximum_session_lifetime.to_i.from_now
                 else
-                   nil
+                      nil
                 end
 
       cookies['tgt'] = if expires
