@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: rubycas-server \n"
-"POT-Creation-Date: 2009-09-29 16:29+0800\n"
+"POT-Creation-Date: 2009-09-29 17:04+0800\n"
 "PO-Revision-Date: 2008-11-04 12:32+0200\n"
 "Last-Translator: Antono Vasiljev <antono.vasiljev@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -93,22 +93,26 @@ msgstr " Перейдите по ссылке чтобы продолжить: "
 msgid "To generate a login ticket, you must make a POST request."
 msgstr "Чтобы сгенерировать входной билет вы должны делать POST запрос."
 
-#: lib/casserver/views.rb:43 lib/casserver/views.rb:119
+#: lib/casserver/views.rb:43 lib/casserver/views.rb:120
 msgid " Central Login"
 msgstr " Центральный вход"
 
-#: lib/casserver/views.rb:73
+#: lib/casserver/views.rb:68
+msgid "Please wait..."
+msgstr ""
+
+#: lib/casserver/views.rb:74
 msgid "Username"
 msgstr "Логин"
 
-#: lib/casserver/views.rb:82
+#: lib/casserver/views.rb:83
 msgid "Password"
 msgstr "Пароль"
 
-#: lib/casserver/views.rb:91
+#: lib/casserver/views.rb:92
 msgid "Remeber me on this computer"
 msgstr ""
 
-#: lib/casserver/views.rb:100
+#: lib/casserver/views.rb:101
 msgid "LOGIN"
 msgstr "Войти"

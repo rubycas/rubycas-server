@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: rubycas-server \n"
-"POT-Creation-Date: 2009-09-29 16:29+0800\n"
+"POT-Creation-Date: 2009-09-29 17:04+0800\n"
 "PO-Revision-Date: 2009-03-17 20:55+0200\n"
 "Last-Translator: Lin Jen-Shin <godfat@godfat.org>\n"
 "Language-Team: Traditional Chinese\n"
@@ -87,25 +87,26 @@ msgstr " 請點以下的連結繼續"
 msgid "To generate a login ticket, you must make a POST request."
 msgstr "你必須使用 POST 來產生登入憑証"
 
-#: lib/casserver/views.rb:43 lib/casserver/views.rb:119
+#: lib/casserver/views.rb:43 lib/casserver/views.rb:120
 msgid " Central Login"
 msgstr " 整合登入"
 
-#: lib/casserver/views.rb:73
+#: lib/casserver/views.rb:68
+msgid "Please wait..."
+msgstr "請稍候..."
+
+#: lib/casserver/views.rb:74
 msgid "Username"
 msgstr "帳號"
 
-#: lib/casserver/views.rb:82
+#: lib/casserver/views.rb:83
 msgid "Password"
 msgstr "密碼"
 
-#: lib/casserver/views.rb:91
+#: lib/casserver/views.rb:92
 msgid "Remeber me on this computer"
 msgstr "在這台電腦上記住我"
 
-#: lib/casserver/views.rb:100
+#: lib/casserver/views.rb:101
 msgid "LOGIN"
 msgstr "登入"
-
-#~ msgid "Please wait..."
-#~ msgstr "請稍候..."
