@@ -49,6 +49,7 @@ locale/ja_JP/LC_MESSAGES/rubycas-server.mo
 locale/pl_PL/LC_MESSAGES/rubycas-server.mo
 locale/pt_BR/LC_MESSAGES/rubycas-server.mo
 locale/ru_RU/LC_MESSAGES/rubycas-server.mo
+locale/zh_TW/LC_MESSAGES/rubycas-server.mo
 po/de_DE/rubycas-server.po
 po/es_ES/rubycas-server.po
 po/fr_FR/rubycas-server.po
@@ -56,6 +57,7 @@ po/ja_JP/rubycas-server.po
 po/pl_PL/rubycas-server.po
 po/pt_BR/rubycas-server.po
 po/ru_RU/rubycas-server.po
+po/zh_TW/rubycas-server.po
 po/rubycas-server.pot
 public/themes/cas.css
 public/themes/notice.png
