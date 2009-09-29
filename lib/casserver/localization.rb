@@ -62,7 +62,8 @@ module CASServer
 
     chosen_lang = nil
     langs.each do |l|
-      a = available.find{|a| a == l || a =~ Regexp.new("#{l}-\w*")}
+      a = available.find{ |a| a =~ Regexp.new("\\A#{l}\\Z", 'i') ||
+                              a =~ Regexp.new("#{l}-\w*",   'i')    }
       if a
         chosen_lang = a
         break
