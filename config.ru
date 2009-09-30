@@ -11,9 +11,9 @@ require 'rubygems'
 require 'rack'
 
 $APP_NAME = 'rubycas-server'
-$APP_ROOT = File.dirname(File.expand_path(__FILE__))
+$APP_ROOT = ::File.dirname(::File.expand_path(__FILE__))
 
-if File.exists?("#{$APP_ROOT}/tmp/debug.txt")
+if ::File.exist?("#{$APP_ROOT}/tmp/debug.txt")
   require 'ruby-debug'
   Debugger.wait_connection = true
   Debugger.start_remote
