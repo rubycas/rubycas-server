@@ -8,6 +8,7 @@
     and Camping 2.0 and is now compatible with Passenger Phusion
   * Added new SQL authenticator (sql_rest_auth) compatible with the
     restful_authentication Rails plugin. [antono]
+  * Re-licensed under the MIT License.
 
 * FIXED:
   * Fixed weird problems with loading controllers when using older versions of 

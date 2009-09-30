@@ -1,6 +1,6 @@
 = RubyCAS-Server
 
-*Copyright*:: Portions contributed by Matt Zukowski are copyright (c) 2008 Urbacon Ltd.
+*Copyright*:: Portions contributed by Matt Zukowski are copyright (c) 2009 Urbacon Ltd.
               Other portions are copyright of their respective authors.
 *Authors*::   See http://github.com/gunark/rubycas-server/commits/
 *Homepage*::  http://rubycas-server.googlecode.com
@@ -10,17 +10,5 @@ For info and installation instructions please see http://code.google.com/p/rubyc
 
 == License
 
-RubyCAS-Server is free software; you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published 
-by the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-RubyCAS-Server is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with RubyCAS-Server; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+RubyCAS-Server is licensed for use under the terms of the MIT License. 
+See the LICENSE.txt file bundled with the official RubyCAS-Server distribution for details.
