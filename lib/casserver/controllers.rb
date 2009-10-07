@@ -130,10 +130,16 @@ module CASServer::Controllers
       successful_authenticator = nil
       begin
         auth_index = 0
+
+        # hack to ensure authenticators is an array
+        authenticators = $CONF.authenticator
+        authenticators = [authenticators] unless authenticators.is_a?(Array)
+
         $AUTH.each do |auth_class|
           auth = auth_class.new
 
-          auth.configure($CONF.authenticator[auth_index].merge(:auth_index => auth_index))
+          #auth.configure($CONF.authenticator[auth_index].merge(:auth_index => auth_index))
+          auth.configure(authenticators[auth_index].merge(:auth_index => auth_index))
 
           credentials_are_valid = auth.validate(
             :username => @username, 
