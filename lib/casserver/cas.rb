@@ -83,6 +83,7 @@ module CASServer::CAS
     #      
     https.start do |conn|
       path = uri.path.empty? ? '/' : uri.path
+      path += '?' + uri.query unless (uri.query.nil? || uri.query.empty?)
       
       pgt = ProxyGrantingTicket.new
       pgt.ticket = "PGT-" + CASServer::Utils.random_string(60)
