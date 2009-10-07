@@ -98,8 +98,9 @@ module CASServer::CAS
       
       response = conn.request_get(path)
       # TODO: follow redirects... 2.5.4 says that redirects MAY be followed
+      # NOTE: The following response codes are valid according to the JA-SIG implementation even without following redirects
       
-      if response.code.to_i == 200
+      if %w(200 202 301 302 304).include?(response.code)
         # 3.4 (proxy-granting ticket IOU)
         pgt.save!
         $LOG.debug "PGT generated for pgt_url '#{pgt_url}': #{pgt.inspect}"
