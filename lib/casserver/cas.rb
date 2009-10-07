@@ -107,6 +107,7 @@ module CASServer::CAS
         pgt
       else
         $LOG.warn "PGT callback server responded with a bad result code '#{response.code}'. PGT will not be stored."
+        nil
       end
     end
   end
