@@ -94,12 +94,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
           user = results.first
 
           extract_extra(user)
-
-          if @extra_attributes.empty?
-            $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
-          else
-            $LOG.debug("#{self.class}: Read the following extra_attributes for user #{@username.inspect}: #{@extra_attributes.inspect}")
-          end
+              log_extra
         end
       end
 
@@ -120,6 +115,14 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     @extra_attributes = {}
     extra_attributes_to_extract.each do |col|
       @extra_attributes[col] = user.send(col)
+    end
+  end
+
+  def log_extra
+    if @extra_attributes.empty?
+      $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
+    else
+      $LOG.debug("#{self.class}: Read the following extra_attributes for user #{@username.inspect}: #{@extra_attributes.inspect}")
     end
   end
 end

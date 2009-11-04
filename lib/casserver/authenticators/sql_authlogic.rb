@@ -71,12 +71,8 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
         else
 
           extract_extra(user)
+              log_extra
 
-          if @extra_attributes.empty?
-            $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
-          else
-            $LOG.debug("#{self.class}: Read the following extra_attributes for user #{@username.inspect}: #{@extra_attributes.inspect}")
-          end
         end
       end
 
