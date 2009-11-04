@@ -75,8 +75,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
 
   def validate(credentials)
     read_standard_credentials(credentials)
-
-    raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
+    raise_if_not_configured
 
     user_model = self.class.user_model
 
@@ -111,5 +110,12 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     else
       return false
     end
+  end
+
+  protected
+  def raise_if_not_configured
+    raise CASServer::AuthenticatorError.new(
+      "Cannot validate credentials because the authenticator hasn't yet been configured"
+    ) unless @options
   end
 end
