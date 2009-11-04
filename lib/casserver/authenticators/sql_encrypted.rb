@@ -1,17 +1,10 @@
-require 'casserver/authenticators/base'
+require 'casserver/authenticators/sql'
 
 require 'digest/sha1'
 require 'digest/sha2'
 
 $: << File.dirname(File.expand_path(__FILE__)) + "/../../../vendor/isaac_0.9.1"
 require 'crypt/ISAAC'
-
-begin
-  require 'active_record'
-rescue LoadError
-  require 'rubygems'
-  require 'active_record'
-end
 
 # This is a more secure version of the SQL authenticator. Passwords are encrypted
 # rather than being stored in plain text.
@@ -20,29 +13,7 @@ end
 #
 # Using this authenticator requires some configuration on the client side. Please see
 # http://code.google.com/p/rubycas-server/wiki/UsingTheSQLEncryptedAuthenticator
-class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
-
-  def validate(credentials)
-    read_standard_credentials(credentials)
-
-    raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
-
-    user_model = establish_database_connection_if_necessary
-
-    username_column = @options[:username_column] || "username"
-    encrypt_function = @options[:encrypt_function] || 'user.encrypted_password == Digest::SHA256.hexdigest("#{user.encryption_salt}::#{@password}")'
-
-    results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
-
-    if results.size > 0
-      $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
-      user = results.first
-      return eval(encrypt_function)
-    else
-      return false
-    end
-  end
-
+class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::SQL
   # Include this module into your application's user model.
   #
   # Your model must have an 'encrypted_password' column where the password will be stored,
@@ -69,24 +40,29 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     end
   end
 
-  protected
-  def establish_database_connection_if_necessary
-    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
+  def self.setup opts
+    super(opts)
+    user_model.__send__(:include, EncryptedPassword)
+  end
 
-    user_model_name = "CASUser_#{@options[:auth_index]}"
-    if self.class.const_defined?(user_model_name)
-      user_model = self.class.const_get(user_model_name)
+  def validate(credentials)
+    read_standard_credentials(credentials)
+
+    raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
+
+    user_model = self.class.user_model
+
+    username_column = @options[:username_column] || "username"
+    encrypt_function = @options[:encrypt_function] || 'user.encrypted_password == Digest::SHA256.hexdigest("#{user.encryption_salt}::#{@password}")'
+
+    results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
+
+    if results.size > 0
+      $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
+      user = results.first
+      return eval(encrypt_function)
     else
-      self.class.class_eval %{
-        class #{user_model_name} < ActiveRecord::Base
-          include EncryptedPassword
-        end
-      }
-      user_model = self.class.const_get(user_model_name)
-      user_model.set_table_name @options[:user_table] || "users"
-      user_model.establish_connection(options[:database])
+      return false
     end
-
-    user_model
   end
 end

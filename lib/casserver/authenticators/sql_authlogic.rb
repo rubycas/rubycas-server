@@ -47,7 +47,7 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
 
     raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
 
-    user_model = establish_database_connection_if_necessary
+    user_model = self.class.user_model
 
     username_column = @options[:username_column] || "login"
     password_column = @options[:password_column] || "crypted_password"

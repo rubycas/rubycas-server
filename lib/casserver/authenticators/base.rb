@@ -1,6 +1,13 @@
 module CASServer
   module Authenticators
     class Base
+      def self.setup opts
+        # this would be called at rubycas-server start-up,
+        # override this method to setup what you need,
+        # e.g. setup database connection.
+        # leave it empty if you don't need to setup something.
+      end
+
       attr_accessor :options
       attr_reader :username # make this accessible so that we can pick up any
                             # transformations done within the authenticator

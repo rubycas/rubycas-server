@@ -53,13 +53,32 @@ end
 #     extra_attributes: full_name, access_level
 #
 class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
+  def self.setup opts
+    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless opts[:database]
+
+    user_model_name = "CASUser_#{opts[:auth_index]}"
+    $LOG.debug "CREATING USER MODEL #{user_model_name}"
+
+    class_eval %{
+      class #{user_model_name} < ActiveRecord::Base
+      end
+    }
+
+    @user_model = const_get(user_model_name)
+    @user_model.establish_connection(opts[:database])
+    @user_model.set_table_name(opts[:user_table] || 'users')
+  end
+
+  def self.user_model
+    @user_model
+  end
 
   def validate(credentials)
     read_standard_credentials(credentials)
 
     raise CASServer::AuthenticatorError, "Cannot validate credentials because the authenticator hasn't yet been configured" unless @options
 
-    user_model = establish_database_connection_if_necessary
+    user_model = self.class.user_model
 
     username_column = @options[:username_column] || 'username'
     password_column = @options[:password_column] || 'password'
@@ -93,27 +112,4 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
       return false
     end
   end
-
-  protected
-  def establish_database_connection_if_necessary
-    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless @options[:database]
-    
-    user_model_name = "CASUser_#{@options[:auth_index]}"
-    if self.class.const_defined?(user_model_name)
-      $LOG.debug "REUSING USER MODEL #{user_model_name}"
-      user_model = self.class.const_get(user_model_name)
-    else
-      $LOG.debug "CREATING USER MODEL #{user_model_name}"
-      self.class.class_eval %{
-        class #{user_model_name} < ActiveRecord::Base
-        end
-      }
-      user_model = self.class.const_get(user_model_name)
-      user_model.establish_connection(options[:database])
-      user_model.set_table_name @options[:user_table] || "users"
-    end
-
-    user_model
-  end
-
 end
