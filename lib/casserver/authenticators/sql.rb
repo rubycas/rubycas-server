@@ -93,10 +93,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
         else
           user = results.first
 
-          @extra_attributes = {}
-          extra_attributes_to_extract.each do |col|
-            @extra_attributes[col] = user.send(col)
-          end
+          extract_extra(user)
 
           if @extra_attributes.empty?
             $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
@@ -117,5 +114,12 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     raise CASServer::AuthenticatorError.new(
       "Cannot validate credentials because the authenticator hasn't yet been configured"
     ) unless @options
+  end
+
+  def extract_extra user
+    @extra_attributes = {}
+    extra_attributes_to_extract.each do |col|
+      @extra_attributes[col] = user.send(col)
+    end
   end
 end

@@ -70,10 +70,7 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
           $LOG.warn("#{self.class}: Unable to extract extra_attributes because multiple matches were found for #{@username.inspect}")
         else
 
-          @extra_attributes = {}
-          extra_attributes_to_extract.each do |col|
-            @extra_attributes[col] = user.send(col)
-          end
+          extract_extra(user)
 
           if @extra_attributes.empty?
             $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
