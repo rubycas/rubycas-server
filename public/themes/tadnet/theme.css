@@ -1,0 +1,55 @@
+body {
+	background: white;
+}
+
+#headline-container {
+	margin-bottom: 5px;
+	text-align: center;
+}
+
+#login-box {
+	margin: 0 auto;
+	width: 450px;
+	top: 110px;
+	position: relative;
+}
+
+#login-form {
+	margin: 0;
+	padding: 0;
+}
+
+#logo-container {
+	vertical-align: middle;
+}
+
+#logo {
+}
+
+#submit-container {
+	padding-top: 10px;
+	text-align: center !important;
+}
+
+button {
+	cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+label {
+	color: #666666;
+	font-size: 12px;
+	font-weight: normal;
+	float: right;
+	width: 8em;
+	text-align: right;
+}
+
+#username, #password {
+	float: left;
+	font-size: 14px;
+	width: 15em;
+	margin-left: 5px;
+	padding: 2px;
+}

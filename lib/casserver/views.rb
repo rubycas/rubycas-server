@@ -39,8 +39,7 @@ module CASServer::Views
       tr do
         td(:colspan => 2) do
           div(:id => "headline-container") do
-            strong organization
-            text _(" Central Login")
+            img(:id => "logo", :src => "/themes/#{current_theme}/logo.png")
           end
         end
       end
@@ -52,9 +51,6 @@ module CASServer::Views
         end
       end
       tr do
-        td(:id => "logo-container") do
-          img(:id => "logo", :src => "/themes/#{current_theme}/logo.png")
-        end
         td(:id => "login-form-container") do
           @include_infoline = true
           login_form
@@ -87,11 +83,12 @@ module CASServer::Views
           end
         end
         tr do
-          td{}
-          td(:id => "submit-container") do
+          td(:id => "submit-container", :colspan => "2") do
             input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
             input(:type => "hidden", :id => "service", :name => "service", :value => @service)
-            input(:type => "submit", :class => "button", :accesskey => "l", :value => _("LOGIN"), :tabindex => "4", :id => "login-submit")
+            button(:type => "submit", :accesskey => "l", :value => _("LOGIN"), :tabindex => "4", :id => "login-submit") do
+              img(:src => "/themes/#{current_theme}/button.png", :alt => "Log In")
+            end            
           end
         end
         tr do
