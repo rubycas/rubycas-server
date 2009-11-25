@@ -82,6 +82,7 @@ module CASServer::Views
               :size => "32", :tabindex => "2", :accesskey => "p", :autocomplete => "off")
           end
         end
+
         tr do
           td(:id => "submit-container", :colspan => "2") do
             input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
@@ -91,9 +92,25 @@ module CASServer::Views
             end            
           end
         end
+
         tr do
           td(:colspan => 2, :id => "infoline") { infoline }
         end if @include_infoline
+
+        tr do
+          td(:colspan => 2) do
+            div(:id => "bottom_menu") do
+              div(:class => "table") do
+                ul do
+                  li(:class => "first") {'Powered by <a href="http://geminisbs.com/">Gemini SBS</a>'}
+                  li {'<a href="http://users.tadnet.org/forgot_password">Forgot password?</a>'}
+                  li(:class => "last") {'<a href="http://www.tadnet.org/">TA&D Home</a>'}
+                end
+              end
+            end
+          end
+        end
+        
       end
     end
   end
