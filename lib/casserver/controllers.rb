@@ -132,8 +132,14 @@ module CASServer::Controllers
         auth_index = 0
         $AUTH.each do |auth_class|
           auth = auth_class.new
+          
+          if $CONF[:authenticator].instance_of? Array
+            auth_config = $CONF.authenticator[auth_index]
+          else
+            auth_config = $CONF.authenticator
+          end
 
-          auth.configure($CONF.authenticator[auth_index].merge(:auth_index => auth_index))
+          auth.configure(auth_config.merge(:auth_index => auth_index))
 
           credentials_are_valid = auth.validate(
             :username => @username, 
