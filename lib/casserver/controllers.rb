@@ -203,7 +203,8 @@ module CASServer::Controllers
                          expiry_info = " It will expire on #{expires}."
 
                          { :value   => tgt.to_s,
-                           :expires => expires   }
+                           :expires => expires,
+                           :path    => self / '/'   }
 
                        else
                          expiry_info = " It will not expire."
