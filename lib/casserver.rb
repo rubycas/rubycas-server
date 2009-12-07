@@ -1,24 +1,8 @@
 unless Object.const_defined?(:Picnic)
   $APP_NAME ||= 'rubycas-server'
   $APP_ROOT ||= File.expand_path(File.dirname(__FILE__)+'/..')
-  
-  if File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../vendor/picnic/lib'))
-    $: << picnic
-  elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../picnic/lib'))
-    $: << picnic
-  else
-    require 'rubygems'
-    
-    # make things backwards-compatible for rubygems < 0.9.0
-    if respond_to?(:require_gem)
-      puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
-      alias gem require_gem
-    end
-   
-    gem 'picnic'
-  end
-  
-  require 'picnic'
+
+  require 'casserver/load_picnic'
 end
 
 require 'yaml'
@@ -44,12 +28,31 @@ require "casserver/controllers"
 require "casserver/localization"
 
 def CASServer.create
-  CASServer::Models::Base.establish_connection($CONF[:database])
+  $LOG.info "Creating RubyCAS-Server with pid #{Process.pid}."
+
+
+  CASServer::Models::Base.establish_connection($CONF.database) unless CASServer::Models::Base.connected?
   CASServer::Models.create_schema
-  
-  CASServer::Models::ServiceTicket.cleanup_expired($CONF[:service_ticket_expiry])
-  CASServer::Models::LoginTicket.cleanup_expired($CONF[:login_ticket_expiry])
-  CASServer::Models::ProxyGrantingTicket.cleanup_expired($CONF[:proxy_granting_ticket_expiry])
-  CASServer::Models::TicketGrantingTicket.cleanup_expired($CONF[:ticket_granting_ticket_expiry])
+
+  #TODO: these warnings should eventually be deleted
+  if $CONF.service_ticket_expiry
+    $LOG.warn "The 'service_ticket_expiry' option has been renamed to 'maximum_unused_service_ticket_lifetime'. Please make the necessary change to your config file!"
+    $CONF.maximum_unused_service_ticket_lifetime ||= $CONF.service_ticket_expiry
+  end
+  if $CONF.login_ticket_expiry
+    $LOG.warn "The 'login_ticket_expiry' option has been renamed to 'maximum_unused_login_ticket_lifetime'. Please make the necessary change to your config file!"
+    $CONF.maximum_unused_login_ticket_lifetime ||= $CONF.login_ticket_expiry
+  end
+  if $CONF.ticket_granting_ticket_expiry || $CONF.proxy_granting_ticket_expiry
+    $LOG.warn "The 'ticket_granting_ticket_expiry' and 'proxy_granting_ticket_expiry' options have been renamed to 'maximum_session_lifetime'. Please make the necessary change to your config file!"
+    $CONF.maximum_session_lifetime ||= $CONF.ticket_granting_ticket_expiry || $CONF.proxy_granting_ticket_expiry
+  end
+
+  if $CONF.maximum_session_lifetime
+    CASServer::Models::ServiceTicket.cleanup($CONF.maximum_session_lifetime, $CONF.maximum_unused_service_ticket_lifetime)
+    CASServer::Models::LoginTicket.cleanup($CONF.maximum_session_lifetime, $CONF.maximum_unused_login_ticket_lifetime)
+    CASServer::Models::ProxyGrantingTicket.cleanup($CONF.maximum_session_lifetime)
+    CASServer::Models::TicketGrantingTicket.cleanup($CONF.maximum_session_lifetime)
+  end
 end
 

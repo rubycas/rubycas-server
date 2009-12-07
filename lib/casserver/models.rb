@@ -7,6 +7,26 @@ module CASServer::Models
       self.consumed = Time.now
       self.save!
     end
+
+    def self.included(mod)
+      mod.extend(ClassMethods)
+    end
+
+    module ClassMethods
+      def cleanup(max_lifetime, max_unconsumed_lifetime)
+        transaction do
+          conditions = ["created_on < ? OR (consumed IS NULL AND created_on < ?)", 
+                          Time.now - max_lifetime,
+                          Time.now - max_unconsumed_lifetime]
+          expired_tickets_count = count(:conditions => conditions)
+
+          $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
+            "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
+
+          destroy_all(conditions)
+        end
+      end
+    end
   end
   
   class Ticket < Base
@@ -14,12 +34,12 @@ module CASServer::Models
       ticket
     end
     
-    def self.cleanup_expired(expiry_time)
+    def self.cleanup(max_lifetime)
       transaction do
-        conditions = ["created_on < ?", Time.now - expiry_time]
+        conditions = ["created_on < ?", Time.now - max_lifetime]
         expired_tickets_count = count(:conditions => conditions)
           
-        $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.split('::').last}"+
+        $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
           "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
       
         destroy_all(conditions)
@@ -36,7 +56,11 @@ module CASServer::Models
     set_table_name 'casserver_st'
     include Consumable
     
-    belongs_to :ticket_granting_ticket, :foreign_key => :tgt_id
+    belongs_to :granted_by_tgt, 
+      :class_name => 'CASServer::Models::TicketGrantingTicket',
+      :foreign_key => :granted_by_tgt_id
+    has_one :proxy_granting_ticket,
+      :foreign_key => :created_by_st_id
     
     def matches_service?(service)
       CASServer::CAS.clean_service_url(self.service) == 
@@ -45,7 +69,9 @@ module CASServer::Models
   end
   
   class ProxyTicket < ServiceTicket
-    belongs_to :proxy_granting_ticket
+    belongs_to :granted_by_pgt,
+      :class_name => 'CASServer::Models::ProxyGrantingTicket',
+      :foreign_key => :granted_by_pgt_id
   end
   
   class TicketGrantingTicket < Ticket
@@ -53,13 +79,17 @@ module CASServer::Models
     
     serialize :extra_attributes
     
-    has_many :service_tickets, :foreign_key => :tgt_id
+    has_many :granted_service_tickets, 
+      :class_name => 'CASServer::Models::ServiceTicket',
+      :foreign_key => :granted_by_tgt_id
   end
   
   class ProxyGrantingTicket < Ticket
     set_table_name 'casserver_pgt'
     belongs_to :service_ticket
-    has_many :proxy_tickets, :dependent => :destroy
+    has_many :granted_proxy_tickets, 
+      :class_name => 'CASServer::Models::ProxyTicket',
+      :foreign_key => :granted_by_pgt_id
   end
   
   class Error
@@ -198,7 +228,12 @@ module CASServer::Models
   
   class ChangeServiceToText < V 0.71
     def self.up
-      change_column :casserver_st, :service, :text
+      # using change_column to change the column type from :string to :text
+      # doesn't seem to work, at least under MySQL, so we drop and re-create
+      # the column instead
+      remove_column :casserver_st, :service
+      say "WARNING: All existing service tickets are being deleted."
+      add_column :casserver_st, :service, :text
     end
     
     def self.down
@@ -213,6 +248,18 @@ module CASServer::Models
     
     def self.down
       remove_column :casserver_tgt, :extra_attributes
+    end
+  end
+
+  class RenamePgtForeignKeys < V 0.80
+    def self.up
+      rename_column :casserver_st,  :proxy_granting_ticket_id,  :granted_by_pgt_id
+      rename_column :casserver_st,  :tgt_id,                    :granted_by_tgt_id
+    end
+
+    def self.down
+      rename_column :casserver_st,  :granted_by_pgt_id,         :proxy_granting_ticket_id
+      rename_column :casserver_st,  :granted_by_tgt_id,         :tgt_id
     end
   end
 end

@@ -45,7 +45,7 @@ module CASServer::CAS
     st.ticket = "ST-" + CASServer::Utils.random_string
     st.service = service
     st.username = username
-    st.ticket_granting_ticket = tgt
+    st.granted_by_tgt_id = tgt.id
     st.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     st.save!
     $LOG.debug("Generated service ticket '#{st.ticket}' for service '#{st.service}'" +
@@ -59,8 +59,8 @@ module CASServer::CAS
     pt.ticket = "PT-" + CASServer::Utils.random_string
     pt.service = target_service
     pt.username = pgt.service_ticket.username
-    pt.proxy_granting_ticket_id = pgt.id
-    pt.ticket_granting_ticket = pgt.service_ticket.ticket_granting_ticket
+    pt.granted_by_pgt_id = pgt.id
+    pt.granted_by_tgt_id = pgt.service_ticket.granted_by_tgt.id
     pt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     pt.save!
     $LOG.debug("Generated proxy ticket '#{pt.ticket}' for target service '#{pt.service}'" +
@@ -83,6 +83,7 @@ module CASServer::CAS
     #      
     https.start do |conn|
       path = uri.path.empty? ? '/' : uri.path
+      path += '?' + uri.query unless (uri.query.nil? || uri.query.empty?)
       
       pgt = ProxyGrantingTicket.new
       pgt.ticket = "PGT-" + CASServer::Utils.random_string(60)
@@ -97,14 +98,16 @@ module CASServer::CAS
       
       response = conn.request_get(path)
       # TODO: follow redirects... 2.5.4 says that redirects MAY be followed
+      # NOTE: The following response codes are valid according to the JA-SIG implementation even without following redirects
       
-      if response.code.to_i == 200
+      if %w(200 202 301 302 304).include?(response.code)
         # 3.4 (proxy-granting ticket IOU)
         pgt.save!
         $LOG.debug "PGT generated for pgt_url '#{pgt_url}': #{pgt.inspect}"
         pgt
       else
         $LOG.warn "PGT callback server responded with a bad result code '#{response.code}'. PGT will not be stored."
+        nil
       end
     end
   end
@@ -114,21 +117,21 @@ module CASServer::CAS
   
     success = false
     if ticket.nil?
-      error = "Your login request did not include a login ticket. There may be a problem with the authentication system."
-      $LOG.warn("Missing login ticket.")
+      error = _("Your login request did not include a login ticket. There may be a problem with the authentication system.")
+      $LOG.warn "Missing login ticket."
     elsif lt = LoginTicket.find_by_ticket(ticket)
       if lt.consumed?
-        error = "The login ticket you provided has already been used up. Please try logging in again."
-        $LOG.warn("Login ticket '#{ticket}' previously used up")
-      elsif Time.now - lt.created_on < $CONF.login_ticket_expiry
-        $LOG.info("Login ticket '#{ticket}' successfully validated")
+        error = _("The login ticket you provided has already been used up. Please try logging in again.")
+        $LOG.warn "Login ticket '#{ticket}' previously used up"
+      elsif Time.now - lt.created_on < $CONF.maximum_unused_login_ticket_lifetime
+        $LOG.info "Login ticket '#{ticket}' successfully validated"
       else
-        error = "Your login ticket has expired. Please try logging in again."
-        $LOG.warn("Expired login ticket '#{ticket}'")
+        error = _("You took too long to enter your credentials. Please try again.")
+        $LOG.warn "Expired login ticket '#{ticket}'"
       end
     else
-      error = "The login ticket you provided is invalid. Please try logging in again."
-      $LOG.warn("Invalid login ticket '#{ticket}'")
+      error = _("The login ticket you provided is invalid. There may be a problem with the authentication system.")
+      $LOG.warn "Invalid login ticket '#{ticket}'"
     end
     
     lt.consume! if lt
@@ -141,13 +144,13 @@ module CASServer::CAS
   
     if ticket.nil?
       error = "No ticket granting ticket given."
-      $LOG.debug(error)
+      $LOG.debug error
     elsif tgt = TicketGrantingTicket.find_by_ticket(ticket)
       if $CONF.expire_sessions && Time.now - tgt.created_on > $CONF.ticket_granting_ticket_expiry
         error = "Your session has expired. Please log in again."
-        $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' expired.")
+        $LOG.info "Ticket granting ticket '#{ticket}' for user '#{tgt.username}' expired."
       else
-        $LOG.info("Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated.")
+        $LOG.info "Ticket granting ticket '#{ticket}' for user '#{tgt.username}' successfully validated."
       end
     else
       error = "Invalid ticket granting ticket '#{ticket}' (no matching ticket found in the database)."
@@ -158,25 +161,25 @@ module CASServer::CAS
   end
 
   def validate_service_ticket(service, ticket, allow_proxy_tickets = false)
-    $LOG.debug("Validating service/proxy ticket '#{ticket}' for service '#{service}'")
+    $LOG.debug "Validating service/proxy ticket '#{ticket}' for service '#{service}'"
   
     if service.nil? or ticket.nil?
       error = Error.new(:INVALID_REQUEST, "Ticket or service parameter was missing in the request.")
-      $LOG.warn("#{error.code} - #{error.message}")
+      $LOG.warn "#{error.code} - #{error.message}"
     elsif st = ServiceTicket.find_by_ticket(ticket)
       if st.consumed?
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has already been used up.")
-        $LOG.warn("#{error.code} - #{error.message}")
+        $LOG.warn "#{error.code} - #{error.message}"
       elsif st.kind_of?(CASServer::Models::ProxyTicket) && !allow_proxy_tickets
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
-        $LOG.warn("#{error.code} - #{error.message}")
-      elsif Time.now - st.created_on > $CONF.service_ticket_expiry
+        $LOG.warn "#{error.code} - #{error.message}"
+      elsif Time.now - st.created_on > $CONF.maximum_unused_service_ticket_lifetime
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has expired.")
-        $LOG.warn("Ticket '#{ticket}' has expired.")
+        $LOG.warn "Ticket '#{ticket}' has expired."
       elsif !st.matches_service? service
         error = Error.new(:INVALID_SERVICE, "The ticket '#{ticket}' belonging to user '#{st.username}' is valid,"+
           " but the requested service '#{service}' does not match the service '#{st.service}' associated with this ticket.")
-        $LOG.warn("#{error.code} - #{error.message}")
+        $LOG.warn "#{error.code} - #{error.message}"
       else
         $LOG.info("Ticket '#{ticket}' for service '#{service}' for user '#{st.username}' successfully validated.")
       end
@@ -197,10 +200,10 @@ module CASServer::CAS
     pt, error = validate_service_ticket(service, ticket, true)
     
     if pt.kind_of?(CASServer::Models::ProxyTicket) && !error
-      if not pt.proxy_granting_ticket
+      if not pt.granted_by_pgt
         error = Error.new(:INTERNAL_ERROR, "Proxy ticket '#{pt}' belonging to user '#{pt.username}' is not associated with a proxy granting ticket.")
-      elsif not pt.proxy_granting_ticket.service_ticket
-        error = Error.new(:INTERNAL_ERROR, "Proxy granting ticket '#{pt.proxy_granting_ticket}'"+
+      elsif not pt.granted_by_pgt.service_ticket
+        error = Error.new(:INTERNAL_ERROR, "Proxy granting ticket '#{pt.granted_by_pgt}'"+
           " (associated with proxy ticket '#{pt}' and belonging to user '#{pt.username}' is not associated with a service ticket.")
       end
     end
@@ -305,10 +308,11 @@ module CASServer::CAS
     return dirty_service if dirty_service.blank?
     clean_service = dirty_service.dup
     ['service', 'ticket', 'gateway', 'renew'].each do |p|
-      clean_service.sub!(Regexp.new("#{p}=[^&]*"), '')
+      clean_service.sub!(Regexp.new("&?#{p}=[^&]*"), '')
     end
     
-    clean_service.gsub!(/[\/\?]$/, '')
+    clean_service.gsub!(/[\/\?&]$/, '') # remove trailing ?, /, or &
+    clean_service.gsub!('?&', '?')
     clean_service.gsub!(' ', '+')
     
     $LOG.debug("Cleaned dirty service URL #{dirty_service.inspect} to #{clean_service.inspect}") if

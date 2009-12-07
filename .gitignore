@@ -7,3 +7,7 @@ config.yml
 *.pidaproject
 *.log
 *.mo
+pkg
+ssl
+custom/*
+.DS_Store

@@ -4,10 +4,11 @@
   * Support for localization via Ruby-GetText. 
     See http://code.google.com/p/rubycas-server/wiki/Localization 
     for details. [antono]
-  * Switched to Picnic 0.8.0, so RubyCAS-Server is now based on Rack
-    and Camping 2.0 and is also now compatible with Passenger Phusion
+  * Switched to Picnic 0.8.x, so RubyCAS-Server is now based on Rack
+    and Camping 2.0 and is now compatible with Passenger Phusion
   * Added new SQL authenticator (sql_rest_auth) compatible with the
     restful_authentication Rails plugin. [antono]
+  * Re-licensed under the MIT License.
 
 * FIXED:
   * Fixed weird problems with loading controllers when using older versions of 
@@ -15,6 +16,9 @@
   * Failure to connect to a service during a single sign out request is now
     handled gracefully.
   * Required gem dependencies have been re-enabled in the gemspec.
+  * Authlogic authenticator files added to gemspec. [rajiv]
+  * Authenticators are now instantiated on a per-request basis (rather than
+    once at startup) to ensure thread safety.
 
 === 0.7.1 :: 2008-11-10
 

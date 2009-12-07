@@ -32,9 +32,16 @@ server: webrick
 port: 443
 ssl_cert: /path/to/your/ssl.pem
 
-# If your private key is separate from cert
+# If your private key is in a separate file from the cert
 
 #ssl_key: /path/to/your/private_key.pem
+
+# If you do not already have an SSL certificate and would like to automatically
+# generate one, run the "generate_ssl_certificate" rake task and use the following 
+# settings:
+
+#  ssl_cert: ssl/cert.pem
+#  ssl_key: ssl/key.pem
 
 
 # By default the login page will be available at the root path 
@@ -66,7 +73,7 @@ ssl_cert: /path/to/your/ssl.pem
 #     binaries will be downloaded and installed, so don't worry about this).
 
 #server: mongrel
-#port: 110011
+#port: 11011
 
 
 # Bind the server to a specific address. Use 0.0.0.0 to listen on all
@@ -121,7 +128,7 @@ ssl_cert: /path/to/your/ssl.pem
 #
 # Here's an example Apache vhost config for RubyCAS-Server and Passenger:
 #
-#  Listen 442
+#  Listen 443
 #  <VirtualHost *:442>
 #     ServerAdmin admin@example.net
 #     ServerName login.example.net
@@ -429,7 +436,7 @@ database:
 # Custom themes are not well supported yet, but will be in the near future. In 
 # the meantime, if you want to create a custom theme, you can create a 
 # subdirectory under the CASServer's themes dir (for example, 
-# '/usr/lib/ruby/1.8/gems/casserver-xxx/lib/themes', if you installed CASServer 
+# '/usr/lib/ruby/1.8/gems/casserver-xxx/public/themes', if you installed CASServer 
 # on Linux as a gem). A theme is basically just a theme.css file that overrides 
 # the themes/cas.css styles along with a collection of image files
 # like logo.png and bg.png.
@@ -518,24 +525,21 @@ log:
 
 # You can set various ticket expiry times (specify the value in seconds).
 
-# Expired login and service tickets are no longer usable this many seconds after 
+# Unused login and service tickets become unusable this many seconds after
 # they are created. (Defaults to 5 minutes)
 
-#login_ticket_expiry: 300
-#service_ticket_expiry: 300
+#maximum_unused_login_ticket_lifetime: 300
+#maximum_unused_service_ticket_lifetime: 300
 
-# Proxy- and ticket-granting tickets do not expire -- normally they are made 
-# invalid only when the user logs out. But the server must periodically delete 
-# them to prevent buildup of stale data. PGTs and TGTs will be deleted during 
-# server startup if they are this many seconds old. (Defaults to 48 hours)
+# The server must periodically delete old tickets (login tickets, service tickets
+# proxy-granting tickets, and ticket-granting tickets) to prevent buildup of
+# stale data. This effectively limits the maximum length of a CAS session to
+# the lifetime given here (in seconds). (Defaults to 48 hours)
+# 
+# Note that this limit is not enforced on the client side; it refers only to the
+# the maximum lifetime of tickets on the CAS server.
 
-#proxy_granting_ticket_expiry: 172800
-#ticket_granting_ticket_expiry: 172800
-
-# If you would prefer that ticket-granting ticket expiry be enforced (in effect 
-# limiting the maximum length of a session), you can set expire_sessions to true.
-
-#expire_sessions: false
+#maximum_session_lifetime: 172800
 
 
 # If you want the usernames entered on the login page to be automatically 

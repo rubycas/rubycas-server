@@ -1,10 +1,7 @@
-
 conf_defaults = {
-  :expire_sessions => false,
-  :login_ticket_expiry => 5.minutes,
-  :service_ticket_expiry => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
-  :proxy_granting_ticket_expiry => 48.hours,
-  :ticket_granting_ticket_expiry => 48.hours,
+  :maximum_unused_login_ticket_lifetime => 5.minutes,
+  :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
+  :maximum_session_lifetime => 1.month, # all tickets are deleted after this period of time
   :log => {:file => 'casserver.log', :level => 'DEBUG'},
   :uri_path => "/"
 }
@@ -22,12 +19,26 @@ else
 end
 
 $AUTH = []
+
+unless $CONF[:authenticator]
+  err =  "
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    You have not yet defined an authenticator for your CAS server!
+    Please consult the documentation and make the necessary changes to
+    your config file.
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	"
+  raise Picnic::Conf::Error, err
+end
+
 begin
   # attempt to instantiate the authenticator
   if $CONF[:authenticator].instance_of? Array
-    $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize.new}
+    $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize}
   else
-    $AUTH << $CONF[:authenticator][:class].constantize.new
+    $AUTH << $CONF[:authenticator][:class].constantize
   end
 rescue NameError
   if $CONF[:authenticator].instance_of? Array
@@ -40,7 +51,7 @@ rescue NameError
         auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
         require 'casserver/'+auth_rb
       end
-      $AUTH << authenticator[:class].constantize.new
+      $AUTH << authenticator[:class].constantize
     end
   else
     if $CONF[:authenticator][:source]
@@ -52,26 +63,12 @@ rescue NameError
       require 'casserver/'+auth_rb
     end
 
-    $AUTH << $CONF[:authenticator][:class].constantize.new
+    $AUTH << $CONF[:authenticator][:class].constantize
   end
 end
 
-unless $CONF[:authenticator]
-  $stderr.puts
-  $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  $stderr.puts
-  $stderr.puts "You have not yet defined an authenticator for your CAS server!"
-  $stderr.puts "Please consult your config file for details (most likely in"
-  $stderr.puts "/etc/rubycas-server/config.yml)."
-  $stderr.puts
-  $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  exit 1
-end
-
-
-$CONF[:public_dir] = {
-  :path => "/themes",
-  :dir  => File.expand_path(File.dirname(__FILE__))+"/themes"
+$CONF[:static] = {
+  :urls => "/themes",
+  :root  => "#{$APP_ROOT}/public"
 }
-
 
