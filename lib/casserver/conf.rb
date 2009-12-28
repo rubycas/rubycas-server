@@ -1,5 +1,5 @@
 
-require 'activesupport'
+require 'active_support'
 
 conf_defaults = {
   :maximum_unused_login_ticket_lifetime => 5.minutes,
