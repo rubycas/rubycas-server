@@ -15,7 +15,7 @@ else
 
   require 'picnic/conf'
   $CONF = Picnic::Conf.new(conf_defaults)
-  $CONF.load_from_file($APP_NAME, $APP_ROOT, File.join($APP_ROOT, 'config', 'config.yml'))
+  $CONF.load_from_file($APP_NAME, $APP_ROOT)
 end
 
 $AUTH = []
