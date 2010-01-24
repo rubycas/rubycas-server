@@ -37,6 +37,20 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::Base
     if results.size > 0
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
       user = results.first
+
+      unless @options[:extra_attributes].blank?
+        @extra_attributes = {}
+        extra_attributes_to_extract.each do |col|
+          @extra_attributes[col] = user.send(col)
+        end
+        
+        if @extra_attributes.empty?
+          $LOG.warn("#{self.class}: Did not read any extra_attributes for user #{@username.inspect} even though an :extra_attributes option was provided.")
+        else
+          $LOG.debug("#{self.class}: Read the following extra_attributes for user #{@username.inspect}: #{@extra_attributes.inspect}")
+        end
+      end
+
       return eval(encrypt_function)
     else
       return false
