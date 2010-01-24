@@ -52,6 +52,7 @@ rescue NameError
         require 'casserver/'+auth_rb
       end
       $AUTH << authenticator[:class].constantize
+      $CONF[:authenticator] = [$CONF[:authenticator]]
     end
   else
     if $CONF[:authenticator][:source]
@@ -64,6 +65,7 @@ rescue NameError
     end
 
     $AUTH << $CONF[:authenticator][:class].constantize
+    $CONF[:authenticator] = [$CONF[:authenticator]]
   end
 end
 
