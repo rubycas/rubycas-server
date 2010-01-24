@@ -1,0 +1,94 @@
+body {
+	background: white;
+}
+
+#headline-container {
+	margin-bottom: 5px;
+	text-align: center;
+}
+
+#login-box {
+	margin: 0 auto;
+	width: 450px;
+	top: 110px;
+	position: relative;
+}
+
+#login-form {
+	margin: 0;
+	padding: 0;
+}
+
+#logo-container {
+	vertical-align: middle;
+}
+
+#logo {
+}
+
+#submit-container {
+	padding-top: 10px;
+	text-align: center !important;
+}
+
+button {
+	cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+label {
+	color: #666666;
+	font-size: 12px;
+	font-weight: normal;
+	float: right;
+	width: 8em;
+	text-align: right;
+}
+
+#username, #password {
+	float: left;
+	font-size: 14px;
+	width: 15em;
+	margin-left: 5px;
+	padding: 2px;
+}
+
+
+div#bottom_menu {
+}
+
+/* http://css-tricks.com/centering-list-items-horizontally-slightly-trickier-than-you-might-think/ */
+.table {
+	display: table;   /* Allow the centering to work */
+	margin: 0 auto;
+}
+
+div#bottom_menu ul {
+	margin: 0;
+	padding: 0;
+}
+
+div#bottom_menu ul li {
+	display: inline;
+	list-style: none;
+	margin: 0;
+	padding: 0px 5px;
+	border-right: 1px solid #DDD;
+	color: #999;
+	font-size: 9px;
+}
+
+div#bottom_menu ul li.first {
+	padding-left: none;
+}
+
+div#bottom_menu ul li.last {
+	padding-right: none;
+	border-right: none;
+}
+
+div#bottom_menu ul li a {
+	color: #666;
+	text-decoration: underline;
+}

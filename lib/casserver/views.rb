@@ -39,8 +39,7 @@ module CASServer::Views
       tr do
         td(:colspan => 2) do
           div(:id => "headline-container") do
-            strong organization
-            text _(" Central Login")
+            img(:id => "logo", :src => "/themes/#{current_theme}/logo.png")
           end
         end
       end
@@ -52,9 +51,6 @@ module CASServer::Views
         end
       end
       tr do
-        td(:id => "logo-container") do
-          img(:id => "logo", :src => "/themes/#{current_theme}/logo.png")
-        end
         td(:id => "login-form-container") do
           @include_infoline = true
           login_form
@@ -86,17 +82,35 @@ module CASServer::Views
               :size => "32", :tabindex => "2", :accesskey => "p", :autocomplete => "off")
           end
         end
+
         tr do
-          td{}
-          td(:id => "submit-container") do
+          td(:id => "submit-container", :colspan => "2") do
             input(:type => "hidden", :id => "lt", :name => "lt", :value => @lt)
             input(:type => "hidden", :id => "service", :name => "service", :value => @service)
-            input(:type => "submit", :class => "button", :accesskey => "l", :value => _("LOGIN"), :tabindex => "4", :id => "login-submit")
+            button(:type => "submit", :accesskey => "l", :value => _("LOGIN"), :tabindex => "4", :id => "login-submit") do
+              img(:src => "/themes/#{current_theme}/button.png", :alt => "Log In")
+            end            
           end
         end
+
         tr do
           td(:colspan => 2, :id => "infoline") { infoline }
         end if @include_infoline
+
+        tr do
+          td(:colspan => 2) do
+            div(:id => "bottom_menu") do
+              div(:class => "table") do
+                ul do
+                  li(:class => "first") {'Powered by <a href="http://geminisbs.com/">Gemini SBS</a>'}
+                  li {'<a href="http://users.tadnet.org/forgot_password">Forgot password?</a>'}
+                  li(:class => "last") {'<a href="http://www.tadnet.org/">TA&D Home</a>'}
+                end
+              end
+            end
+          end
+        end
+        
       end
     end
   end

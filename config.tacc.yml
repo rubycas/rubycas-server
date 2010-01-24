@@ -1,0 +1,19 @@
+organization: 'TA&D'
+infoline: Powered by Gemini SBS
+theme: tadnet
+
+server: mongrel
+port: 5300
+
+database:
+  adapter: sqlite3
+  database: db/casserver.sqlite3
+
+authenticator:
+  class: CASServer::Authenticators::Tacc
+  site: http://users.tadnet.org/
+
+log:
+  file: log/casserver.log
+  level: INFO
+
