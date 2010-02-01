@@ -34,6 +34,12 @@ def CASServer.create
   CASServer::Models::Base.establish_connection($CONF.database) unless CASServer::Models::Base.connected?
   CASServer::Models.create_schema
 
+  # setup all the authenticators
+  $AUTH.zip($CONF.authenticator).each_with_index{ |auth_conf, index|
+    auth, conf = auth_conf
+    auth.setup(conf.merge(:auth_index => index))
+  }
+
   #TODO: these warnings should eventually be deleted
   if $CONF.service_ticket_expiry
     $LOG.warn "The 'service_ticket_expiry' option has been renamed to 'maximum_unused_service_ticket_lifetime'. Please make the necessary change to your config file!"

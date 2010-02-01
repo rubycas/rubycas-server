@@ -7,5 +7,5 @@ end
 desc 'Creates mo files from po files and puts them to locale dir'
 task :mo do
   require 'gettext/utils'
-  GetText.create_mofiles(true, "po", "locale") 
+  GetText.create_mofiles(true, "po", "locale")
 end

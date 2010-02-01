@@ -1,7 +1,7 @@
 require 'camping/ar'
 
 module CASServer::Models
-  
+
   module Consumable
     def consume!
       self.consumed = Time.now
@@ -15,7 +15,7 @@ module CASServer::Models
     module ClassMethods
       def cleanup(max_lifetime, max_unconsumed_lifetime)
         transaction do
-          conditions = ["created_on < ? OR (consumed IS NULL AND created_on < ?)", 
+          conditions = ["created_on < ? OR (consumed IS NULL AND created_on < ?)",
                           Time.now - max_lifetime,
                           Time.now - max_unconsumed_lifetime]
           expired_tickets_count = count(:conditions => conditions)
@@ -28,78 +28,78 @@ module CASServer::Models
       end
     end
   end
-  
+
   class Ticket < Base
     def to_s
       ticket
     end
-    
+
     def self.cleanup(max_lifetime)
       transaction do
         conditions = ["created_on < ?", Time.now - max_lifetime]
         expired_tickets_count = count(:conditions => conditions)
-          
+
         $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
           "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
-      
+
         destroy_all(conditions)
       end
     end
   end
-  
+
   class LoginTicket < Ticket
     set_table_name 'casserver_lt'
     include Consumable
   end
-  
+
   class ServiceTicket < Ticket
     set_table_name 'casserver_st'
     include Consumable
-    
-    belongs_to :granted_by_tgt, 
+
+    belongs_to :granted_by_tgt,
       :class_name => 'CASServer::Models::TicketGrantingTicket',
       :foreign_key => :granted_by_tgt_id
     has_one :proxy_granting_ticket,
       :foreign_key => :created_by_st_id
-    
+
     def matches_service?(service)
-      CASServer::CAS.clean_service_url(self.service) == 
+      CASServer::CAS.clean_service_url(self.service) ==
         CASServer::CAS.clean_service_url(service)
     end
   end
-  
+
   class ProxyTicket < ServiceTicket
     belongs_to :granted_by_pgt,
       :class_name => 'CASServer::Models::ProxyGrantingTicket',
       :foreign_key => :granted_by_pgt_id
   end
-  
+
   class TicketGrantingTicket < Ticket
     set_table_name 'casserver_tgt'
-    
+
     serialize :extra_attributes
-    
-    has_many :granted_service_tickets, 
+
+    has_many :granted_service_tickets,
       :class_name => 'CASServer::Models::ServiceTicket',
       :foreign_key => :granted_by_tgt_id
   end
-  
+
   class ProxyGrantingTicket < Ticket
     set_table_name 'casserver_pgt'
     belongs_to :service_ticket
-    has_many :granted_proxy_tickets, 
+    has_many :granted_proxy_tickets,
       :class_name => 'CASServer::Models::ProxyTicket',
       :foreign_key => :granted_by_pgt_id
   end
-  
+
   class Error
     attr_reader :code, :message
-    
+
     def initialize(code, message)
       @code = code
       @message = message
     end
-    
+
     def to_s
       message
     end
@@ -109,14 +109,14 @@ module CASServer::Models
     def self.up
       if ActiveRecord::Base.connection.table_alias_length > 30
         $LOG.info("Creating database with long table names...")
-        
+
         create_table :casserver_login_tickets, :force => true do |t|
           t.column :ticket,     :string,   :null => false
           t.column :created_on, :timestamp, :null => false
           t.column :consumed,   :datetime, :null => true
           t.column :client_hostname, :string, :null => false
         end
-      
+
         create_table :casserver_service_tickets, :force => true do |t|
           t.column :ticket,     :string,    :null => false
           t.column :service,    :string,    :null => false
@@ -127,14 +127,14 @@ module CASServer::Models
           t.column :type,       :string,   :null => false
           t.column :proxy_granting_ticket_id, :integer, :null => true
         end
-        
+
         create_table :casserver_ticket_granting_tickets, :force => true do |t|
           t.column :ticket,     :string,    :null => false
           t.column :created_on, :timestamp, :null => false
           t.column :client_hostname, :string, :null => false
           t.column :username,   :string,    :null => false
         end
-        
+
         create_table :casserver_proxy_granting_tickets, :force => true do |t|
           t.column :ticket,     :string,    :null => false
           t.column :created_on, :timestamp, :null => false
@@ -144,7 +144,7 @@ module CASServer::Models
         end
       end
     end
-    
+
     def self.down
       if ActiveRecord::Base.connection.table_alias_length > 30
         drop_table :casserver_proxy_granting_tickets
@@ -154,8 +154,8 @@ module CASServer::Models
       end
     end
   end
-  
-  # Oracle table names cannot exceed 30 chars... 
+
+  # Oracle table names cannot exceed 30 chars...
   # See http://code.google.com/p/rubycas-server/issues/detail?id=15
   class ShortenTableNames < V 0.5
     def self.up
@@ -172,7 +172,7 @@ module CASServer::Models
           t.column :consumed,   :datetime, :null => true
           t.column :client_hostname, :string, :null => false
         end
-      
+
         create_table :casserver_st, :force => true do |t|
           t.column :ticket,     :string,    :null => false
           t.column :service,    :string,    :null => false
@@ -183,14 +183,14 @@ module CASServer::Models
           t.column :type,       :string,   :null => false
           t.column :proxy_granting_ticket_id, :integer, :null => true
         end
-        
+
         create_table :casserver_tgt, :force => true do |t|
           t.column :ticket,     :string,    :null => false
           t.column :created_on, :timestamp, :null => false
           t.column :client_hostname, :string, :null => false
           t.column :username,   :string,    :null => false
         end
-        
+
         create_table :casserver_pgt, :force => true do |t|
           t.column :ticket,     :string,    :null => false
           t.column :created_on, :timestamp, :null => false
@@ -200,7 +200,7 @@ module CASServer::Models
         end
       end
     end
-    
+
     def self.down
       if ActiveRecord::Base.connection.table_alias_length > 30
         rename_table :casserver_lt, :cassserver_login_tickets
@@ -215,17 +215,17 @@ module CASServer::Models
       end
     end
   end
-  
+
   class AddTgtToSt < V 0.7
     def self.up
       add_column :casserver_st, :tgt_id, :integer, :null => true
     end
-    
+
     def self.down
       remove_column :casserver_st, :tgt_id, :integer
     end
   end
-  
+
   class ChangeServiceToText < V 0.71
     def self.up
       # using change_column to change the column type from :string to :text
@@ -235,17 +235,17 @@ module CASServer::Models
       say "WARNING: All existing service tickets are being deleted."
       add_column :casserver_st, :service, :text
     end
-    
+
     def self.down
       change_column :casserver_st, :service, :string
     end
   end
-  
+
   class AddExtraAttributes < V 0.72
     def self.up
       add_column :casserver_tgt, :extra_attributes, :text
     end
-    
+
     def self.down
       remove_column :casserver_tgt, :extra_attributes
     end

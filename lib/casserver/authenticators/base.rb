@@ -1,24 +1,31 @@
 module CASServer
   module Authenticators
     class Base
+      def self.setup opts
+        # this would be called at rubycas-server start-up,
+        # override this method to setup what you need,
+        # e.g. setup database connection.
+        # leave it empty if you don't need to setup something.
+      end
+
       attr_accessor :options
-      attr_reader :username # make this accessible so that we can pick up any 
+      attr_reader :username # make this accessible so that we can pick up any
                             # transformations done within the authenticator
-    
+
       def validate(credentials)
         raise NotImplementedError, "This method must be implemented by a class extending #{self.class}"
       end
-      
+
       def configure(options)
         raise ArgumentError, "options must be a HashWithIndifferentAccess" unless options.kind_of? HashWithIndifferentAccess
         @options = options.dup
         @extra_attributes = {}
       end
-      
+
       def extra_attributes
         @extra_attributes
       end
-      
+
       protected
       def read_standard_credentials(credentials)
         @username = credentials[:username]
@@ -26,7 +33,7 @@ module CASServer
         @service = credentials[:service]
         @request = credentials[:request]
       end
-      
+
       def extra_attributes_to_extract
         if @options[:extra_attributes].kind_of? Array
           attrs = @options[:extra_attributes]
@@ -36,13 +43,13 @@ module CASServer
           $LOG.error("Can't figure out attribute list from #{@options[:extra_attributes].inspect}. This must be an Aarray of column names or a comma-separated list.")
           attrs = []
         end
-        
+
         $LOG.debug("#{self.class.name} will try to extract the following extra_attributes: #{attrs.inspect}")
         return attrs
       end
     end
   end
-  
+
   class AuthenticatorError < Exception
   end
 end

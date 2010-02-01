@@ -1,21 +1,21 @@
 body {
-	background-image: url(bg.png);
+  background-image: url(bg.png);
 }
 
 label {
-	color: #5c6156;
+  color: #5c6156;
 }
 
 #login-form {
-	background-repeat: no-repeat;
-	background-image: url(login_box_bg.png);
-	height: 175px;
-	width: 210px;
-	padding: 20px;
+  background-repeat: no-repeat;
+  background-image: url(login_box_bg.png);
+  height: 175px;
+  width: 210px;
+  padding: 20px;
 }
 
 #logo-container {
-	vertical-align: top;
+  vertical-align: top;
 }
 
 #logo {
@@ -24,10 +24,10 @@ label {
 }
 
 #infoline {
-	color: #5c6156;
-	font-size: 8px;
+  color: #5c6156;
+  font-size: 8px;
 }
 
 #headline-container {
-	margin-right: 15px;
+  margin-right: 15px;
 }

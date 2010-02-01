@@ -1,5 +1,5 @@
 * {
-	font-family: Verdana, sans-serif;
+  font-family: Verdana, sans-serif;
 }
 
 body {
@@ -7,115 +7,115 @@ body {
 }
 
 label {
-	font-weight: bold;
-	font-size: 9px;
+  font-weight: bold;
+  font-size: 9px;
 }
 
 input {
-	font-weight: normal;
-	font-size: 12px;
+  font-weight: normal;
+  font-size: 12px;
 }
 
 input.button {
-	/*font-weight: bold;*/
-	font-size: 10px;
+  /*font-weight: bold;*/
+  font-size: 10px;
 }
 
 #login-box {
-	margin: 0 auto;
-	width: 350px;
-	top: 130px;
-	position: relative;
+  margin: 0 auto;
+  width: 350px;
+  top: 130px;
+  position: relative;
 }
 
 #headline-container {
-	text-align: right;
-	border-bottom: 1px solid #899989;
-	font-family: Tahoma, Verdana, sans-serif;
-	font-size: 22px;
-	margin-right: 0px;
-	padding-right: 7px;
-	margin-left: 10px;
-	letter-spacing: -0.25px;
+  text-align: right;
+  border-bottom: 1px solid #899989;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 22px;
+  margin-right: 0px;
+  padding-right: 7px;
+  margin-left: 10px;
+  letter-spacing: -0.25px;
 }
 
 #logo-container {
-	vertical-align: top;
+  vertical-align: top;
 }
 
 #logo {
 }
 
 #login-form-container {
-	vertical-align: top;
+  vertical-align: top;
 }
 
 
 #username,
 #password {
-	width: 10em;
+  width: 10em;
 }
 
 #login-form {
-	padding: 20px;
+  padding: 20px;
 }
 
 
 #form-layout {
-	position: relative;
-	top: 6px;
-	width: 100%;
+  position: relative;
+  top: 6px;
+  width: 100%;
 }
 
 #form-layout td {
-	text-align: center;
-	padding-bottom: 8px;
+  text-align: center;
+  padding-bottom: 8px;
 }
 
 #form-layout td#submit-container {
-	text-align: right;
-	padding-right: 10px;
+  text-align: right;
+  padding-right: 10px;
 }
 
 #infoline {
-	font-size: 9px;
+  font-size: 9px;
 }
 
 #messagebox-container {
-	padding-left: 11px;
-	padding-right: 16px;
+  padding-left: 11px;
+  padding-right: 16px;
 }
 
 div.messagebox {
-	font-size: 12px;
-	padding: 5px;
-	padding-left: 55px;
-	text-align: center;
-	width: 70%;
-	min-height: 34px;
-	vertical-align: middle;
+  font-size: 12px;
+  padding: 5px;
+  padding-left: 55px;
+  text-align: center;
+  width: 70%;
+  min-height: 34px;
+  vertical-align: middle;
 }
 
 div.mistake {
-	color: #d00;
-	background-image: url(warning.png);
-	background-repeat: no-repeat;
-	background-position: 10px 5px;
-	font-weight: bold;
+  color: #d00;
+  background-image: url(warning.png);
+  background-repeat: no-repeat;
+  background-position: 10px 5px;
+  font-weight: bold;
 }
 
 div.confirmation {
-	color: #280;
-	background-image: url(ok.png);
-	background-repeat: no-repeat;
-	background-position: 10px 5px;
-	font-weight: bold;
+  color: #280;
+  background-image: url(ok.png);
+  background-repeat: no-repeat;
+  background-position: 10px 5px;
+  font-weight: bold;
 }
 
 div.notice {
-	color: #04c;
-	background-image: url(notice.png);
-	background-repeat: no-repeat;
-	background-position: 10px 5px;
-	font-weight: bold;
+  color: #04c;
+  background-image: url(notice.png);
+  background-repeat: no-repeat;
+  background-position: 10px 5px;
+  font-weight: bold;
 }

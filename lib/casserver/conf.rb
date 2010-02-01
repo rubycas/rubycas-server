@@ -1,3 +1,6 @@
+
+require 'active_support'
+
 conf_defaults = {
   :maximum_unused_login_ticket_lifetime => 5.minutes,
   :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
@@ -29,7 +32,7 @@ unless $CONF[:authenticator]
     your config file.
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	"
+  "
   raise Picnic::Conf::Error, err
 end
 
@@ -39,6 +42,7 @@ begin
     $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize}
   else
     $AUTH << $CONF[:authenticator][:class].constantize
+    $CONF[:authenticator] = [$CONF[:authenticator]]
   end
 rescue NameError
   if $CONF[:authenticator].instance_of? Array
@@ -52,7 +56,6 @@ rescue NameError
         require 'casserver/'+auth_rb
       end
       $AUTH << authenticator[:class].constantize
-      $CONF[:authenticator] = [$CONF[:authenticator]]
     end
   else
     if $CONF[:authenticator][:source]

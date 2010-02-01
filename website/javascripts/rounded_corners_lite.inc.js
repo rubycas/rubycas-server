@@ -34,7 +34,7 @@
   *  MA 02111-1307 USA                                           *
   *                                                              *
   ****************************************************************/
-  
+
 var isIE = navigator.userAgent.toLowerCase().indexOf("msie") > -1; var isMoz = document.implementation && document.implementation.createDocument; var isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari')!=-1)&&(navigator.userAgent.toLowerCase().indexOf('mac')!=-1))?true:false; function curvyCorners()
 { if(typeof(arguments[0]) != "object") throw newCurvyError("First parameter of curvyCorners() must be an object."); if(typeof(arguments[1]) != "object" && typeof(arguments[1]) != "string") throw newCurvyError("Second parameter of curvyCorners() must be an object or a class name."); if(typeof(arguments[1]) == "string")
 { var startIndex = 0; var boxCol = getElementsByClass(arguments[1]);}

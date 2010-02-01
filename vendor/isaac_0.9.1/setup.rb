@@ -22,9 +22,9 @@ KINDS = [
 
 #{{{ list of files to be ignored stolen from setup.rb
 mapping = { '.' => '\.', '$' => '\$', '#' => '\#', '*' => '.*' }
-ignore_files = %w[core RCSLOG tags TAGS .make.state .nse_depinfo 
+ignore_files = %w[core RCSLOG tags TAGS .make.state .nse_depinfo
       #* .#* cvslog.* ,* .del-* *.olb *~ *.old *.bak *.BAK *.orig *.rej _$* *$
-      *.org *.in .* ] 
+      *.org *.in .* ]
 #end of robbery
 IGNORE_FILES = ignore_files.map do |x|
   Regexp.new('\A' + x.gsub(/[\.\$\#\*]/){|c| mapping[c]} + '\z')
@@ -96,7 +96,7 @@ end
 
 
 module Actions
-  
+
   class InstallFile
 
     attr_reader :source, :destination, :mode
@@ -119,7 +119,7 @@ module Actions
     end
 
     def eql?(other)
-      self.class == other.class && 
+      self.class == other.class &&
         @source == other.source &&
           @destination == other.destination &&
             @mode == other.mode
@@ -146,7 +146,7 @@ module Actions
     end
 
     def <=>(other)
-      FULL_ORDER[self, other] || self.directory <=> other.directory 
+      FULL_ORDER[self, other] || self.directory <=> other.directory
     end
   end
 
@@ -254,17 +254,17 @@ class PackageSpecification_1_0
 
   def self.declare_file_type(args, &handle_arg)
     str_arr_p = lambda{|x| Array === x && x.all?{|y| String === y}}
-    
+
     # strict type checking --- we don't want this to be extended arbitrarily
-    unless args.size == 1 && Hash === args.first && 
+    unless args.size == 1 && Hash === args.first &&
            args.first.all?{|f,r| [Proc, String, NilClass].include?(r.class) &&
                                  (String === f || str_arr_p[f])} or
            args.all?{|x| String === x || str_arr_p[x]}
-      raise SpecificationError, 
+      raise SpecificationError,
         "Unspecified semantics for the given arguments: #{args.inspect}"
     end
 
-    if args.size == 1 && Hash === args.first 
+    if args.size == 1 && Hash === args.first
       args.first.to_a.each do |file, rename_info|
         if Array === file
           # ignoring boring files
@@ -284,7 +284,7 @@ class PackageSpecification_1_0
       end
     end
   end
-  
+
   #{{{ define the file tagging methods
   KINDS.each { |kind|
     define_method(kind) { |*args| # if this were 1.9 we could also take a block
@@ -330,7 +330,7 @@ class PackageSpecification_1_0
       target, options = @translate[kind][replaced_path]
       options ||= TRANSLATE_DEFAULT_OPTIONS
       if target && (replaced_path == dir || options[:inherit])
-        dir = (target != '' ? File.join(target, *kept_dir_parts) : 
+        dir = (target != '' ? File.join(target, *kept_dir_parts) :
                               File.join(*kept_dir_parts))
         break
       end
@@ -339,7 +339,7 @@ class PackageSpecification_1_0
     end
     dir
   end
-  
+
   def add_file(kind, filename, new_filename_info, &callback)
     #TODO: refactor!!!
     if File.directory? filename #XXX setup.rb and rpa-base defined File.dir?
@@ -423,7 +423,7 @@ class PackageSpecification_1_0
       unless options.noop
         t = Test::Unit::AutoRunner.new(true)
         t.process_args(@unit_tests)
-        t.run  
+        t.run
       end
     end
   end
@@ -445,7 +445,7 @@ class PackageSpecification_1_0
     key_val_pairs = additional_translations.to_a
     option_pairs = key_val_pairs.select{|(k,v)| Symbol === k}
     default_opts.update(Hash[*option_pairs.flatten])
-    
+
     (key_val_pairs - option_pairs).each do |key, val|
       add_translation(kind, key, val, default_opts)
     end
@@ -486,7 +486,7 @@ class PackageSpecification_1_0
       opts.separator "    setup      compiles ruby extentions and others XXX"
       opts.separator "    install    installs files"
       opts.separator "    test       runs unit tests"
-      
+
 
       opts.separator ""
       opts.separator "Specific options:"
@@ -532,7 +532,7 @@ class PackageSpecification_1_0
       opts.on "--vendor", "install into distribution directories (for packagers)" do
         @dirs.update VENDOR_DIRS
       end
-      
+
       opts.separator ""
       opts.separator "General options:"
 

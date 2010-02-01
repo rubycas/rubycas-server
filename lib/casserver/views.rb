@@ -5,7 +5,7 @@
 Markaby::Builder.set(:auto_validation, false)
 
 # disabled XML indentation because it was causing problems with mod_auth_cas
-#Markaby::Builder.set(:indent, 2) 
+#Markaby::Builder.set(:indent, 2)
 
 module CASServer::Views
 
@@ -13,7 +13,7 @@ module CASServer::Views
     # wrap as XHTML only when auto_validation is on, otherwise pass right through
     if @use_layout
       xhtml_strict do
-        head do 
+        head do
           title { "#{organization} #{_(' Central Login')}" }
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/cas.css")
           link(:rel => "stylesheet", :type => "text/css", :href => "/themes/#{current_theme}/theme.css")
@@ -21,7 +21,7 @@ module CASServer::Views
             File.exists?("#{$APP_ROOT}/public/themes/#{current_theme}/favicon.png")
         end
         body(:onload => "if (document.getElementById('username')) document.getElementById('username').focus()") do
-          self << yield 
+          self << yield
         end
       end
     else
@@ -34,7 +34,7 @@ module CASServer::Views
   # The full login page.
   def login
     @use_layout = true
-    
+
     table(:id => "login-box") do
       tr do
         td(:colspan => 2) do
@@ -62,11 +62,12 @@ module CASServer::Views
       end
     end
   end
-  
+
   # Just the login form.
   def login_form
+    submitbutton = _("Please wait...")
     form(:method => "post", :action => @form_action || '/login', :id => "login-form",
-        :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='#{ _("Please wait...") }'; submitbutton.disabled=true; return true;") do
+         :onsubmit => "submitbutton = document.getElementById('login-submit'); submitbutton.value='#{submitbutton}'; submitbutton.disabled=true; return true;") do
       table(:id => "form-layout") do
         tr do
           td(:id => "username-label-container") do
@@ -82,7 +83,7 @@ module CASServer::Views
             label(:id => "password-label", :for => "password") { _( "Password" ) }
           end
           td(:id => "password-container") do
-            input(:type => "password", :id => "password", :name => "password", 
+            input(:type => "password", :id => "password", :name => "password",
               :size => "32", :tabindex => "2", :accesskey => "p", :autocomplete => "off")
           end
         end
@@ -100,11 +101,11 @@ module CASServer::Views
       end
     end
   end
-  
+
   # 2.3.2
   def logout
     @use_layout = true
-    
+
     table(:id => "login-box") do
       tr do
         td(:colspan => 2) do
@@ -128,7 +129,7 @@ module CASServer::Views
       end
     end
   end
-  
+
   # 2.4.2
   # CAS 1.0 validate response.
   def validate
@@ -138,7 +139,7 @@ module CASServer::Views
       text "no\n\n"
     end
   end
-  
+
   # 2.5.2
   # CAS 2.0 service validate response.
   def service_validate
@@ -160,7 +161,7 @@ module CASServer::Views
       end
     end
   end
-  
+
   # 2.6.2
   # CAS 2.0 proxy validate response.
   def proxy_validate
@@ -189,7 +190,7 @@ module CASServer::Views
       end
     end
   end
-  
+
   # 2.7.2
   # CAS 2.0 proxy request response.
   def proxy
@@ -205,31 +206,31 @@ module CASServer::Views
       end
     end
   end
-  
+
   def configure
   end
-  
+
   protected
     def themes_dir
       File.dirname(File.expand_path(__FILE__))+'../themes'
     end
     module_function :themes_dir
-    
+
     def current_theme
       $CONF.theme || "simple"
     end
     module_function :current_theme
-    
+
     def organization
       $CONF.organization || ""
     end
     module_function :organization
-    
+
     def infoline
       $CONF.infoline || ""
     end
     module_function :infoline
-    
+
     def serialize_extra_attribute(value)
       if value.kind_of?(String) || value.kind_of?(Numeric)
         value
