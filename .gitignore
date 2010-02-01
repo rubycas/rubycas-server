@@ -11,3 +11,4 @@ pkg
 ssl
 custom/*
 .DS_Store
+/nbproject
