@@ -32,10 +32,6 @@ lib/casserver/load_picnic.rb
 lib/casserver/localization.rb
 lib/casserver/models.rb
 lib/casserver/postambles.rb
-lib/casserver/template/erb/layout.html.erb
-lib/casserver/template/erb/login.html.erb
-lib/casserver/template/erb/login_form.html.erb
-lib/casserver/template/erb/logout.html.erb
 lib/casserver/utils.rb
 lib/casserver/version.rb
 lib/casserver/views.rb
