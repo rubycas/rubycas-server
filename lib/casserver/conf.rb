@@ -38,12 +38,8 @@ end
 
 begin
   # attempt to instantiate the authenticator
-  if $CONF[:authenticator].instance_of? Array
-    $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize}
-  else
-    $AUTH << $CONF[:authenticator][:class].constantize
-    $CONF[:authenticator] = [$CONF[:authenticator]]
-  end
+  $CONF[:authenticator] = [$CONF[:authenticator]] unless $CONF[:authenticator].instance_of? Array
+  $CONF[:authenticator].each { |authenticator| $AUTH << authenticator[:class].constantize}
 rescue NameError
   if $CONF[:authenticator].instance_of? Array
     $CONF[:authenticator].each do |authenticator|
