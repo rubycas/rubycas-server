@@ -6,6 +6,15 @@
     for details. [antono]
   * Switched to Picnic 0.8.x, so RubyCAS-Server is now based on Rack
     and Camping 2.0 and is now compatible with Passenger Phusion
+  * Change to authenticator API: every authenticator now has a class 'setup'
+    method that gets called at server startup. This is where class-level
+    configuration should be done (e.g. establishing a database connection).
+    This is different from the 'configure' method which gets called on a per-
+    instance basis for each authenticator. [godfat]
+  * Database connections are now automatically released back to the connection
+    pool at the end of each request. This should allow the server to handle
+    many more concurrent requests, since database connections are no longer left
+    checked out of the pool.
   * Added new SQL authenticator (sql_rest_auth) compatible with the
     restful_authentication Rails plugin. [antono]
   * Re-licensed under the MIT License.
