@@ -40,6 +40,7 @@ class CASServer::Authenticators::ClientCertificate < CASServer::Authenticators::
     return false if @client_cert.blank?
 
     # IMPLEMENT SSL CERTIFICATE VALIDATION CODE HERE
+    raise NotImplementedError, "#{self.class.name}#validate NOT YET IMPLEMENTED!"
 
     return true # if SSL certificate is valid, false otherwise
   end
