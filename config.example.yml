@@ -153,8 +153,7 @@ ssl_cert: /path/to/your/ssl.pem
 # Set up the database connection. Make sure that this database is secure!
 # 
 # By default, we use MySQL, since it is widely used and does not require any 
-# additional
-# ruby libraries besides ActiveRecord.
+# additional ruby libraries besides ActiveRecord.
 #
 # With MySQL, your config would be something like the following:
 # (be sure to create the casserver database in MySQL beforehand,
@@ -167,6 +166,18 @@ database:
   password: 
   host: localhost
 
+# IMPORTANT! By default, the server can handle up to ~5 concurrent requests
+# (without queuing). You can increase this by setting the database connection
+# pool size to a higher number. For example, to handle up to ~10 concurrent 
+# requests:
+#
+#database:
+#  pool: 10
+#  adapter: mysql
+#  database: casserver
+#  username: root
+#  password: 
+#  host: localhost
 
 #
 # Instead of MySQL you can use SQLite3, PostgreSQL, MSSQL, or anything else 
@@ -241,6 +252,7 @@ database:
 #  username_column: username
 #  password_column: password
 #  extra_attributes: full_name, access_level
+#
 #
 #
 # === Google Authentication ====================================================
