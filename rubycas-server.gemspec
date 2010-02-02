@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Zukowski"]
-  s.date = %q{2009-09-18}
+  s.date = %q{2010-02-02}
   s.description = %q{Provides single sign-on authentication for web applications using the CAS protocol.}
   s.email = ["matt@zukowski.ca"]
   s.executables = ["rubycas-server", "rubycas-server-ctl"]
