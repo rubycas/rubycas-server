@@ -53,10 +53,10 @@ end
 #     extra_attributes: full_name, access_level
 #
 class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
-  def self.setup opts
-    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless opts[:database]
+  def self.setup(options)
+    raise CASServer::AuthenticatorError, "Invalid authenticator configuration!" unless options[:database]
 
-    user_model_name = "CASUser_#{opts[:auth_index]}"
+    user_model_name = "CASUser_#{options[:auth_index]}"
     $LOG.debug "CREATING USER MODEL #{user_model_name}"
 
     class_eval %{
@@ -65,8 +65,8 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     }
 
     @user_model = const_get(user_model_name)
-    @user_model.establish_connection(opts[:database])
-    @user_model.set_table_name(opts[:user_table] || 'users')
+    @user_model.establish_connection(options[:database])
+    @user_model.set_table_name(options[:user_table] || 'users')
   end
 
   def self.user_model
@@ -81,12 +81,14 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
 
     username_column = @options[:username_column] || 'username'
     password_column = @options[:password_column] || 'password'
-
+    
+    $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).count}/#{user_model.connection_pool.instance_variable_get(:@connections).count}"
     results = user_model.find(:all, :conditions => ["#{username_column} = ? AND #{password_column} = ?", @username, @password])
-
+    user_model.connection_pool.checkin(user_model.connection)
+       
     if results.size > 0
       $LOG.warn("#{self.class}: Multiple matches found for user #{@username.inspect}") if results.size > 1
-
+      
       unless @options[:extra_attributes].blank?
         if results.size > 1
           $LOG.warn("#{self.class}: Unable to extract extra_attributes because multiple matches were found for #{@username.inspect}")
