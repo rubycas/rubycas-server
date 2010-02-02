@@ -21,27 +21,27 @@ msgid ""
 "Your login request did not include a login ticket. There may be a problem "
 "with the authentication system."
 msgstr ""
+"ログインリクエストにログインチケットが含まれていません。認証システムに問題があるようです。"
 
 #: lib/casserver/cas.rb:121
 msgid ""
 "The login ticket you provided has already been used up. Please try logging "
 "in again."
 msgstr ""
+"ログインチケットはすでに使い切られています。もう一度ログインしてください。"
 
 #: lib/casserver/cas.rb:126
 msgid "You took too long to enter your credentials. Please try again."
 msgstr ""
+"クレデンシャルの入力に時間が掛かりすぎました。もう一度試してください。"
 
 #: lib/casserver/cas.rb:130
 msgid ""
 "The login ticket you provided is invalid. There may be a problem with the "
 "authentication system."
 msgstr ""
+"指定されたログインチケットが無効です。認証システムに問題があるようです。"
 
-# THIS IS MACHINE-TRANSLATED AND PROBABLY MAKES VERY LITTLE SENSE IN JAPANESE :)
-# HELP IN CORRECTING THIS WOULD BE GREATLY APPRECIATED.
-# この機械的に翻訳すると、おそらくほとんど意味です日本語 :)
-# これを修正するのに役立つ高く評価されるだろう。
 #: lib/casserver/controllers.rb:32
 msgid ""
 "You are currently logged in as '%s'. If this is not you, please log in below."

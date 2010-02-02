@@ -12,3 +12,4 @@ ssl
 custom/*
 .DS_Store
 /nbproject
+.irbrc_history
