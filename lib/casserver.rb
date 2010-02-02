@@ -27,6 +27,17 @@ require "casserver/views"
 require "casserver/controllers"
 require "casserver/localization"
 
+module CASServer
+  # Release database connections back to the pool after each request.
+  # This is necessary to prevent the connection pool from filling up with
+  # hanging connections (Rails does this automatically, but Camping does not).
+  def service(*a)
+    r = super
+    ActiveRecord::Base.clear_active_connections!
+    return r
+  end
+end
+
 def CASServer.create
   $LOG.info "Creating RubyCAS-Server with pid #{Process.pid}."
 
@@ -37,7 +48,9 @@ def CASServer.create
   # setup all the authenticators
   $AUTH.zip($CONF.authenticator).each_with_index{ |auth_conf, index|
     auth, conf = auth_conf
-    auth.setup(conf.merge(:auth_index => index))
+    $LOG.debug "About to setup #{auth} with #{conf.inspect}..."
+    auth.setup(conf.merge(:auth_index => index)) if auth.respond_to?(:setup)
+    $LOG.debug "Done setting up #{auth}."
   }
 
   #TODO: these warnings should eventually be deleted
