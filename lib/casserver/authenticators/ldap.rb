@@ -106,7 +106,7 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     def user_filter
       username_attribute = options[:ldap][:username_attribute] || default_username_attribute
 
-      filter = Net::LDAP::Filter.eq(username_attribute, @username)
+      filter = Array(username_attribute).map { |ua| Net::LDAP::Filter.eq(ua, @username) }.reduce(:|)
       unless @options[:ldap][:filter].blank?
         filter &= Net::LDAP::Filter.construct(@options[:ldap][:filter])
       end
