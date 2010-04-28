@@ -41,6 +41,11 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
     end
   end
 
+  def self.setup(options)
+    super(options)
+    user_model.__send__(:include, EncryptedPassword)
+  end
+
   module EncryptedPassword
 
     # XXX: this constants MUST be defined in config.
