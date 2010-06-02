@@ -36,8 +36,10 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
       user = results.first
       if user.crypted_password == user.encrypt(@password)
-        extract_extra(user)
-        log_extra
+        unless @options[:extra_attributes].blank?
+          extract_extra(user)
+          log_extra
+        end
         return true
       else
         return false
