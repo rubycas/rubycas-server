@@ -60,12 +60,11 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::SQL
     
     if results.size > 0
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
+      user = results.first
       unless @options[:extra_attributes].blank?
         if results.size > 1
           $LOG.warn("#{self.class}: Unable to extract extra_attributes because multiple matches were found for #{@username.inspect}")
         else
-          user = results.first
-
           extract_extra(user)
               log_extra
         end
