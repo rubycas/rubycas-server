@@ -129,7 +129,7 @@ ssl_cert: /path/to/your/ssl.pem
 # Here's an example Apache vhost config for RubyCAS-Server and Passenger:
 #
 #  Listen 443
-#  <VirtualHost *:442>
+#  <VirtualHost *:443>
 #     ServerAdmin admin@example.net
 #     ServerName login.example.net
 #
