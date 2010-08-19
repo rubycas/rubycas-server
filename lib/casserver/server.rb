@@ -1,0 +1,432 @@
+require 'sinatra/base'
+
+require 'casserver/localization'
+require 'casserver/utils'
+require 'casserver/cas'
+
+require 'logger'
+$LOG = Logger.new(STDOUT)
+
+module CASServer
+  class Server < Sinatra::Base
+    include CASServer::CAS # CAS protocol helpers
+    include Localization
+
+    set :app_file, __FILE__
+    set :public, File.expand_path(File.dirname(__FILE__)+"/../../public")
+
+    config = HashWithIndifferentAccess.new(
+      :maximum_unused_login_ticket_lifetime => 5.minutes,
+      :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
+      :maximum_session_lifetime => 1.month, # all tickets are deleted after this period of time
+      :log => {:file => 'casserver.log', :level => 'DEBUG'},
+      :uri_path => "/"
+    )
+    config.merge! HashWithIndifferentAccess.new(YAML.load(File.open('/etc/rubycas-server/config.yml')))
+    set :config, config
+    set :server, config[:server] || 'webrick'
+
+    def self.run!(options={})
+      set options
+      handler      = detect_rack_handler
+      handler_name = handler.name.gsub(/.*::/, '')
+      
+      init_authenticators!
+      
+      puts "== RubyCAS-Server is starting up " +
+        "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
+      handler.run self, handler_options do |server|
+        [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
+        set :running, true
+      end
+    rescue Errno::EADDRINUSE => e
+      puts "== Something is already running on port #{port}!"
+    end
+
+    def self.quit!(server, handler_name)
+      ## Use thins' hard #stop! if available, otherwise just #stop
+      server.respond_to?(:stop!) ? server.stop! : server.stop
+      puts "\n== RubyCAS-Server is shutting down" unless handler_name =~/cgi/i
+    end
+
+    def self.handler_options
+      handler_options = {
+        :Host => bind || config[:bind_address],
+        :Port => config[:port] || 443
+      }
+
+      handler_options.merge(handler_ssl_options).to_hash.symbolize_keys!
+    end
+
+    def self.handler_ssl_options
+      return {} unless config[:ssl_cert]
+
+      cert_path = config[:ssl_cert]
+      key_path = config[:ssl_key] || config[:ssl_cert]
+      
+      unless cert_path.nil? && key_path.nil?
+        raise Error, "The ssl_cert and ssl_key options cannot be used with mongrel. You will have to run your " +
+          " server behind a reverse proxy if you want SSL under mongrel." if
+            config[:server] == 'mongrel'
+
+        raise Error, "The specified certificate file #{cert_path.inspect} does not exist or is not readable. " +
+          " Your 'ssl_cert' configuration setting must be a path to a valid " +
+          " ssl certificate." unless
+            File.exists? cert_path
+
+        raise Error, "The specified key file #{key_path.inspect} does not exist or is not readable. " +
+          " Your 'ssl_key' configuration setting must be a path to a valid " +
+          " ssl private key." unless
+            File.exists? key_path
+
+        require 'openssl'
+        require 'webrick/https'
+
+        cert = OpenSSL::X509::Certificate.new(File.read(cert_path))
+        key = OpenSSL::PKey::RSA.new(File.read(key_path))
+
+        {
+          :SSLEnable        => true,
+          :SSLVerifyClient  => ::OpenSSL::SSL::VERIFY_NONE,
+          :SSLCertificate   => cert,
+          :SSLPrivateKey    => key
+        }
+      end
+    end
+
+    def self.init_authenticators!
+      auth = []
+      
+      begin
+        # attempt to instantiate the authenticator
+        config[:authenticator] = [config[:authenticator]] unless config[:authenticator].instance_of? Array
+        config[:authenticator].each { |authenticator| auth << authenticator[:class].constantize}
+      rescue NameError
+        if config[:authenticator].instance_of? Array
+          config[:authenticator].each do |authenticator|
+            if !authenticator[:source].nil?
+              # config.yml explicitly names source file
+              require authenticator[:source]
+            else
+              # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+              auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
+              require 'casserver/'+auth_rb
+            end
+            auth << authenticator[:class].constantize
+          end
+        else
+          if config[:authenticator][:source]
+            # config.yml explicitly names source file
+            require config[:authenticator][:source]
+          else
+            # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
+            auth_rb = config[:authenticator][:class].underscore.gsub('cas_server/', '')
+            require 'casserver/'+auth_rb
+          end
+
+          auth << config[:authenticator][:class].constantize
+          config[:authenticator] = [config[:authenticator]]
+        end
+      end
+
+      auth.zip(config[:authenticator]).each_with_index{ |auth_conf, index|
+        authenticator, conf = auth_conf
+        $LOG.debug "About to setup #{authenticator} with #{conf.inspect}..."
+        authenticator.setup(conf.merge('auth_index' => index)) if authenticator.respond_to?(:setup)
+        $LOG.debug "Done setting up #{authenticator}."
+      }
+
+      set :auth, auth
+    end
+
+
+
+    before do
+      GetText.locale = determine_locale(request)
+      @theme = 'urbacon'
+      @organization = "URBACON"
+    end
+
+    # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec
+    # under http://www.ja-sig.org/products/cas/overview/protocol/index.html
+    
+    # 2.1 :: Login
+
+    # 2.1.1
+    get '/login' do
+      CASServer::Utils::log_controller_action(self.class, params)
+
+      # make sure there's no caching
+      headers['Pragma'] = 'no-cache'
+      headers['Cache-Control'] = 'no-store'
+      headers['Expires'] = (Time.now - 1.year).rfc2822
+
+      # optional params
+      @service = clean_service_url(params['service'])
+      @renew = params['renew']
+      @gateway = params['gateway'] == 'true' || params['gateway'] == '1'
+
+      if tgc = request.cookies['tgt']
+        tgt, tgt_error = validate_ticket_granting_ticket(tgc)
+      end
+
+      if tgt and !tgt_error
+        @message = {:type => 'notice',
+          :message => _("You are currently logged in as '%s'. If this is not you, please log in below.") % tgt.username }
+      end
+
+      if params['redirection_loop_intercepted']
+        @message = {:type => 'mistake',
+          :message => _("The client and server are unable to negotiate authentication. Please try logging in again later.")}
+      end
+
+      begin
+        if @service
+          if !@renew && tgt && !tgt_error
+            st = generate_service_ticket(@service, tgt.username, tgt)
+            service_with_ticket = service_uri_with_ticket(@service, st)
+            $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
+            return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+          elsif @gateway
+            $LOG.info("Redirecting unauthenticated gateway request to service '#{@service}'.")
+            return redirect(@service, :status => 303)
+          end
+        elsif @gateway
+            $LOG.error("This is a gateway request but no service parameter was given!")
+            @message = {:type => 'mistake',
+              :message => _("The server cannot fulfill this gateway request because no service parameter was given.")}
+        end
+      rescue URI::InvalidURIError
+        $LOG.error("The service '#{@service}' is not a valid URI!")
+        @message = {:type => 'mistake',
+          :message => _("The target service your browser supplied appears to be invalid. Please contact your system administrator for help.")}
+      end
+
+      lt = generate_login_ticket
+
+      $LOG.debug("Rendering login form with lt: #{lt}, service: #{@service}, renew: #{@renew}, gateway: #{@gateway}")
+
+      @lt = lt.ticket
+
+      #$LOG.debug(env)
+
+      # If the 'onlyLoginForm' parameter is specified, we will only return the
+      # login form part of the page. This is useful for when you want to
+      # embed the login form in some external page (as an IFRAME, or otherwise).
+      # The optional 'submitToURI' parameter can be given to explicitly set the
+      # action for the form, otherwise the server will try to guess this for you.
+      if params.has_key? 'onlyLoginForm'
+        if @env['HTTP_HOST']
+          guessed_login_uri = "http#{@env['HTTPS'] && @env['HTTPS'] == 'on' ? 's' : ''}://#{@env['REQUEST_URI']}#{self / '/login'}"
+        else
+          guessed_login_uri = nil
+        end
+
+        @form_action = params['submitToURI'] || guessed_login_uri
+
+        if @form_action
+          render :login_form
+        else
+          @status = 500
+          _("Could not guess the CAS login URI. Please supply a submitToURI parameter with your request.")
+        end
+      else
+        render(:erb, :login)
+      end
+    end
+
+    # 2.2
+    post '/login' do
+      Utils::log_controller_action(self.class, params)
+
+      # 2.2.1 (optional)
+      @service = clean_service_url(params['service'])
+
+      # 2.2.2 (required)
+      @username = params['username']
+      @password = params['password']
+      @lt = params['lt']
+
+      # Remove leading and trailing widespace from username.
+      @username.strip! if @username
+      
+      if @username && settings.config[:downcase_username]
+        $LOG.debug("Converting username #{@username.inspect} to lowercase because 'downcase_username' option is enabled.")
+        @username.downcase!
+      end
+
+      if error = validate_login_ticket(@lt)
+        @message = {:type => 'mistake', :message => error}
+        # generate another login ticket to allow for re-submitting the form
+        @lt = generate_login_ticket.ticket
+        @status = 401
+        render :erb, :login
+      end
+
+      # generate another login ticket to allow for re-submitting the form after a post
+      @lt = generate_login_ticket.ticket
+
+      $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{settings.auth.inspect}")
+
+      credentials_are_valid = false
+      extra_attributes = {}
+      successful_authenticator = nil
+      begin
+        auth_index = 0
+        settings.auth.each do |auth_class|
+          auth = auth_class.new
+
+          auth_config = settings.config[:authenticator][auth_index]
+          # pass the authenticator index to the configuration hash in case the authenticator needs to know
+          # it splace in the authenticator queue
+          auth.configure(auth_config.merge('auth_index' => auth_index))
+
+          credentials_are_valid = auth.validate(
+            :username => @username,
+            :password => @password,
+            :service => @service,
+            :request => @env
+          )
+          if credentials_are_valid
+            extra_attributes.merge!(auth.extra_attributes) unless auth.extra_attributes.blank?
+            successful_authenticator = auth
+            break
+          end
+
+          auth_index += 1
+        end
+      rescue CASServer::AuthenticatorError => e
+        $LOG.error(e)
+        @message = {:type => 'mistake', :message => e.to_s}
+        return render(:login)
+      end
+
+      if credentials_are_valid
+        $LOG.info("Credentials for username '#{@username}' successfully validated using #{successful_authenticator.class.name}.")
+        $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
+
+        # 3.6 (ticket-granting cookie)
+        tgt = generate_ticket_granting_ticket(@username, extra_attributes)
+
+        if config[:maximum_session_lifetime]
+          expires = settings.config[:maximum_session_lifetime].to_i.from_now
+          expiry_info = " It will expire on #{expires}."
+        else
+          expiry_info = " It will not expire."
+        end
+
+        if settings.config[:maximum_session_lifetime]
+          request.cookies['tgt'] = {
+            :value => tgt.to_s,
+            :expires => Time.now + settings.config[:maximum_session_lifetime]
+          }
+        else
+          request.cookies['tgt'] = tgt.to_s
+        end
+
+        $LOG.debug("Ticket granting cookie '#{request.cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
+
+        if @service.blank?
+          $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
+          @message = {:type => 'confirmation', :message => _("You have successfully logged in.")}
+        else
+          @st = generate_service_ticket(@service, @username, tgt)
+          begin
+            service_with_ticket = service_uri_with_ticket(@service, @st)
+
+            $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
+            return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+          rescue URI::InvalidURIError
+            $LOG.error("The service '#{@service}' is not a valid URI!")
+            @message = {:type => 'mistake',
+              :message => _("The target service your browser supplied appears to be invalid. Please contact your system administrator for help.")}
+          end
+        end
+      else
+        $LOG.warn("Invalid credentials given for user '#{@username}'")
+        @message = {:type => 'mistake', :message => _("Incorrect username or password.")}
+        @status = 401
+      end
+
+      render :erb, :login
+    end
+  end
+end
+#
+#unless Object.const_defined?(:Picnic)
+#  $APP_NAME ||= 'rubycas-server'
+#  $APP_ROOT ||= File.expand_path(File.dirname(__FILE__)+'/..')
+#
+#  require 'casserver/load_picnic'
+#end
+#
+#require 'yaml'
+#require 'markaby'
+#
+#require "casserver/conf"
+#require "picnic/logger"
+#
+#$: << File.dirname(File.expand_path(__FILE__))
+#
+#$: << File.expand_path("#{File.dirname(__FILE__)}/../vendor/isaac_0.9.1")
+#require 'crypt/ISAAC'
+#
+#Camping.goes :CASServer
+#
+#Picnic::Logger.init_global_logger!
+#
+#require "casserver/utils"
+#require "casserver/models"
+#require "casserver/cas"
+#require "casserver/views"
+#require "casserver/controllers"
+#require "casserver/localization"
+#
+#module CASServer
+#  # Release database connections back to the pool after each request.
+#  # This is necessary to prevent the connection pool from filling up with
+#  # hanging connections (Rails does this automatically, but Camping does not).
+#  def service(*a)
+#    r = super
+#    ActiveRecord::Base.clear_active_connections!
+#    return r
+#  end
+#end
+#
+#def CASServer.create
+#  $LOG.info "Creating RubyCAS-Server with pid #{Process.pid}."
+#
+#
+#  CASServer::Models::Base.establish_connection($CONF.database) unless CASServer::Models::Base.connected?
+#  CASServer::Models.create_schema
+#
+#  # setup all the authenticators
+#  $AUTH.zip($CONF.authenticator).each_with_index{ |auth_conf, index|
+#    auth, conf = auth_conf
+#    $LOG.debug "About to setup #{auth} with #{conf.inspect}..."
+#    auth.setup(conf.merge(:auth_index => index)) if auth.respond_to?(:setup)
+#    $LOG.debug "Done setting up #{auth}."
+#  }
+#
+#  #TODO: these warnings should eventually be deleted
+#  if $CONF.service_ticket_expiry
+#    $LOG.warn "The 'service_ticket_expiry' option has been renamed to 'maximum_unused_service_ticket_lifetime'. Please make the necessary change to your config file!"
+#    $CONF.maximum_unused_service_ticket_lifetime ||= $CONF.service_ticket_expiry
+#  end
+#  if $CONF.login_ticket_expiry
+#    $LOG.warn "The 'login_ticket_expiry' option has been renamed to 'maximum_unused_login_ticket_lifetime'. Please make the necessary change to your config file!"
+#    $CONF.maximum_unused_login_ticket_lifetime ||= $CONF.login_ticket_expiry
+#  end
+#  if $CONF.ticket_granting_ticket_expiry || $CONF.proxy_granting_ticket_expiry
+#    $LOG.warn "The 'ticket_granting_ticket_expiry' and 'proxy_granting_ticket_expiry' options have been renamed to 'maximum_session_lifetime'. Please make the necessary change to your config file!"
+#    $CONF.maximum_session_lifetime ||= $CONF.ticket_granting_ticket_expiry || $CONF.proxy_granting_ticket_expiry
+#  end
+#
+#  if $CONF.maximum_session_lifetime
+#    CASServer::Models::ServiceTicket.cleanup($CONF.maximum_session_lifetime, $CONF.maximum_unused_service_ticket_lifetime)
+#    CASServer::Models::LoginTicket.cleanup($CONF.maximum_session_lifetime, $CONF.maximum_unused_login_ticket_lifetime)
+#    CASServer::Models::ProxyGrantingTicket.cleanup($CONF.maximum_session_lifetime)
+#    CASServer::Models::TicketGrantingTicket.cleanup($CONF.maximum_session_lifetime)
+#  end
+#end
+#
