@@ -1,4 +1,7 @@
 require 'sinatra/base'
+require 'ruby-debug'
+
+$: << File.expand_path(File.dirname(__FILE__)) + '/../../vendor/isaac_0.9.1'
 
 require 'casserver/localization'
 require 'casserver/utils'
@@ -22,19 +25,16 @@ module CASServer
       :log => {:file => 'casserver.log', :level => 'DEBUG'},
       :uri_path => "/"
     )
-    config.merge! HashWithIndifferentAccess.new(YAML.load(File.open('/etc/rubycas-server/config.yml')))
     set :config, config
-    set :server, config[:server] || 'webrick'
+    set :config_file_loaded, false
 
     def self.run!(options={})
       set options
       handler      = detect_rack_handler
       handler_name = handler.name.gsub(/.*::/, '')
       
-      init_authenticators!
-      
       puts "== RubyCAS-Server is starting up " +
-        "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
+        "on port #{config[:port] || port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
       handler.run self, handler_options do |server|
         [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
         set :running, true
@@ -47,6 +47,12 @@ module CASServer
       ## Use thins' hard #stop! if available, otherwise just #stop
       server.respond_to?(:stop!) ? server.stop! : server.stop
       puts "\n== RubyCAS-Server is shutting down" unless handler_name =~/cgi/i
+    end
+
+    def self.load_config_file(config_file)
+      config.merge! HashWithIndifferentAccess.new(YAML.load(File.open(config_file)))
+      set :server, config[:server] || 'webrick'
+      set :config_file_loaded, true
     end
 
     def self.handler_options
@@ -139,7 +145,10 @@ module CASServer
       set :auth, auth
     end
 
-
+    configure do
+      load_config_file("/etc/rubycas-server/config.yml") unless config_file_loaded
+      init_authenticators!
+    end
 
     before do
       GetText.locale = determine_locale(request)
@@ -335,7 +344,7 @@ module CASServer
             service_with_ticket = service_uri_with_ticket(@service, @st)
 
             $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
-            return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+            redirect service_with_ticket, 303 # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
           rescue URI::InvalidURIError
             $LOG.error("The service '#{@service}' is not a valid URI!")
             @message = {:type => 'mistake',
@@ -349,6 +358,68 @@ module CASServer
       end
 
       render :erb, :login
+    end
+
+    # 2.3
+
+    # 2.3.1
+    get '/logout' do
+      CASServer::Utils::log_controller_action(self.class, params)
+
+      # The behaviour here is somewhat non-standard. Rather than showing just a blank
+      # "logout" page, we take the user back to the login page with a "you have been logged out"
+      # message, allowing for an opportunity to immediately log back in. This makes it
+      # easier for the user to log out and log in as someone else.
+      @service = clean_service_url(params['service'] || params['destination'])
+      @continue_url = params['url']
+
+      @gateway = params['gateway'] == 'true' || params['gateway'] == '1'
+
+      tgt = CASServer::Models::TicketGrantingTicket.find_by_ticket(request.cookies['tgt'])
+
+      request.cookies.delete 'tgt'
+
+      if tgt
+        CASServer::Models::TicketGrantingTicket.transaction do
+          $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
+          tgt.granted_service_tickets.each do |st|
+            send_logout_notification_for_service_ticket(st) if $CONF.enable_single_sign_out
+            # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails?
+            #       (the above method returns false if the POST results in a non-200 HTTP response).
+            $LOG.debug "Deleting #{st.class.name.demodulize} #{st.ticket.inspect} for service #{st.service}."
+            st.destroy
+          end
+
+          pgts = CASServer::Models::ProxyGrantingTicket.find(:all,
+            :conditions => [CASServer::Models::Base.connection.quote_table_name(CASServer::Models::ServiceTicket.table_name)+".username = ?", tgt.username],
+            :include => :service_ticket)
+          pgts.each do |pgt|
+            $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
+            pgt.destroy
+          end
+
+          $LOG.debug("Deleting #{tgt.class.name.demodulize} '#{tgt}' for user '#{tgt.username}'")
+          tgt.destroy
+        end
+
+        $LOG.info("User '#{tgt.username}' logged out.")
+      else
+        $LOG.warn("User tried to log out without a valid ticket-granting ticket.")
+      end
+
+      @message = {:type => 'confirmation', :message => _("You have successfully logged out.")}
+
+      @message[:message] +=_(" Please click on the following link to continue:") if @continue_url
+
+      @lt = generate_login_ticket
+
+      if @gateway && @service
+        redirect @service, 303
+      elsif @continue_url
+        render :logout
+      else
+        render :login
+      end
     end
   end
 end
