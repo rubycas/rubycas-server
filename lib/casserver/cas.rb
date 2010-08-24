@@ -276,7 +276,7 @@ module CASServer::CAS
   end
 
   def service_uri_with_ticket(service, st)
-    raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Models::ServiceTicket
+    raise ArgumentError, "Second argument must be a ServiceTicket!" unless st.kind_of? CASServer::Model::ServiceTicket
 
     # This will choke with a URI::InvalidURIError if service URI is not properly URI-escaped...
     # This exception is handled further upstream (i.e. in the controller).

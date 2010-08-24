@@ -29,9 +29,9 @@ module CASServer
       when !request.env['HTTP_USER_AGENT'].blank? && request.env['HTTP_USER_AGENT'] =~ /[^a-z]([a-z]{2}(-[a-z]{2})?)[^a-z]/i
         source = "'HTTP_USER_AGENT' header"
         $~[1]
-      when !$CONF['default_locale'].blank?
-        source = "'default_locale' config option"
-        $CONF[:default_locale]
+#      when !$CONF['default_locale'].blank?
+#        source = "'default_locale' config option"
+#        $CONF[:default_locale]
       else
         source = "default"
         "en"
