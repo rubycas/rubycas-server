@@ -1,0 +1,5 @@
+source "http://rubygems.org"
+gem "activerecord"
+gem "activesupport"
+gem "sinatra"
+gem "gettext"

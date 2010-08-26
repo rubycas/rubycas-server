@@ -1,5 +1,4 @@
 require 'sinatra/base'
-require 'ruby-debug'
 
 $: << File.expand_path(File.dirname(__FILE__)) + '/../../vendor/isaac_0.9.1'
 
@@ -50,7 +49,16 @@ module CASServer
     end
 
     def self.load_config_file(config_file)
-      config.merge! HashWithIndifferentAccess.new(YAML.load(File.open(config_file)))
+      begin
+        config_file = File.open(config_file)
+      rescue Errno::ENOENT => e
+        $stderr.puts
+        $stderr.puts "!!! Config file #{config_file.inspect} could not be read!"
+        $stderr.puts
+        raise e
+      end
+      
+      config.merge! HashWithIndifferentAccess.new(YAML.load(config_file))
       set :server, config[:server] || 'webrick'
       set :config_file_loaded, true
     end
