@@ -1,5 +1,2 @@
-require 'rubygems'
-
-require 'casserver/server'
-
-CASServer::Server.run!
+module CASServer
+end
