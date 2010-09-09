@@ -28,10 +28,17 @@ module CASServer
     set :config, config
     set :config_file_loaded, false
 
+    def self.uri_path
+      config[:uri_path]
+    end
+
     def self.run!(options={})
       set options
+
       handler      = detect_rack_handler
       handler_name = handler.name.gsub(/.*::/, '')
+
+      set :url_prefix, '/cas/'
       
       puts "== RubyCAS-Server is starting up " +
         "on port #{config[:port] || port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
@@ -58,7 +65,8 @@ module CASServer
     def self.handler_options
       handler_options = {
         :Host => bind || config[:bind_address],
-        :Port => config[:port] || 443
+        :Port => config[:port] || 443,
+        :mount => '/cas'
       }
 
       handler_options.merge(handler_ssl_options).to_hash.symbolize_keys!
@@ -146,7 +154,13 @@ module CASServer
     end
 
     configure do
-      load_config_file("/etc/rubycas-server/config.yml") unless config_file_loaded
+      begin
+        config_file
+      rescue NameError
+        config_file = "/etc/rubycas-server/config.yml"
+      end
+      
+      load_config_file(config_file) unless config_file_loaded?
       init_authenticators!
     end
 
@@ -162,7 +176,7 @@ module CASServer
     # 2.1 :: Login
 
     # 2.1.1
-    get '/login' do
+    get "#{uri_path}/login" do
       CASServer::Utils::log_controller_action(self.class, params)
 
       # make sure there's no caching
@@ -245,7 +259,7 @@ module CASServer
     end
 
     # 2.2
-    post '/login' do
+    post "#{uri_path}/login" do
       Utils::log_controller_action(self.class, params)
 
       # 2.2.1 (optional)
@@ -363,7 +377,7 @@ module CASServer
     # 2.3
 
     # 2.3.1
-    get '/logout' do
+    get "#{uri_path}/logout" do
       CASServer::Utils::log_controller_action(self.class, params)
 
       # The behaviour here is somewhat non-standard. Rather than showing just a blank
@@ -375,12 +389,12 @@ module CASServer
 
       @gateway = params['gateway'] == 'true' || params['gateway'] == '1'
 
-      tgt = CASServer::Models::TicketGrantingTicket.find_by_ticket(request.cookies['tgt'])
+      tgt = CASServer::Model::TicketGrantingTicket.find_by_ticket(request.cookies['tgt'])
 
       request.cookies.delete 'tgt'
 
       if tgt
-        CASServer::Models::TicketGrantingTicket.transaction do
+        CASServer::Model::TicketGrantingTicket.transaction do
           $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
           tgt.granted_service_tickets.each do |st|
             send_logout_notification_for_service_ticket(st) if $CONF.enable_single_sign_out
@@ -390,8 +404,8 @@ module CASServer
             st.destroy
           end
 
-          pgts = CASServer::Models::ProxyGrantingTicket.find(:all,
-            :conditions => [CASServer::Models::Base.connection.quote_table_name(CASServer::Models::ServiceTicket.table_name)+".username = ?", tgt.username],
+          pgts = CASServer::Model::ProxyGrantingTicket.find(:all,
+            :conditions => [CASServer::Model::Base.connection.quote_table_name(CASServer::Model::ServiceTicket.table_name)+".username = ?", tgt.username],
             :include => :service_ticket)
           pgts.each do |pgt|
             $LOG.debug("Deleting Proxy-Granting Ticket '#{pgt}' for user '#{pgt.service_ticket.username}'")
@@ -416,9 +430,9 @@ module CASServer
       if @gateway && @service
         redirect @service, 303
       elsif @continue_url
-        render :logout
+        render :erb, :logout
       else
-        render :login
+        render :erb, :login
       end
     end
   end
