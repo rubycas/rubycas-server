@@ -53,6 +53,16 @@ module CASServer
         config_file = File.open(config_file)
       rescue Errno::ENOENT => e
         $stderr.puts
+        $stderr.puts "!!! Config file #{config_file.inspect} does not exist!"
+        $stderr.puts
+        raise e
+      rescue Errno::EACCES => e
+        $stderr.puts
+        $stderr.puts "!!! Config file #{config_file.inspect} is not readable (permission denied)!"
+        $stderr.puts
+        raise e
+      rescue => e
+        $stderr.puts
         $stderr.puts "!!! Config file #{config_file.inspect} could not be read!"
         $stderr.puts
         raise e
@@ -152,9 +162,14 @@ module CASServer
 
       set :auth, auth
     end
+    
+    def self.init_database!
+      CASServer::Model::Base.establish_connection(config[:database])
+    end
 
     configure do
       load_config_file("/etc/rubycas-server/config.yml") unless config_file_loaded
+      init_database!
       init_authenticators!
     end
 

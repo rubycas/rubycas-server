@@ -266,11 +266,3 @@ module CASServer::Model
 #    end
 #  end
 end
-
-
-CASServer::Model::Base.establish_connection(
-  :adapter => 'mysql',
-  :host => 'localhost',
-  :user => 'root',
-  :database => 'casserver'
-)
