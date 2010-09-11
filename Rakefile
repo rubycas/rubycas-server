@@ -3,6 +3,10 @@ require 'config/hoe' # setup Hoe + all gem configuration
 
 Dir['tasks/**/*.rake'].each { |rake| load rake }
 
+namespace :db do
+  desc "bring your CAS server database schema up to date"
+end
+
 desc "generate a self signed SSL certificate (in order to get going easily)"
 task :generate_ssl_certificate do
   `mkdir -p ssl/newcerts ssl/private`
