@@ -69,13 +69,25 @@ describe CASServer do
 
   end # describe '/login'
 
+
   describe '/logout' do
+
+    before do
+      @target_service = 'http://my.app.test'
+    end
 
     it "logs out successfully" do
       # capybara doesn't let us post directly :(
-      Capybara.current_session.driver.post '/logout'
-      puts page.body
+      #Capybara.current_session.driver.post '/logout'
+      visit "/logout"
+      
       page.should have_content("You have successfully logged out")
+    end
+
+    it "logs out successfully and redirects to target service" do
+      visit "/logout?gateway=true&service="+CGI.escape(@target_service)
+      
+      page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?/
     end
 
   end # describe '/logout'
