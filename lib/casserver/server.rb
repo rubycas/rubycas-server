@@ -354,19 +354,16 @@ module CASServer
         # 3.6 (ticket-granting cookie)
         tgt = generate_ticket_granting_ticket(@username, extra_attributes)
 
-        if config[:maximum_session_lifetime]
-          expires = settings.config[:maximum_session_lifetime].to_i.from_now
-          expiry_info = " It will expire on #{expires}."
-        else
-          expiry_info = " It will not expire."
-        end
-
         if settings.config[:maximum_session_lifetime]
+          expires     = settings.config[:maximum_session_lifetime].to_i.from_now
+          expiry_info = " It will expire on #{expires}."
+
           request.cookies['tgt'] = {
             :value => tgt.to_s,
-            :expires => Time.now + settings.config[:maximum_session_lifetime]
+            :expires => expires
           }
         else
+          expiry_info = " It will not expire."
           request.cookies['tgt'] = tgt.to_s
         end
 
@@ -377,6 +374,7 @@ module CASServer
           @message = {:type => 'confirmation', :message => _("You have successfully logged in.")}
         else
           @st = generate_service_ticket(@service, @username, tgt)
+
           begin
             service_with_ticket = service_uri_with_ticket(@service, @st)
 
@@ -384,8 +382,10 @@ module CASServer
             redirect service_with_ticket, 303 # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
           rescue URI::InvalidURIError
             $LOG.error("The service '#{@service}' is not a valid URI!")
-            @message = {:type => 'mistake',
-              :message => _("The target service your browser supplied appears to be invalid. Please contact your system administrator for help.")}
+            @message = {
+              :type => 'mistake',
+              :message => _("The target service your browser supplied appears to be invalid. Please contact your system administrator for help.")
+            }
           end
         end
       else
