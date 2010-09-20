@@ -11,7 +11,7 @@ $gemspec = Gem::Specification.new do |s|
 
   s.files  = [
     "CHANGELOG", "LICENSE", "README.md", "Rakefile", "setup.rb",
-    "bin/*", "lib/**/*.rb", "public/**/*", "po/**/*", "resources/**/*",
+    "bin/*", "lib/**/*.rb", "public/**/*", "po/**/*", "resources/*.*",
     "tasks/**/*.rake", "vendor/**/*", "script/*"
   ].map{|p| Dir[p]}.flatten
 
