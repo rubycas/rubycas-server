@@ -1,3 +1,0 @@
-
-For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
-

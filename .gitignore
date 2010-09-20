@@ -13,3 +13,6 @@ custom/*
 .DS_Store
 /nbproject
 .irbrc_history
+resources/dev
+.rvmrc
+.bundle
