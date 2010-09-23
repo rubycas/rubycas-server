@@ -1,0 +1,46 @@
+server: webrick
+port: 6543
+#ssl_cert: test.pem
+#uri_path: /cas
+#bind_address: 0.0.0.0
+
+# database:
+#   adapter: mysql
+#   database: casserver
+#   username: root
+#   password: 
+#   host: localhost
+#   reconnect: true
+database:
+ adapter: sqlite3
+ database: casserver.db
+
+authenticator:
+  class: CASServer::Authenticators::Test
+  password: spec_password
+
+theme: simple
+
+organization: "RSPEC-TEST"
+
+infoline: "This is an rspec test."
+
+#custom_views_file: /path/to/custom/views.rb
+
+default_locale: en
+
+log:
+  file: casserver_spec.log
+  level: DEBUG
+
+#db_log:
+#  file: casserver_spec_db.log
+
+enable_single_sign_out: true
+
+#maximum_unused_login_ticket_lifetime: 300
+#maximum_unused_service_ticket_lifetime: 300
+
+#maximum_session_lifetime: 172800
+
+#downcase_username: true

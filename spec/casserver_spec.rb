@@ -7,28 +7,25 @@ $LOG = Logger.new(File.basename(__FILE__).gsub('.rb','.log'))
 
 include Capybara
 
-CASServer::Server.enable(:raise_errors)
-CASServer::Server.disable(:show_exceptions)
-
-CASServer::Server.load_config_file('spec_config.yml')
-
 VALID_USERNAME = 'spec_user'
 VALID_PASSWORD = 'spec_password'
 
 INVALID_PASSWORD = 'invalid_password'
 
-#Capybara.current_driver = :selenium
-Capybara.app = CASServer::Server
-
-describe CASServer do
+describe 'CASServer' do
+  
+  before do
+    @target_service = 'http://my.app.test'
+  end
 
   describe "/login" do
     before do
-      @target_service = 'http://my.app.test'
+      load_server(File.dirname(__FILE__) + "/default_config.yml")
     end
 
     it "logs in successfully with valid username and password without a target service" do
       visit "/login"
+      
       fill_in 'username', :with => VALID_USERNAME
       fill_in 'password', :with => VALID_PASSWORD
       click_button 'login-submit'
@@ -73,7 +70,7 @@ describe CASServer do
   describe '/logout' do
 
     before do
-      @target_service = 'http://my.app.test'
+      load_server(File.dirname(__FILE__) + "/default_config.yml")
     end
 
     it "logs out successfully" do
@@ -91,4 +88,17 @@ describe CASServer do
     end
 
   end # describe '/logout'
+  
+  describe 'configuration' do
+    it "uri_path value changes prefix of routes" do
+      load_server(File.dirname(__FILE__) + "/alt_config.yml")
+      @target_service = 'http://my.app.test'
+      
+      visit "/test/login"
+      page.status_code.should_not == 404
+      
+      visit "/test/logout"
+      page.status_code.should_not == 404
+    end
+  end
 end

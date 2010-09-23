@@ -7,10 +7,12 @@ require 'casserver/utils'
 require 'casserver/cas'
 
 require 'logger'
-$LOG = Logger.new(STDOUT)
+$LOG ||= Logger.new(STDOUT)
 
 module CASServer
   class Server < Sinatra::Base
+    CONFIG_FILE = ENV['CONFIG_FILE'] || "/etc/rubycas-server/config.yml"
+    
     include CASServer::CAS # CAS protocol helpers
     include Localization
 
@@ -22,10 +24,9 @@ module CASServer
       :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
       :maximum_session_lifetime => 1.month, # all tickets are deleted after this period of time
       :log => {:file => 'casserver.log', :level => 'DEBUG'},
-      :uri_path => "/"
+      :uri_path => ""
     )
     set :config, config
-    set :config_file_loaded, false
 
     def self.uri_path
       config[:uri_path]
@@ -36,8 +37,6 @@ module CASServer
 
       handler      = detect_rack_handler
       handler_name = handler.name.gsub(/.*::/, '')
-
-      set :url_prefix, '/cas/'
       
       puts "== RubyCAS-Server is starting up " +
         "on port #{config[:port] || port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
@@ -77,7 +76,14 @@ module CASServer
       
       config.merge! HashWithIndifferentAccess.new(YAML.load(config_file))
       set :server, config[:server] || 'webrick'
-      set :config_file_loaded, true
+    end
+    
+    def self.reconfigure!(config)
+      config.each do |key, val|
+        self.config[key] = val
+      end
+      init_database!
+      init_authenticators!
     end
 
     def self.handler_options
@@ -171,17 +177,13 @@ module CASServer
     end
     
     def self.init_database!
-      CASServer::Model::Base.establish_connection(config[:database])
+      #CASServer::Model::Base.establish_connection(config[:database])
+      ActiveRecord::Base.establish_connection(config[:database])
     end
 
     configure do
-      begin
-        config_file
-      rescue NameError
-        config_file = "/etc/rubycas-server/config.yml"
-      end
-      
-      load_config_file(config_file) unless config_file_loaded?
+      load_config_file(CONFIG_FILE)
+      init_database!
       init_authenticators!
     end
 
