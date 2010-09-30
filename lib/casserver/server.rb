@@ -273,8 +273,8 @@ module CASServer
         if @form_action
           render :login_form
         else
-          @status = 500
-          _("Could not guess the CAS login URI. Please supply a submitToURI parameter with your request.")
+          status 500
+          render _("Could not guess the CAS login URI. Please supply a submitToURI parameter with your request.")
         end
       else
         render(:erb, :login)
@@ -391,7 +391,7 @@ module CASServer
       else
         $LOG.warn("Invalid credentials given for user '#{@username}'")
         @message = {:type => 'mistake', :message => _("Incorrect username or password.")}
-        @status = 401
+        status 401
       end
 
       render :erb, :login
@@ -456,6 +456,70 @@ module CASServer
         render :erb, :logout
       else
         render :erb, :login
+      end
+    end
+
+    
+    # 2.6
+
+    # 2.6.1
+    get "#{uri_path}/proxyValidate" do
+      CASServer::Utils::log_controller_action(self.class, params)
+
+      # required
+      @service = clean_service_url(params['service'])
+      @ticket = params['ticket']
+      # optional
+      @pgt_url = params['pgtUrl']
+      @renew = params['renew']
+
+      @proxies = []
+
+      t, @error = validate_proxy_ticket(@service, @ticket)
+      @success = t && !@error
+
+      @extra_attributes = {}
+      if @success
+        @username = t.username
+
+        if t.kind_of? CASServer::Model::ProxyTicket
+          @proxies << t.granted_by_pgt.service_ticket.service
+        end
+
+        if @pgt_url
+          pgt = generate_proxy_granting_ticket(@pgt_url, t)
+          @pgtiou = pgt.iou if pgt
+        end
+
+        @extra_attributes = t.granted_by_tgt.extra_attributes || {}
+      end
+
+      status response_status_from_error(@error) if @error
+
+     render :builder, :proxy_validate
+    end
+
+
+    # Helpers
+
+    def response_status_from_error(error)
+      case error.code.to_s
+      when /^INVALID_/, 'BAD_PGT'
+        422
+      when 'INTERNAL_ERROR'
+        500
+      else
+        500
+      end
+    end
+
+    def serialize_extra_attribute(builder, value)
+      if value.kind_of?(String)
+        builder.text! value
+      elsif value.kind_of?(Numeric)
+        builder.text! value.to_s
+      else
+        builder.cdata! value.to_yaml
       end
     end
   end

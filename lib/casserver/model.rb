@@ -60,7 +60,7 @@ module CASServer::Model
     include Consumable
 
     belongs_to :granted_by_tgt,
-      :class_name => 'CASServer::Models::TicketGrantingTicket',
+      :class_name => 'CASServer::Model::TicketGrantingTicket',
       :foreign_key => :granted_by_tgt_id
     has_one :proxy_granting_ticket,
       :foreign_key => :created_by_st_id
@@ -73,7 +73,7 @@ module CASServer::Model
 
   class ProxyTicket < ServiceTicket
     belongs_to :granted_by_pgt,
-      :class_name => 'CASServer::Models::ProxyGrantingTicket',
+      :class_name => 'CASServer::Model::ProxyGrantingTicket',
       :foreign_key => :granted_by_pgt_id
   end
 
@@ -83,7 +83,7 @@ module CASServer::Model
     serialize :extra_attributes
 
     has_many :granted_service_tickets,
-      :class_name => 'CASServer::Models::ServiceTicket',
+      :class_name => 'CASServer::Model::ServiceTicket',
       :foreign_key => :granted_by_tgt_id
   end
 
@@ -91,7 +91,7 @@ module CASServer::Model
     set_table_name 'casserver_pgt'
     belongs_to :service_ticket
     has_many :granted_proxy_tickets,
-      :class_name => 'CASServer::Models::ProxyTicket',
+      :class_name => 'CASServer::Model::ProxyTicket',
       :foreign_key => :granted_by_pgt_id
   end
 

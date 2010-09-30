@@ -172,7 +172,7 @@ module CASServer::CAS
       if st.consumed?
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' has already been used up.")
         $LOG.warn "#{error.code} - #{error.message}"
-      elsif st.kind_of?(CASServer::Models::ProxyTicket) && !allow_proxy_tickets
+      elsif st.kind_of?(CASServer::Model::ProxyTicket) && !allow_proxy_tickets
         error = Error.new(:INVALID_TICKET, "Ticket '#{ticket}' is a proxy ticket, but only service tickets are allowed here.")
         $LOG.warn "#{error.code} - #{error.message}"
       elsif Time.now - st.created_on > settings.config[:maximum_unused_service_ticket_lifetime]
@@ -201,7 +201,7 @@ module CASServer::CAS
   def validate_proxy_ticket(service, ticket)
     pt, error = validate_service_ticket(service, ticket, true)
 
-    if pt.kind_of?(CASServer::Models::ProxyTicket) && !error
+    if pt.kind_of?(CASServer::Model::ProxyTicket) && !error
       if not pt.granted_by_pgt
         error = Error.new(:INTERNAL_ERROR, "Proxy ticket '#{pt}' belonging to user '#{pt.username}' is not associated with a proxy granting ticket.")
       elsif not pt.granted_by_pgt.service_ticket
