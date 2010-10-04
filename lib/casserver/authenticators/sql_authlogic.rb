@@ -38,7 +38,10 @@ end
 #   username_column: login
 #   password_column: crypted_password
 #   salt_column: password_salt
-#   encryptor: BCrypt
+#   encryptor: Sha1
+#   encryptor_options:
+#     digest_format: --SALT--PASSWORD--
+#     stretches: 1
 #
 class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
 
@@ -50,7 +53,7 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
 
     username_column = @options[:username_column] || "login"
     password_column = @options[:password_column] || "crypted_password"
-    salt_column = @options[:salt_column]
+    salt_column     = @options[:salt_column]
 
     $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).length}/#{user_model.connection_pool.instance_variable_get(:@connections).length}"
     results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
@@ -59,7 +62,12 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
     begin
       encryptor = eval("Authlogic::CryptoProviders::" + @options[:encryptor] || "Sha512")
     rescue
+      $LOG.warn("Could not initialize Authlogic crypto class for '#{@options[:encryptor]}'")
       encryptor = Authlogic::CryptoProviders::Sha512
+    end
+
+    @options[:encryptor_options].each do |name, value|
+      encryptor.send("#{name}=", value) if encryptor.respond_to?("#{name}=")
     end
 
     if results.size > 0
@@ -72,10 +80,8 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
         if results.size > 1
           $LOG.warn("#{self.class}: Unable to extract extra_attributes because multiple matches were found for #{@username.inspect}")
         else
-
           extract_extra(user)
-              log_extra
-
+          log_extra
         end
       end
 

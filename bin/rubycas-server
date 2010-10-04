@@ -1,13 +1,9 @@
 #!/usr/bin/env ruby
 
-require File.expand_path(File.dirname(__FILE__)+"/../lib/casserver/load_picnic")
+require 'rubygems'
 
-require 'picnic/cli'
+$: << File.dirname(__FILE__) + "/../lib"
 
-cli = Picnic::Cli.new(
-  'rubycas-server',
-  :app_module => 'CASServer',
-  :app_file => File.expand_path(File.dirname(__FILE__)+"/../lib/casserver.rb")
-)
+require 'casserver/server'
 
-cli.handle_cli_input
+CASServer::Server.run!

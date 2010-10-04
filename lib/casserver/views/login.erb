@@ -1,0 +1,29 @@
+<table id="login-box">
+  <tr>
+    <td colspan="2">
+      <div id="headline-container">
+        <strong><%= @organization %></strong>
+        <%= _(" Central Login") %>
+      </div>
+    </td>
+  </tr>
+
+  <% if @message %>
+  <tr>
+    <td colspan="2" id="messagebox-container">
+      <div class="messagebox <%= @message[:type] %>">
+        <%= @message[:message] %>
+      </div>
+    </td>
+  </tr>
+  <% end %>
+
+  <tr>
+    <td id="logo-container">
+      <img id="logo" src="/themes/<%= @theme %>/logo.png" />
+    </td>
+    <td id="login-form-container">
+      <%= erb(:_login_form, :layout => false) %>
+    </td>
+  </tr>
+</table>

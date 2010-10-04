@@ -50,6 +50,7 @@ end
 #     user_table: users
 #     username_column: username
 #     password_column: password
+#     ignore_type_column: true # indicates if you want to ignore Single Table Inheritance 'type' field
 #     extra_attributes: full_name, access_level
 #
 class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
@@ -67,6 +68,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     @user_model = const_get(user_model_name)
     @user_model.establish_connection(options[:database])
     @user_model.set_table_name(options[:user_table] || 'users')
+    @user_model.inheritance_column = 'no_inheritance_column' if options[:ignore_type_column]
   end
 
   def self.user_model
@@ -96,7 +98,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
           user = results.first
 
           extract_extra(user)
-              log_extra
+          log_extra
         end
       end
 
@@ -107,6 +109,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
   end
 
   protected
+
   def raise_if_not_configured
     raise CASServer::AuthenticatorError.new(
       "Cannot validate credentials because the authenticator hasn't yet been configured"

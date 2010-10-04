@@ -1,4 +1,6 @@
-# Misc utility function used throughout by the RubyCAS-server.
+require 'crypt/ISAAC'
+
+# Misc utility function used throughout by the RubyCAS-Server.
 module CASServer
   module Utils
     def random_string(max_length = 29)
