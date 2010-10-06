@@ -7,6 +7,11 @@
 
 For info and installation instructions please see http://code.google.com/p/rubycas-server
 
+=== Moving to Sinatra!
+
+RubyCAS-Server is currently being ported to Sinatra. Active development is in the *sinatra* branch (http://github.com/gunark/rubycas-server/tree/sinatra).
+
+I'm still merging in the occasional bug fix into the old Camping version (*master*) but expect this to wind down completely by the end of the year when the Sinatra branch becomes usable.
 
 == License
 
