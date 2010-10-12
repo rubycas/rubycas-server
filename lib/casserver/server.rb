@@ -459,6 +459,28 @@ module CASServer
       end
     end
 
+		# 2.4
+
+		# 2.4.1
+		get "#{uri_path}/validate" do
+			CASServer::Utils::log_controller_action(self.class, params)
+			
+			# required
+			@service = clean_service_url(params['service'])
+			@ticket = params['ticket']
+			# optional
+			@renew = params['renew']
+			
+			st, @error = validate_service_ticket(@service, @ticket)      
+			@success = st && !@error
+			
+			@username = st.username if @success
+			
+      status response_status_from_error(@error) if @error
+			
+			render :erb, :validate, :layout => false
+		end
+  
     
     # 2.6
 
