@@ -12,6 +12,9 @@ set :run, false
 set :raise_errors, true
 set :logging, false
 
+# Avoid potential weirdness by changing the working directory to the CASServer root
+FileUtils.cd('..')
+
 def silence_warnings
   old_verbose, $VERBOSE = $VERBOSE, nil
   yield
@@ -19,11 +22,11 @@ ensure
   $VERBOSE = old_verbose
 end
 
-# this called in specs' `before` block
-# ... due to the way Sinatra applications are loaded,
-#     we're forced to delay loading of the server code
-#     until the start of each test so that certain 
-#     configuraiton options can be changed (e.g. `uri_path`)
+# This called in specs' `before` block.
+# Due to the way Sinatra applications are loaded,
+# we're forced to delay loading of the server code
+# until the start of each test so that certain 
+# configuraiton options can be changed (e.g. `uri_path`)
 def load_server(config_file)
   ENV['CONFIG_FILE'] = config_file
   
@@ -36,4 +39,18 @@ def load_server(config_file)
 
   #Capybara.current_driver = :selenium
   Capybara.app = CASServer::Server
+end
+
+# Deletes the sqlite3 database specified in the app's config
+# and runs the db:migrate rake tasks to rebuild the database schema.
+def reset_spec_database
+  raise "Cannot reset the spec database because config[:database][:database] is not defined." unless
+    CASServer::Server.config[:database] && CASServer::Server.config[:database][:database]
+
+  FileUtils.rm_f(CASServer::Server.config[:database][:database])
+  
+  ActiveRecord::Base.logger = Logger.new(STDOUT)
+  ActiveRecord::Base.logger.level = Logger::ERROR
+  ActiveRecord::Migration.verbose = false
+  ActiveRecord::Migrator.migrate("db/migrate")
 end

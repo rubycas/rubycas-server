@@ -13,7 +13,7 @@ uri_path: /test
 #   reconnect: true
 database:
  adapter: sqlite3
- database: casserver.db
+ database: spec/casserver_spec.db
 
 authenticator:
   class: CASServer::Authenticators::Test

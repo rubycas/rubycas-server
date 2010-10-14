@@ -21,6 +21,7 @@ describe 'CASServer' do
   describe "/login" do
     before do
       load_server(File.dirname(__FILE__) + "/default_config.yml")
+      reset_spec_database
     end
 
     it "logs in successfully with valid username and password without a target service" do
@@ -71,6 +72,7 @@ describe 'CASServer' do
 
     before do
       load_server(File.dirname(__FILE__) + "/default_config.yml")
+      reset_spec_database
     end
 
     it "logs out successfully" do
@@ -89,7 +91,7 @@ describe 'CASServer' do
 
   end # describe '/logout'
   
-  describe 'configuration' do
+  describe 'Configuration' do
     it "uri_path value changes prefix of routes" do
       load_server(File.dirname(__FILE__) + "/alt_config.yml")
       @target_service = 'http://my.app.test'
