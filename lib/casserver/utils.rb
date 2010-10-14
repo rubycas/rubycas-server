@@ -1,4 +1,4 @@
-require 'crypt-isaac'
+require 'crypt/ISAAC'
 
 # Misc utility function used throughout by the RubyCAS-Server.
 module CASServer
