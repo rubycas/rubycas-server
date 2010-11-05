@@ -189,8 +189,8 @@ module CASServer
 
     before do
       GetText.locale = determine_locale(request)
-      @theme = 'urbacon'
-      @organization = "URBACON"
+      @theme = settings.config[:theme]
+      @organization = settings.config[:organization]
     end
 
     # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec
