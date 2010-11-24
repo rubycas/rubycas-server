@@ -289,7 +289,7 @@ database:
 #    database:
 #      adapter: mysql
 #      database: some_database_with_users_table
-#      user: root
+#      username: root
 #      password:
 #      host: localhost
 #    user_table: user
@@ -440,7 +440,7 @@ database:
 #    database:
 #      adapter: mysql
 #      database: some_database_with_users_table
-#      user: root
+#      username: root
 #      password:
 #      host: localhost
 #    user_table: user
