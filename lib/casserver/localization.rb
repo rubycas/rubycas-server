@@ -57,6 +57,12 @@ module CASServer
 
       available = available_locales
 
+      if available.length == 1
+        $LOG.warn "Only the #{available.first.inspect} localization is available. You should run `rake localization:mo` to compile support for additional languages!"
+      elsif available.length == 0 # this should never actually happen
+        $LOG.error "No localizations available! Run `rake localization:mo` to compile support for additional languages."
+      end
+
       # Try to pick a locale exactly matching the desired identifier, otherwise
       # fall back to locale without region (i.e. given "en-US; de-DE", we would
       # first look for "en-US", then "en", then "de-DE", then "de").

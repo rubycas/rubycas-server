@@ -189,6 +189,7 @@ module CASServer
 
     before do
       GetText.locale = determine_locale(request)
+      content_type :html, 'charset' => 'utf-8'
       @theme = settings.config[:theme]
       @organization = settings.config[:organization]
     end

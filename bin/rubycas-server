@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# Enables UTF-8 compatibility.
+$KCODE = 'u' if RUBY_VERSION < '1.9'
+
 require 'rubygems'
 
 $: << File.dirname(__FILE__) + "/../lib"
