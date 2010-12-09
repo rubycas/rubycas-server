@@ -83,6 +83,7 @@ module CASServer
         self.config[key] = val
       end
       init_database!
+      init_logger!
       init_authenticators!
     end
 
@@ -175,7 +176,19 @@ module CASServer
 
       set :auth, auth
     end
-    
+
+    def self.init_logger!
+      if config[:log]
+        if $LOG && config[:log][:file]
+          $LOG.debug "Redirecting log to #{config[:log][:file]}"
+          #$LOG.close
+          $LOG = Logger.new(config[:log][:file])
+        end
+        $LOG.debug "TEST"
+        $LOG.level = Logger.const_get(config[:log][:level]) if config[:log][:level]
+      end
+    end
+
     def self.init_database!
       #CASServer::Model::Base.establish_connection(config[:database])
       ActiveRecord::Base.establish_connection(config[:database])
@@ -183,6 +196,7 @@ module CASServer
 
     configure do
       load_config_file(CONFIG_FILE)
+      init_logger!
       init_database!
       init_authenticators!
     end
@@ -233,10 +247,10 @@ module CASServer
             st = generate_service_ticket(@service, tgt.username, tgt)
             service_with_ticket = service_uri_with_ticket(@service, st)
             $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
-            return redirect(service_with_ticket, :status => 303) # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+            redirect service_with_ticket, 303 # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
           elsif @gateway
             $LOG.info("Redirecting unauthenticated gateway request to service '#{@service}'.")
-            return redirect(@service, :status => 303)
+            redirect @service, 303
           end
         elsif @gateway
             $LOG.error("This is a gateway request but no service parameter was given!")
@@ -282,6 +296,7 @@ module CASServer
       end
     end
 
+    
     # 2.2
     post "#{uri_path}/login" do
       Utils::log_controller_action(self.class, params)
@@ -402,6 +417,7 @@ module CASServer
       redirect "#{config['uri_path']}/login", 303
     end
 
+
     # 2.3
 
     # 2.3.1
@@ -464,6 +480,7 @@ module CASServer
       end
     end
 
+
 		# 2.4
 
 		# 2.4.1
@@ -485,6 +502,7 @@ module CASServer
 			
 			render :erb, :validate, :layout => false
 		end
+
 
     # 2.5
 
@@ -554,6 +572,28 @@ module CASServer
 
      render :builder, :proxy_validate
     end
+
+
+    # 2.7
+    get "#{uri_path}/proxy" do
+      CASServer::Utils::log_controller_action(self.class, params)
+
+      # required
+      @ticket = params['pgt']
+      @target_service = params['targetService']
+
+      pgt, @error = validate_proxy_granting_ticket(@ticket)
+      @success = pgt && !@error
+
+      if @success
+        @pt = generate_proxy_ticket(@target_service, pgt)
+      end
+
+      status response_status_from_error(@error) if @error
+
+      render :builder, :proxy
+    end
+
 
 
     # Helpers
