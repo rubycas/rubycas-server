@@ -65,6 +65,17 @@ describe 'CASServer' do
       page.should have_xpath('//input[@id="service"]', :value => @target_service)
     end
 
+    it "uses appropriate localization when 'lang' prameter is given" do
+      visit "/login?lang=pl"
+      page.should have_content("Użytkownik")
+
+      visit "/login?lang=pt_BR"
+      page.should have_content("Usuário")
+
+      visit "/login?lang=en"
+      page.should have_content("Username")
+    end
+
   end # describe '/login'
 
 

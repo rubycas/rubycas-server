@@ -12,8 +12,11 @@ set :run, false
 set :raise_errors, true
 set :logging, false
 
-# Avoid potential weirdness by changing the working directory to the CASServer root
-FileUtils.cd('..')
+
+if Dir.getwd =~ /\/spec$/
+  # Avoid potential weirdness by changing the working directory to the CASServer root
+  FileUtils.cd('..')
+end
 
 def silence_warnings
   old_verbose, $VERBOSE = $VERBOSE, nil
