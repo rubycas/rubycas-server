@@ -104,7 +104,7 @@ msgstr " Centralna Usługa Uwierzytelniania"
 
 #: lib/casserver/views.rb:68
 msgid "Please wait..."
-msgstr ""
+msgstr "Chwileczke..."
 
 #: lib/casserver/views.rb:74
 msgid "Username"
