@@ -2,18 +2,16 @@
 
 ## Copyright
 
-Portions contributed by Matt Zukowski are copyright (c) 2009 Urbacon Ltd.
+Portions contributed by Matt Zukowski are copyright (c) 2010 Urbacon Ltd.
 Other portions are copyright of their respective authors.
 
 ## Authors
 
 See http://github.com/gunark/rubycas-server/commits/
 
-## Homepage
+## Installation
 
-http://rubycas-server.googlecode.com
-
-For info and installation instructions please see http://code.google.com/p/rubycas-server
+For info and detailed installation instructions please see http://code.google.com/p/rubycas-server
 
 ## License
 

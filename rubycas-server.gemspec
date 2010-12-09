@@ -1,8 +1,7 @@
-require File.expand_path("../lib/casserver/version", __FILE__)
 
 $gemspec = Gem::Specification.new do |s|
   s.name     = 'rubycas-server'
-  s.version  = CASServer::VERSION::STRING
+  s.version  = '1.0.a'
   s.authors  = ["Matt Zukowski"]
   s.email    = ["matt@zukowski.ca"]
   s.homepage = 'http://code.google.com/p/rubycas-server/'
@@ -11,11 +10,13 @@ $gemspec = Gem::Specification.new do |s|
 
   s.files  = [
     "CHANGELOG", "LICENSE", "README.md", "Rakefile", "setup.rb",
-    "bin/*", "lib/**/*.rb", "public/**/*", "po/**/*", "resources/*.*",
+    "bin/*", "lib/**/*.rb", "public/**/*", "po/**/*", "mo/**/*", "resources/*.*",
     "tasks/**/*.rake", "vendor/**/*", "script/*", "lib/**/*.erb", "lib/**/*.builder"
   ].map{|p| Dir[p]}.flatten
 
-  s.executables = ["rubycas-server", "rubycas-server-ctl"]
+  s.test_files = `git ls-files -- spec`.split("\n")
+
+  s.executables = ["rubycas-server"]
   s.bindir = "bin"
   s.require_path = "lib"
 
@@ -26,17 +27,12 @@ $gemspec = Gem::Specification.new do |s|
 For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
 
 If you plan on using RubyCAS-Server with languages other than English, please cd into the
-RubyCAS-Server installation directory (where the gem is installed) and type `rake mo` to
-build the LOCALE_LC files.
+RubyCAS-Server installation directory (where the gem is installed) and type `rake localization:mo` 
+to build the LOCALE_LC files.
 }
 
   s.rdoc_options = [
-    '--quiet', '--title', 'rubycas-server documentation', '--opname',
+    '--quiet', '--title', 'RubyCAS-Server Documentation', '--opname',
     'index.html', '--line-numbers', '--main', 'README.md', '--inline-source'
   ]
-
-  s.add_runtime_dependency 'activesupport', '~> 3.0.0'
-  s.add_runtime_dependency 'activerecord',  '~> 3.0.0'
-  s.add_runtime_dependency 'gettext',       '~> 2.1.0'
-  s.add_runtime_dependency 'sinatra',       '~> 1.0'
 end
