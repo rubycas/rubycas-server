@@ -28,17 +28,30 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
 
     username_column = @options[:username_column] || "email"
 
-    $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).count}/#{user_model.connection_pool.instance_variable_get(:@connections).count}"
+    $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).length}/#{user_model.connection_pool.instance_variable_get(:@connections).length}"
     results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
     user_model.connection_pool.checkin(user_model.connection)
 
     if results.size > 0
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
       user = results.first
-      return (user.crypted_password == user.encrypt(@password))
+      if user.crypted_password == user.encrypt(@password)
+        unless @options[:extra_attributes].blank?
+          extract_extra(user)
+          log_extra
+        end
+        return true
+      else
+        return false
+      end
     else
       return false
     end
+  end
+
+  def self.setup(options)
+    super(options)
+    user_model.__send__(:include, EncryptedPassword)
   end
 
   module EncryptedPassword

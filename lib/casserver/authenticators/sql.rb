@@ -82,7 +82,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     username_column = @options[:username_column] || 'username'
     password_column = @options[:password_column] || 'password'
     
-    $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).count}/#{user_model.connection_pool.instance_variable_get(:@connections).count}"
+    $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).length}/#{user_model.connection_pool.instance_variable_get(:@connections).length}"
     results = user_model.find(:all, :conditions => ["#{username_column} = ? AND #{password_column} = ?", @username, @password])
     user_model.connection_pool.checkin(user_model.connection)
        

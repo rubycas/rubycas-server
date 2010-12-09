@@ -8,4 +8,12 @@ class CASServer::Authenticators::ActiveDirectoryLDAP < CASServer::Authenticators
   def default_username_attribute
     "sAMAccountName"
   end
+
+  def extract_extra_attributes(ldap_entry)
+    super(ldap_entry)
+    if @extra_attributes["objectGUID"]
+      @extra_attributes["guid"] = @extra_attributes["objectGUID"].to_s.unpack("H*").to_s
+    end
+    ldap_entry
+  end
 end

@@ -22,7 +22,11 @@ class CASServer::Authenticators::Google < CASServer::Authenticators::Base
     }
 
     url = URI.parse('https://www.google.com/accounts/ClientLogin')
-    http = Net::HTTP.new(url.host, url.port)
+    if $CONF.proxy_host
+      http = Net::HTTP.Proxy($CONF.proxy_host, $CONF.proxy_port, $CONF.proxy_username, $CONF.proxy_password).new(url.host, url.port)
+    else
+      http = Net::HTTP.new(url.host, url.port)
+    end
     http.use_ssl = true
 
     # TODO: make the timeout configurable

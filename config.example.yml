@@ -43,6 +43,17 @@ ssl_cert: /path/to/your/ssl.pem
 #  ssl_cert: ssl/cert.pem
 #  ssl_key: ssl/key.pem
 
+###
+### Proxy support (Google, etc)
+###
+# If your server is behind a proxy you can uncomment the following lines in order
+# to activate proxy support:
+#
+#  proxy_host: your-proxy-server
+#  proxy_port: 8080
+#  proxy_username: nil
+#  proxy_passsword: nil
+
 
 # By default the login page will be available at the root path 
 # (e.g. https://login.example.net/). The uri_path option lets you serve it from a 
@@ -129,7 +140,7 @@ ssl_cert: /path/to/your/ssl.pem
 # Here's an example Apache vhost config for RubyCAS-Server and Passenger:
 #
 #  Listen 443
-#  <VirtualHost *:442>
+#  <VirtualHost *:443>
 #     ServerAdmin admin@example.net
 #     ServerName login.example.net
 #
@@ -278,7 +289,7 @@ database:
 #    database:
 #      adapter: mysql
 #      database: some_database_with_users_table
-#      user: root
+#      username: root
 #      password:
 #      host: localhost
 #    user_table: user
@@ -429,7 +440,7 @@ database:
 #    database:
 #      adapter: mysql
 #      database: some_database_with_users_table
-#      user: root
+#      username: root
 #      password:
 #      host: localhost
 #    user_table: user
