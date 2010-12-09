@@ -398,6 +398,10 @@ module CASServer
       render :erb, :login
     end
 
+    get /#{uri_path}\/?$/ do
+      redirect "#{config['uri_path']}/login", 303
+    end
+
     # 2.3
 
     # 2.3.1
