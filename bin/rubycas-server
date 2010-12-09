@@ -1,13 +1,16 @@
 #!/usr/bin/env ruby
 
-require File.expand_path(File.dirname(__FILE__)+"/../lib/casserver/load_picnic")
+# Enables UTF-8 compatibility.
+$KCODE = 'u' if RUBY_VERSION < '1.9'
 
-require 'picnic/cli'
+require 'rubygems'
 
-cli = Picnic::Cli.new(
-  'rubycas-server',
-  :app_module => 'CASServer',
-  :app_file => File.expand_path(File.dirname(__FILE__)+"/../lib/casserver.rb")
-)
+$: << File.dirname(__FILE__) + "/../lib"
 
-cli.handle_cli_input
+if ARGV.join.match('--debugger')
+  require 'ruby-debug' 
+  puts "=> Debugger Enabled"
+end
+require 'casserver'
+
+CASServer::Server.run!

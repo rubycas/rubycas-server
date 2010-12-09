@@ -111,5 +111,3 @@ msgstr "记住我"
 msgid "LOGIN"
 msgstr "登录"
 
-#~ msgid "Please wait..."
-#~ msgstr "请稍候..."

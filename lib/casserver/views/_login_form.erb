@@ -1,0 +1,41 @@
+<form method="post" action="<%= @form_action || "login" %>" id="login-form"
+      onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='<%= _("Please wait...") %>'; submitbutton.disabled=true; return true;">
+  <table id="form-layout">
+    <tr>
+      <td id="username-label-container">
+        <label id="username-label" for="username">
+          <%= _("Username") %>
+        </label>
+      </td>
+      <td id="username-container">
+        <input type="text" id="username" name="username"
+               size="32" tabindex="1" accesskey="u" />
+      </td>
+    </tr>
+    <tr>
+      <td id="password-label-container">
+        <label id="password-label" for="password">
+          <%= _("Password") %>
+        </label>
+      </td>
+      <td id="password-container">
+        <input type="password" id="password" name="password"
+               size="32" tabindex="2" accesskey="p" autocomplete="off" />
+      </td>
+    </tr>
+    <tr>
+      <td />
+      <td id="submit-container">
+        <input type="hidden" id="lt" name="lt" value="<%= @lt %>" />
+        <input type="hidden" id="service" name="service" value="<%= @service %>" />
+        <input type="submit" class="button" accesskey="l" value="<%= _("LOGIN") %>"
+               tabindex="4" id="login-submit" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" id="infoline">
+        <%= @infoline %>
+      </td>
+    </tr>
+  </table>
+</form>

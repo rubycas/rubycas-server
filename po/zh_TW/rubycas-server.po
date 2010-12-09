@@ -111,5 +111,3 @@ msgstr "在這台電腦上記住我"
 msgid "LOGIN"
 msgstr "登入"
 
-#~ msgid "Please wait..."
-#~ msgstr "請稍候..."
