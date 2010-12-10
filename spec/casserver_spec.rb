@@ -1,11 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-require 'capybara'
-require 'capybara/dsl'
-
 $LOG = Logger.new(File.basename(__FILE__).gsub('.rb','.log'))
 
-include Capybara
+RSpec.configure do |config|
+  config.include Capybara
+end
 
 VALID_USERNAME = 'spec_user'
 VALID_PASSWORD = 'spec_password'
@@ -48,10 +47,10 @@ describe 'CASServer' do
 
       fill_in 'username', :with => VALID_USERNAME
       fill_in 'password', :with => VALID_PASSWORD
-
+      
       click_button 'login-submit'
 
-      page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/\?ticket=ST\-[1-9A-Z]+/
+      page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?\?ticket=ST\-[1-9rA-Z]+/
     end
 
     it "preserves target service after invalid login" do
@@ -87,8 +86,6 @@ describe 'CASServer' do
     end
 
     it "logs out successfully" do
-      # capybara doesn't let us post directly :(
-      #Capybara.current_session.driver.post '/logout'
       visit "/logout"
       
       page.should have_content("You have successfully logged out")

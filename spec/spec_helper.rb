@@ -1,10 +1,15 @@
 require 'rubygems'
 require 'sinatra'
 require 'rack/test'
-require 'spec'
-require 'spec/autorun'
-require 'spec/interop/test'
+require 'rspec'
+#require 'spec/autorun'
+#require 'spec/interop/test'
 require 'logger'
+require 'ostruct'
+
+require 'capybara'
+require 'capybara/node'
+require 'capybara/dsl'
 
 # set test environment
 set :environment, :test
@@ -23,6 +28,31 @@ def silence_warnings
   yield
 ensure
   $VERBOSE = old_verbose
+end
+
+# Ugly monkeypatch to allow us to test for correct redirection to
+# external services.
+#
+# This will likely break in the future when Capybara or RackTest are upgraded.
+class Capybara::Driver::RackTest
+  alias_method :original_follow_redirects!, :follow_redirects!
+  alias_method :original_current_url, :current_url
+
+  def current_url
+    if @redirected_to_external_url
+      @redirected_to_external_url
+    else
+      original_current_url
+    end
+  end
+
+  def follow_redirects!
+    if response['Location'] =~ /^http:/
+      @redirected_to_external_url = response['Location']
+    else
+      original_follow_redirects!
+    end
+  end
 end
 
 # This called in specs' `before` block.
