@@ -11,7 +11,8 @@ $gemspec = Gem::Specification.new do |s|
   s.files  = [
     "CHANGELOG", "LICENSE", "README.md", "Rakefile", "setup.rb",
     "bin/*", "lib/**/*.rb", "public/**/*", "po/**/*", "mo/**/*", "resources/*.*",
-    "tasks/**/*.rake", "vendor/**/*", "script/*", "lib/**/*.erb", "lib/**/*.builder"
+    "tasks/**/*.rake", "vendor/**/*", "script/*", "lib/**/*.erb", "lib/**/*.builder",
+    "rubycas-server.gemspec"
   ].map{|p| Dir[p]}.flatten
 
   s.test_files = `git ls-files -- spec`.split("\n")
@@ -29,6 +30,7 @@ For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-ser
 If you plan on using RubyCAS-Server with languages other than English, please cd into the
 RubyCAS-Server installation directory (where the gem is installed) and type `rake localization:mo` 
 to build the LOCALE_LC files.
+
 }
 
   s.rdoc_options = [
