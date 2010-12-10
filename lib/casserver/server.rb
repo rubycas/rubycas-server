@@ -300,7 +300,7 @@ module CASServer
     # 2.2
     post "#{uri_path}/login" do
       Utils::log_controller_action(self.class, params)
-
+      
       # 2.2.1 (optional)
       @service = clean_service_url(params['service'])
 
@@ -413,7 +413,7 @@ module CASServer
       render :erb, :login
     end
 
-    get /#{uri_path}\/?$/ do
+    get /^#{uri_path}\/?$/ do
       redirect "#{config['uri_path']}/login", 303
     end
 
