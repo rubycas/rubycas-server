@@ -374,13 +374,13 @@ module CASServer
           expires     = settings.config[:maximum_session_lifetime].to_i.from_now
           expiry_info = " It will expire on #{expires}."
 
-          request.cookies['tgt'] = {
+          response.set_cookie('tgt', {
             :value => tgt.to_s,
             :expires => expires
-          }
+          })
         else
           expiry_info = " It will not expire."
-          request.cookies['tgt'] = tgt.to_s
+          response.set_cookie('tgt', tgt.to_s)
         end
 
         $LOG.debug("Ticket granting cookie '#{request.cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
@@ -435,13 +435,13 @@ module CASServer
 
       tgt = CASServer::Model::TicketGrantingTicket.find_by_ticket(request.cookies['tgt'])
 
-      request.cookies.delete 'tgt'
+      response.delete_cookie 'tgt'
 
       if tgt
         CASServer::Model::TicketGrantingTicket.transaction do
           $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
           tgt.granted_service_tickets.each do |st|
-            send_logout_notification_for_service_ticket(st) if $CONF.enable_single_sign_out
+            send_logout_notification_for_service_ticket(st) if config[:enable_single_sign_out]
             # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails?
             #       (the above method returns false if the POST results in a non-200 HTTP response).
             $LOG.debug "Deleting #{st.class.name.demodulize} #{st.ticket.inspect} for service #{st.service}."
