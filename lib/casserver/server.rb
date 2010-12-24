@@ -22,7 +22,7 @@ module CASServer
     config = HashWithIndifferentAccess.new(
       :maximum_unused_login_ticket_lifetime => 5.minutes,
       :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
-      :maximum_session_lifetime => 1.month, # all tickets are deleted after this period of time
+      :maximum_session_lifetime => 2.days, # all tickets are deleted after this period of time
       :log => {:file => 'casserver.log', :level => 'DEBUG'},
       :uri_path => ""
     )
@@ -369,21 +369,9 @@ module CASServer
 
         # 3.6 (ticket-granting cookie)
         tgt = generate_ticket_granting_ticket(@username, extra_attributes)
+        response.set_cookie('tgt', tgt.to_s)
 
-        if settings.config[:maximum_session_lifetime]
-          expires     = settings.config[:maximum_session_lifetime].to_i.from_now
-          expiry_info = " It will expire on #{expires}."
-
-          response.set_cookie('tgt', {
-            :value => tgt.to_s,
-            :expires => expires
-          })
-        else
-          expiry_info = " It will not expire."
-          response.set_cookie('tgt', tgt.to_s)
-        end
-
-        $LOG.debug("Ticket granting cookie '#{request.cookies['tgt'].inspect}' granted to #{@username.inspect}. #{expiry_info}")
+        $LOG.debug("Ticket granting cookie '#{request.cookies['tgt'].inspect}' granted to #{@username.inspect}")
 
         if @service.blank?
           $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
