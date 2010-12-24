@@ -2,9 +2,7 @@ require 'casserver/authenticators/sql'
 
 require 'digest/sha1'
 require 'digest/sha2'
-
-$: << File.dirname(File.expand_path(__FILE__)) + "/../../../vendor/isaac_0.9.1"
-require 'crypt/ISAAC'
+require 'crypt-isaac'
 
 # This is a more secure version of the SQL authenticator. Passwords are encrypted
 # rather than being stored in plain text.
