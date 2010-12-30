@@ -1,7 +1,4 @@
 require 'sinatra/base'
-
-$: << File.expand_path(File.dirname(__FILE__)) + '/../../vendor/isaac_0.9.1'
-
 require 'casserver/localization'
 require 'casserver/utils'
 require 'casserver/cas'
