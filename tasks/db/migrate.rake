@@ -1,7 +1,7 @@
 namespace :db do
   desc "bring your CAS server database schema up to date (options CONFIG=/path/to/config.yml)"
   task :migrate do |t|
-    $: << File.dirname(__FILE__) + "/../../lib"
+    $:.unshift File.dirname(__FILE__) + "/../../lib"
     
     require 'casserver/server'
     

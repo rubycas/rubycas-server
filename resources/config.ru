@@ -19,7 +19,7 @@ if ::File.exist?("#{$APP_ROOT}/tmp/debug.txt")
   Debugger.start_remote
 end
 
-$: << $APP_ROOT + "/lib"
+$:.unshift $APP_ROOT + "/lib"
 
 require 'casserver/load_picnic'
 require 'picnic'

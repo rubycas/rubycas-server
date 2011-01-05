@@ -5,7 +5,7 @@ $KCODE = 'u' if RUBY_VERSION < '1.9'
 
 require 'rubygems'
 
-$: << File.dirname(__FILE__) + "/../lib"
+$:.unshift File.dirname(__FILE__) + "/../lib"
 
 if ARGV.join.match('--debugger')
   require 'ruby-debug' 
