@@ -10,7 +10,7 @@ $gemspec = Gem::Specification.new do |s|
 
   s.files  = [
     "CHANGELOG", "LICENSE", "README.md", "Rakefile", "setup.rb",
-    "bin/*", "lib/**/*.rb", "public/**/*", "po/**/*", "mo/**/*", "resources/*.*",
+    "bin/*", "db/*", "lib/**/*.rb", "public/**/*", "po/**/*", "mo/**/*", "resources/*.*",
     "tasks/**/*.rake", "vendor/**/*", "script/*", "lib/**/*.erb", "lib/**/*.builder",
     "rubycas-server.gemspec"
   ].map{|p| Dir[p]}.flatten
