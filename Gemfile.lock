@@ -70,11 +70,6 @@ PLATFORMS
 DEPENDENCIES
   activerecord (~> 3.0.0)
   activesupport (~> 3.0.0)
-  capybara
   crypt-isaac (~> 0.9.1)
   gettext (~> 2.1.0)
-  rack-test
-  rspec
-  rspec-core
   sinatra (~> 1.0)
-  sqlite3-ruby (~> 1.3.1)
