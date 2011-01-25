@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-
-require File.expand_path(File.dirname(__FILE__)+"/../lib/casserver/load_picnic")
-
-require 'picnic/service_control'
-
-ctl = Picnic::ServiceControl.new('rubycas-server')
-
-ctl.handle_cli_input
