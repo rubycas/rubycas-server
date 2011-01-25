@@ -402,7 +402,7 @@ module CASServer
       rescue CASServer::AuthenticatorError => e
         $LOG.error(e)
         @message = {:type => 'mistake', :message => e.to_s}
-        return render(:login)
+        render :erb, :login
       end
 
       if credentials_are_valid
