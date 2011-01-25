@@ -216,12 +216,20 @@ module CASServer
     def self.init_logger!
       if config[:log]
         if $LOG && config[:log][:file]
-          $LOG.debug "Redirecting RubyCAS-Server log to #{config[:log][:file]}"
+          print_cli_message "Redirecting RubyCAS-Server log to #{config[:log][:file]}"
           #$LOG.close
           $LOG = Logger.new(config[:log][:file])
         end
-        $LOG.debug "TEST"
         $LOG.level = Logger.const_get(config[:log][:level]) if config[:log][:level]
+      end
+      
+      if config[:db_log]
+        if $LOG && config[:db_log][:file]
+          $LOG.debug "Redirecting ActiveRecord log to #{config[:log][:file]}"
+          #$LOG.close
+          ActiveRecord::Base.logger = Logger.new(config[:db_log][:file])
+        end
+        ActiveRecord::Base.logger.level = Logger.const_get(config[:db+log][:level]) if config[:db_log][:level]
       end
     end
 
@@ -230,9 +238,11 @@ module CASServer
       ActiveRecord::Base.establish_connection(config[:database])
       
       print_cli_message "Running migrations to make sure your database schema is up to date..."
+      prev_db_log = ActiveRecord::Base.logger
       ActiveRecord::Base.logger = Logger.new(STDOUT)
       ActiveRecord::Migration.verbose = true
       ActiveRecord::Migrator.migrate(File.dirname(__FILE__) + "/../../db/migrate")
+      ActiveRecord::Base.logger = prev_db_log
       print_cli_message "Your database is now up to date."
     end
 
@@ -363,7 +373,7 @@ module CASServer
         @message = {:type => 'mistake', :message => error}
         # generate another login ticket to allow for re-submitting the form
         @lt = generate_login_ticket.ticket
-        @status = 401
+        status 500
         render :erb, :login
       end
 
@@ -371,7 +381,7 @@ module CASServer
       @lt = generate_login_ticket.ticket
 
       $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{settings.auth.inspect}")
-
+      
       credentials_are_valid = false
       extra_attributes = {}
       successful_authenticator = nil
@@ -399,44 +409,46 @@ module CASServer
 
           auth_index += 1
         end
+        
+        if credentials_are_valid
+          $LOG.info("Credentials for username '#{@username}' successfully validated using #{successful_authenticator.class.name}.")
+          $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
+
+          # 3.6 (ticket-granting cookie)
+          tgt = generate_ticket_granting_ticket(@username, extra_attributes)
+          response.set_cookie('tgt', tgt.to_s)
+
+          $LOG.debug("Ticket granting cookie '#{request.cookies['tgt'].inspect}' granted to #{@username.inspect}")
+
+          if @service.blank?
+            $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
+            @message = {:type => 'confirmation', :message => _("You have successfully logged in.")}
+          else
+            @st = generate_service_ticket(@service, @username, tgt)
+
+            begin
+              service_with_ticket = service_uri_with_ticket(@service, @st)
+
+              $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
+              redirect service_with_ticket, 303 # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
+            rescue URI::InvalidURIError
+              $LOG.error("The service '#{@service}' is not a valid URI!")
+              @message = {
+                :type => 'mistake',
+                :message => _("The target service your browser supplied appears to be invalid. Please contact your system administrator for help.")
+              }
+            end
+          end
+        else
+          $LOG.warn("Invalid credentials given for user '#{@username}'")
+          @message = {:type => 'mistake', :message => _("Incorrect username or password.")}
+          status 401
+        end
       rescue CASServer::AuthenticatorError => e
         $LOG.error(e)
-        @message = {:type => 'mistake', :message => e.to_s}
-        render :erb, :login
-      end
-
-      if credentials_are_valid
-        $LOG.info("Credentials for username '#{@username}' successfully validated using #{successful_authenticator.class.name}.")
-        $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
-
-        # 3.6 (ticket-granting cookie)
-        tgt = generate_ticket_granting_ticket(@username, extra_attributes)
-        response.set_cookie('tgt', tgt.to_s)
-
-        $LOG.debug("Ticket granting cookie '#{request.cookies['tgt'].inspect}' granted to #{@username.inspect}")
-
-        if @service.blank?
-          $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
-          @message = {:type => 'confirmation', :message => _("You have successfully logged in.")}
-        else
-          @st = generate_service_ticket(@service, @username, tgt)
-
-          begin
-            service_with_ticket = service_uri_with_ticket(@service, @st)
-
-            $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
-            redirect service_with_ticket, 303 # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
-          rescue URI::InvalidURIError
-            $LOG.error("The service '#{@service}' is not a valid URI!")
-            @message = {
-              :type => 'mistake',
-              :message => _("The target service your browser supplied appears to be invalid. Please contact your system administrator for help.")
-            }
-          end
-        end
-      else
-        $LOG.warn("Invalid credentials given for user '#{@username}'")
-        @message = {:type => 'mistake', :message => _("Incorrect username or password.")}
+        # generate another login ticket to allow for re-submitting the form
+        @lt = generate_login_ticket.ticket
+        @message = {:type => 'mistake', :message => _(e.to_s)}
         status 401
       end
 
