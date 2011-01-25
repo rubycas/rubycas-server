@@ -5,12 +5,13 @@ begin
 rescue LoadError
   require 'rubygems'
   begin
-    gem 'ruby-net-ldap', '~> 0.0.4'
+    gem 'net-ldap', '~> 0.1.1'
   rescue Gem::LoadError
     $stderr.puts
     $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     $stderr.puts
-    $stderr.puts "To use the LDAP/AD authenticator, you must first install the 'ruby-net-ldap' gem."
+    $stderr.puts "To use the LDAP/AD authenticator, you must first install the 'net-ldap' gem."
+    $stderr.puts "        See http://github.com/RoryO/ruby-net-ldap for details."
     $stderr.puts
     $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     exit 1
