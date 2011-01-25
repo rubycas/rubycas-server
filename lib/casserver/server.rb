@@ -37,7 +37,15 @@ module CASServer
       
       puts "== RubyCAS-Server is starting up " +
         "on port #{config[:port] || port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
-      handler.run self, handler_options do |server|
+        
+      begin
+        opts = handler_options
+      rescue Exception => e
+        print_cli_message e, :error
+        raise e
+      end
+        
+      handler.run self, opts do |server|
         [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
         set :running, true
       end
@@ -50,24 +58,50 @@ module CASServer
       server.respond_to?(:stop!) ? server.stop! : server.stop
       puts "\n== RubyCAS-Server is shutting down" unless handler_name =~/cgi/i
     end
+    
+    def self.print_cli_message(msg, type = :info)
+      if type == :error
+        io = $stderr
+        prefix = "!!! "
+      else
+        io = $stdout
+        prefix = ">>> "
+      end
+      
+      io.puts
+      io.puts "#{prefix}#{msg}"
+      io.puts
+    end
 
     def self.load_config_file(config_file)
       begin
         config_file = File.open(config_file)
       rescue Errno::ENOENT => e
-        $stderr.puts
-        $stderr.puts "!!! Config file #{config_file.inspect} does not exist!"
-        $stderr.puts
-        raise e
+        
+        print_cli_message "Config file #{config_file} does not exist!", :error
+        print_cli_message "Would you like the default config file copied to #{config_file.inspect}? [y/N]"
+        if gets.strip.downcase == 'y'
+          require 'fileutils'
+          default_config = File.dirname(__FILE__) + '/../../resources/config.example.yml'
+          
+          if !File.exists?(File.dirname(config_file))
+            print_cli_message "Creating config directory..."
+            FileUtils.mkdir_p(File.dirname(config_file), :verbose => true)
+          end
+          
+          print_cli_message "Copying #{default_config.inspect} to #{config_file.inspect}..."
+          FileUtils.cp(default_config, config_file, :verbose => true)
+          print_cli_message "The default config has been copied. You should now edit it and try starting again."
+          exit
+        else
+          print_cli_message "Cannot start RubyCAS-Server without a valid config file.", :error
+          raise e
+        end
       rescue Errno::EACCES => e
-        $stderr.puts
-        $stderr.puts "!!! Config file #{config_file.inspect} is not readable (permission denied)!"
-        $stderr.puts
+        print_cli_message "Config file #{config_file.inspect} is not readable (permission denied)!", :error
         raise e
       rescue => e
-        $stderr.puts
-        $stderr.puts "!!! Config file #{config_file.inspect} could not be read!"
-        $stderr.puts
+        print_cli_message "Config file #{config_file.inspect} could not be read!", :error
         raise e
       end
       
@@ -100,16 +134,16 @@ module CASServer
       key_path = config[:ssl_key] || config[:ssl_cert]
       
       unless cert_path.nil? && key_path.nil?
-        raise Error, "The ssl_cert and ssl_key options cannot be used with mongrel. You will have to run your " +
+        raise "The ssl_cert and ssl_key options cannot be used with mongrel. You will have to run your " +
           " server behind a reverse proxy if you want SSL under mongrel." if
             config[:server] == 'mongrel'
 
-        raise Error, "The specified certificate file #{cert_path.inspect} does not exist or is not readable. " +
+        raise "The specified certificate file #{cert_path.inspect} does not exist or is not readable. " +
           " Your 'ssl_cert' configuration setting must be a path to a valid " +
           " ssl certificate." unless
             File.exists? cert_path
 
-        raise Error, "The specified key file #{key_path.inspect} does not exist or is not readable. " +
+        raise "The specified key file #{key_path.inspect} does not exist or is not readable. " +
           " Your 'ssl_key' configuration setting must be a path to a valid " +
           " ssl private key." unless
             File.exists? key_path
@@ -131,6 +165,11 @@ module CASServer
 
     def self.init_authenticators!
       auth = []
+      
+      if config[:authenticator].nil?
+        print_cli_message "No authenticators have been configured. Please double-check your config file (#{CONFIG_FILE.inspect}).", :error
+        exit 1
+      end
       
       begin
         # attempt to instantiate the authenticator
@@ -177,7 +216,7 @@ module CASServer
     def self.init_logger!
       if config[:log]
         if $LOG && config[:log][:file]
-          $LOG.debug "Redirecting log to #{config[:log][:file]}"
+          $LOG.debug "Redirecting RubyCAS-Server log to #{config[:log][:file]}"
           #$LOG.close
           $LOG = Logger.new(config[:log][:file])
         end
