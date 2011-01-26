@@ -111,4 +111,30 @@ describe 'CASServer' do
       page.status_code.should_not == 404
     end
   end
+
+  describe "proxyValidate" do
+    before do
+      load_server(File.dirname(__FILE__) + "/default_config.yml")
+      reset_spec_database
+
+      visit "/login?service="+CGI.escape(@target_service)
+
+      fill_in 'username', :with => VALID_USERNAME
+      fill_in 'password', :with => VALID_PASSWORD
+      
+      click_button 'login-submit'
+
+      page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?\?ticket=ST\-[1-9rA-Z]+/
+      @ticket = page.current_url.match(/ticket=(.*)$/)[1]
+    end
+
+    it "should have extra attributes in proper format" do
+      visit "/serviceValidate?service=#{CGI.escape(@target_service)}&ticket=#{@ticket}"
+
+      puts page.body
+      page.body.should match("<test_string>testing!</test_string>")
+      page.body.should match("<test_numeric>123.45</test_numeric>")
+      page.body.should match("<test_utf_string>&#1070;&#1090;&#1092;</test_utf_string>")
+    end
+  end
 end

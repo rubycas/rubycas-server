@@ -3,9 +3,7 @@ if @success
     xml.tag!("cas:authenticationSuccess") do
       xml.tag!("cas:user", @username.to_s)
       @extra_attributes.each do |key, value|
-        xml.tag!(key) do
-          serialize_extra_attribute(xml, value)
-        end
+        serialize_extra_attribute(xml, key, value)
       end
       if @pgtiou
         xml.tag!("cas:proxyGrantingTicket", @pgtiou.to_s)
