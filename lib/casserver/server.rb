@@ -13,8 +13,9 @@ module CASServer
     include CASServer::CAS # CAS protocol helpers
     include Localization
 
+    set :root, File.dirname(__FILE__)
     set :app_file, __FILE__
-    set :public, File.expand_path(File.dirname(__FILE__)+"/../../public")
+    set :public, Proc.new { File.join(root, "public") }
 
     config = HashWithIndifferentAccess.new(
       :maximum_unused_login_ticket_lifetime => 5.minutes,
@@ -258,6 +259,8 @@ module CASServer
       content_type :html, 'charset' => 'utf-8'
       @theme = settings.config[:theme]
       @organization = settings.config[:organization]
+      @uri_path = settings.config[:uri_path]
+      @infoline = settings.config[:infoline]
     end
 
     # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec

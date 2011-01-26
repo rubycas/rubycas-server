@@ -6,9 +6,9 @@
 
   <head>
     <title><%= @organization %><%= _(" Central Login") %></title>
-    <link rel="stylesheet" type="text/css" href="/themes/cas.css" />
-    <link rel="stylesheet" type="text/css" href="/themes/<%= @theme %>/theme.css" />
-    <link rel="icon" type="image/png" href="/themes/<%= @theme %>/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="<%= @uri_path %>/themes/cas.css" />
+    <link rel="stylesheet" type="text/css" href="<%= @uri_path %>/themes/<%= @theme %>/theme.css" />
+    <link rel="icon" type="image/png" href="<%= @uri_path %>/themes/<%= @theme %>/favicon.png" />
   </head>
 
   <body onload="if (document.getElementById('username')) document.getElementById('username').focus()">
