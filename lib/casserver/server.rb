@@ -13,9 +13,8 @@ module CASServer
     include CASServer::CAS # CAS protocol helpers
     include Localization
 
-    set :root, File.dirname(__FILE__)
     set :app_file, __FILE__
-    set :public, Proc.new { File.join(root, "public") }
+    set :public, Proc.new { File.join(root, "..", "..", "public") }
 
     config = HashWithIndifferentAccess.new(
       :maximum_unused_login_ticket_lifetime => 5.minutes,
@@ -28,6 +27,20 @@ module CASServer
 
     def self.uri_path
       config[:uri_path]
+    end
+    
+    # Strip the config.uri_path from the request.path_info...
+    # FIXME: do we really need to override all of Sinatra's #static! to make this happen?
+    def static!
+      return if (public_dir = settings.public).nil?
+      public_dir = File.expand_path(public_dir)
+      
+      path = File.expand_path(public_dir + unescape(request.path_info.gsub(/^#{settings.config[:uri_path]}/,'')))
+      return if path[0, public_dir.length] != public_dir
+      return unless File.file?(path)
+
+      env['sinatra.static_file'] = path
+      send_file path, :disposition => nil
     end
 
     def self.run!(options={})
@@ -347,7 +360,7 @@ module CASServer
           render _("Could not guess the CAS login URI. Please supply a submitToURI parameter with your request.")
         end
       else
-        render(:erb, :login)
+        render :erb, :login
       end
     end
 
