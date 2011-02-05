@@ -130,7 +130,7 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
           if ldap_entry[attr].kind_of?(Array)
              @extra_attributes[attr] = []
              ldap_entry[attr].each do |a|
-               @extra_attributes[attr] << a
+               @extra_attributes[attr] << a.to_s
              end
           else
             @extra_attributes[attr] = v.to_s
