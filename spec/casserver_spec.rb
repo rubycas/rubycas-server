@@ -64,7 +64,7 @@ describe 'CASServer' do
       page.should have_xpath('//input[@id="service"]', :value => @target_service)
     end
 
-    it "uses appropriate localization when 'lang' prameter is given" do
+    it "uses appropriate localization when 'lang' prameter is given (make sure you've run `rake localization:mo` first!!)" do
       visit "/login?lang=pl"
       page.should have_content("Użytkownik")
 
