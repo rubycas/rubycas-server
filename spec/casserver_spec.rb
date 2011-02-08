@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/spec_helper'
 
 $LOG = Logger.new(File.basename(__FILE__).gsub('.rb','.log'))
