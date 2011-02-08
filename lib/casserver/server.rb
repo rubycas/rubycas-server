@@ -674,13 +674,15 @@ module CASServer
       end
     end
 
-    def serialize_extra_attribute(builder, value)
+    def serialize_extra_attribute(builder, key, value)
       if value.kind_of?(String)
-        builder.text! value
+        builder.tag! key, value
       elsif value.kind_of?(Numeric)
-        builder.text! value.to_s
+        builder.tag! key, value.to_s
       else
-        builder.cdata! value.to_yaml
+        builder.tag! key do
+          builder.cdata! value.to_yaml
+        end
       end
     end
 
