@@ -14,6 +14,10 @@ uri_path: /test
 database:
  adapter: sqlite3
  database: spec/casserver_spec.db
+ 
+disable_auto_migrations: true
+
+quiet: true
 
 authenticator:
   class: CASServer::Authenticators::Test
