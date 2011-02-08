@@ -203,6 +203,12 @@ database:
 #  dbfile: /var/lib/casserver.db
   
 
+# By default RubyCAS-Server will run migrations at every startup to ensure
+# that its database schema is up-to-date. To disable this behaviour set
+# the following option to true:
+
+#disable_auto_migrations: true
+
 ##### AUTHENTICATION ###########################################################
 
 # Configure how username/passwords are validated.
