@@ -8,7 +8,6 @@ require 'logger'
 require 'ostruct'
 
 require 'capybara'
-require 'capybara/node'
 require 'capybara/dsl'
 
 # set test environment
