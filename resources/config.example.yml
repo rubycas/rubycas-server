@@ -475,7 +475,7 @@ organization: CAS
 infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-Server</a>
 
 # Custom views file.  Overrides methodes in lib/casserver/views.rb
-#custom_views_file: /path/to/custom/views.rb
+#custom_views: /path/to/custom/views
 
 ##### LOCALIZATION (L10N) #######################################################
 # The server will attempt to detect the user's locale and show text in the 

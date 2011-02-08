@@ -25,7 +25,7 @@ organization: "RSPEC-TEST"
 
 infoline: "This is an rspec test."
 
-#custom_views_file: /path/to/custom/views.rb
+#custom_views: /path/to/custom/views
 
 default_locale: en
 

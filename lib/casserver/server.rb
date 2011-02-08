@@ -676,6 +676,12 @@ module CASServer
         builder.cdata! value.to_yaml
       end
     end
+
+    def compile_template(engine, data, options, views)
+      super engine, data, options, settings.config[:custom_views]
+    rescue Errno::ENOENT
+      super engine, data, options, views
+    end
   end
 end
 
