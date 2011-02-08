@@ -274,6 +274,7 @@ module CASServer
       @organization = settings.config[:organization]
       @uri_path = settings.config[:uri_path]
       @infoline = settings.config[:infoline]
+      @custom_views = settings.config[:custom_views]
     end
 
     # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec
@@ -675,6 +676,13 @@ module CASServer
       else
         builder.cdata! value.to_yaml
       end
+    end
+
+    def compile_template(engine, data, options, views)
+      super engine, data, options, @custom_views || views
+    rescue Errno::ENOENT
+      raise unless @custom_views
+      super engine, data, options, views
     end
   end
 end
