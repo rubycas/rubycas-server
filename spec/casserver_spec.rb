@@ -132,7 +132,6 @@ describe 'CASServer' do
     it "should have extra attributes in proper format" do
       visit "/serviceValidate?service=#{CGI.escape(@target_service)}&ticket=#{@ticket}"
 
-      puts page.body
       page.body.should match("<test_string>testing!</test_string>")
       page.body.should match("<test_numeric>123.45</test_numeric>")
       page.body.should match("<test_utf_string>&#1070;&#1090;&#1092;</test_utf_string>")
