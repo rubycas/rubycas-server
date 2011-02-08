@@ -74,6 +74,10 @@ module CASServer
     end
     
     def self.print_cli_message(msg, type = :info)
+      if respond_to?(:config) && config && config[:quiet]
+        return
+      end
+      
       if type == :error
         io = $stderr
         prefix = "!!! "

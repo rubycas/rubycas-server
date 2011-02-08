@@ -525,9 +525,16 @@ log:
 # If you want full database logging, uncomment this next section.
 # Every SQL query will be logged here. This is useful for debugging database 
 # problems.
-#
+
 #db_log:
 #  file: /var/log/casserver_db.log
+
+
+# Setting the following option to true will disable CLI output to stdout.
+# i.e. this will get rid of messages like ">>> Redirecting RubyCAS-Server log..."
+# This is useful when, for example, you're running rspecs.
+
+#quiet: true
 
 
 ##### SINGLE SIGN-OUT ##########################################################
