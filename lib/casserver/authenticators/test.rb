@@ -11,7 +11,6 @@ class CASServer::Authenticators::Test < CASServer::Authenticators::Base
 
     raise CASServer::AuthenticatorError, "Username is 'do_error'!" if @username == 'do_error'
 
-    @extra_attributes[:test_string] = "testing!"
     @extra_attributes[:test_utf_string] = "Ютф"
     @extra_attributes[:test_numeric] = 123.45
     @extra_attributes[:test_serialized] = {:foo => 'bar', :alpha => [1,2,3]}
