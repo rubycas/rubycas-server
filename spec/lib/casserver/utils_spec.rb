@@ -26,3 +26,21 @@ describe CASServer::Utils, '#random_string(max_length = 29)' do
     random_string.should_not == another_random_string
   end
 end
+
+describe CASServer::Utils, '#log_controller_action(controller, params)' do
+  let(:params) { {} }
+  let(:params_with_password) { { 'password' => 'test' } }
+  let(:params_with_password_filtered) { { 'password' => '******' } }
+
+  it 'should log the controller action' do
+    $LOG.should_receive(:debug).with 'Processing application::instance_eval {}'
+
+    subject.log_controller_action('application', params)
+  end
+
+  it 'should filter password parameters in the log' do
+    $LOG.should_receive(:debug).with "Processing application::instance_eval #{params_with_password_filtered.inspect}"
+
+    subject.log_controller_action('application', params_with_password)
+  end
+end
