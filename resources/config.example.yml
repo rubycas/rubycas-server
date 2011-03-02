@@ -165,6 +165,7 @@ database:
   username: root
   password: 
   host: localhost
+  reconnect: true
 
 # IMPORTANT! By default, the server can handle up to ~5 concurrent requests
 # (without queuing). You can increase this by setting the database connection
