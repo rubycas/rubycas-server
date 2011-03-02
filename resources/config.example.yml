@@ -200,7 +200,7 @@ database:
 
 #database:
 #  adapter: sqlite3
-#  dbfile: /var/lib/casserver.db
+#  database: /var/lib/casserver.db
   
 
 # By default RubyCAS-Server will run migrations at every startup to ensure
