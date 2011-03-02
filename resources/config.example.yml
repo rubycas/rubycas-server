@@ -43,17 +43,6 @@ ssl_cert: /path/to/your/ssl.pem
 #  ssl_cert: ssl/cert.pem
 #  ssl_key: ssl/key.pem
 
-###
-### Proxy support (Google, etc)
-###
-# If your server is behind a proxy you can uncomment the following lines in order
-# to activate proxy support:
-#
-#  proxy_host: your-proxy-server
-#  proxy_port: 8080
-#  proxy_username: nil
-#  proxy_passsword: nil
-
 
 # By default the login page will be available at the root path 
 # (e.g. https://login.example.net/). The uri_path option lets you serve it from a 
@@ -281,6 +270,16 @@ database:
 #
 #authenticator:
 #  class: CASServer::Authenticators::Google
+#
+# If you are behind an http proxy, you can try specifying proxy settings as follows:
+#
+#authenticator:
+#  class: CASServer::Authenticators::Google
+#  proxy:
+#    host: your-proxy-server
+#    port: 8080
+#    username: nil
+#    password: nil
 #
 # Note that as with all authenticators, it is possible to use the Google 
 # authenticator alongside other authenticators. For example, CAS can first

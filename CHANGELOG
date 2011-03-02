@@ -5,6 +5,9 @@
 	* Support for Ruby 1.9.2
 	* Support for Active Record 3
 
+* CHANGED:
+  * Google authenticator proxy configuration has been changed (see config.example.yml)
+
 === 0.8.0
 
 * NEW:
