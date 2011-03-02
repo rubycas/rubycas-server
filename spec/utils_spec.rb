@@ -1,9 +1,16 @@
-require 'spec/spec_helper'
+# encoding: UTF-8
+require File.dirname(__FILE__) + '/spec_helper'
 
-require 'casserver'
+module CASServer
+end
 require 'casserver/utils'
 
 describe CASServer::Utils, '#random_string(max_length = 29)' do
+  before do
+    load_server(File.dirname(__FILE__) + "/default_config.yml")
+    reset_spec_database
+  end
+  
   context 'when max length is not passed in' do
     it 'should return a random string of length 29' do
       subject.random_string.length.should == 29
