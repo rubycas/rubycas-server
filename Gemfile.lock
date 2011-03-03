@@ -46,6 +46,7 @@ GEM
     json_pure (1.5.1)
     locale (2.0.5)
     mime-types (1.16)
+    net-ldap (0.1.1)
     nokogiri (1.4.4)
     rack (1.2.1)
     rack-test (0.5.7)
@@ -83,6 +84,7 @@ DEPENDENCIES
   capybara
   crypt-isaac (~> 0.9.1)
   gettext (~> 2.1.0)
+  net-ldap (~> 0.1.1)
   rack-test
   rspec
   rspec-core
