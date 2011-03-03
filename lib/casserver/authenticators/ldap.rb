@@ -125,16 +125,15 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     def extract_extra_attributes(ldap_entry)
       @extra_attributes = {}
       extra_attributes_to_extract.each do |attr|
-        v = !ldap_entry[attr].blank? && ldap_entry[attr].first
-        if v
-          if ldap_entry[attr].kind_of?(Array)
-             @extra_attributes[attr] = []
-             ldap_entry[attr].each do |a|
-               @extra_attributes[attr] << a.to_s
-             end
-          else
-            @extra_attributes[attr] = v.to_s
-          end
+        v = ldap_entry[attr]
+        next if !v || (v.respond_to?(:empty?) && v.empty?)
+        if v.kind_of?(Array)
+           @extra_attributes[attr] = []
+           ldap_entry[attr].each do |a|
+             @extra_attributes[attr] << a.to_s
+           end
+        else
+          @extra_attributes[attr] = v.to_s
         end
       end
 
