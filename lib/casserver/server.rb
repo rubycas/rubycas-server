@@ -100,7 +100,7 @@ module CASServer
         print_cli_message "Would you like the default config file copied to #{config_file.inspect}? [y/N]"
         if gets.strip.downcase == 'y'
           require 'fileutils'
-          default_config = File.dirname(__FILE__) + '/../../resources/config.example.yml'
+          default_config = File.dirname(__FILE__) + '/../../config/config.example.yml'
           
           if !File.exists?(File.dirname(config_file))
             print_cli_message "Creating config directory..."
