@@ -14,7 +14,7 @@ module CASServer
     include Localization
 
     set :app_file, __FILE__
-    set :public, Proc.new { File.join(root, "..", "..", "public") }
+    set :public, Proc.new { settings.config[:public_dir] || File.join(root, "..", "..", "public") }
 
     config = HashWithIndifferentAccess.new(
       :maximum_unused_login_ticket_lifetime => 5.minutes,

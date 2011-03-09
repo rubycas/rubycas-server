@@ -480,8 +480,13 @@ organization: CAS
 # if you prefer to have no extra text shown at the bottom of the login box.
 infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-Server</a>
 
-# Custom views file.  Overrides methodes in lib/casserver/views.rb
+# Custom views directory. If set, this will be used instead of 'lib/casserver/views'.
 #custom_views: /path/to/custom/views
+
+# Custom public directory. If set, static content (css, etc.) will be served from here rather 
+# than from rubycas-server's internal 'public' directory (but be mindful of any overriding 
+# settings you may have in your web server's config).
+#public_dir: /path/to/custom/public
 
 ##### LOCALIZATION (L10N) #######################################################
 # The server will attempt to detect the user's locale and show text in the 
