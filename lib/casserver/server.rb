@@ -281,6 +281,11 @@ module CASServer
       @uri_path = settings.config[:uri_path]
       @infoline = settings.config[:infoline]
       @custom_views = settings.config[:custom_views]
+      @template_engine = settings.config[:template_engine] || :erb
+      if @template_engine != :erb
+        require @template_engine
+        @template_engine = @template_engine.to_sym
+      end
     end
 
     # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec
@@ -367,7 +372,7 @@ module CASServer
           render _("Could not guess the CAS login URI. Please supply a submitToURI parameter with your request.")
         end
       else
-        render :erb, :login
+        render @template_engine, :login
       end
     end
 
@@ -397,7 +402,7 @@ module CASServer
         # generate another login ticket to allow for re-submitting the form
         @lt = generate_login_ticket.ticket
         status 500
-        render :erb, :login
+        render @template_engine, :login
       end
 
       # generate another login ticket to allow for re-submitting the form after a post
@@ -475,7 +480,7 @@ module CASServer
         status 401
       end
 
-      render :erb, :login
+      render @template_engine, :login
     end
 
     get /^#{uri_path}\/?$/ do
@@ -539,9 +544,9 @@ module CASServer
       if @gateway && @service
         redirect @service, 303
       elsif @continue_url
-        render :erb, :logout
+        render @template_engine, :logout
       else
-        render :erb, :login
+        render @template_engine, :login
       end
     end
 
@@ -565,7 +570,7 @@ module CASServer
 			
       status response_status_from_error(@error) if @error
 			
-			render :erb, :validate, :layout => false
+			render @template_engine, :validate, :layout => false
 		end
 
 
