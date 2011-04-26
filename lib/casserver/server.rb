@@ -247,7 +247,7 @@ module CASServer
           #$LOG.close
           ActiveRecord::Base.logger = Logger.new(config[:db_log][:file])
         end
-        ActiveRecord::Base.logger.level = Logger.const_get(config[:db+log][:level]) if config[:db_log][:level]
+        ActiveRecord::Base.logger.level = Logger.const_get(config[:db_log][:level]) if config[:db_log][:level]
       end
     end
 
