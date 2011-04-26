@@ -10,10 +10,11 @@ end
 VALID_USERNAME = 'spec_user'
 VALID_PASSWORD = 'spec_password'
 
+ATTACK_USERNAME = '%3E%22%27%3E%3Cscript%3Ealert%2826%29%3C%2Fscript%3E&password=%3E%22%27%3E%3Cscript%3Ealert%2826%29%3C%2Fscript%3E&lt=%3E%22%27%3E%3Cscript%3Ealert%2826%29%3C%2Fscript%3E&service=%3E%22%27%3E%3Cscript%3Ealert%2826%29%3C%2Fscript%3E'
 INVALID_PASSWORD = 'invalid_password'
 
 describe 'CASServer' do
-  
+
   before do
     @target_service = 'http://my.app.test'
   end
@@ -26,11 +27,11 @@ describe 'CASServer' do
 
     it "logs in successfully with valid username and password without a target service" do
       visit "/login"
-      
+
       fill_in 'username', :with => VALID_USERNAME
       fill_in 'password', :with => VALID_PASSWORD
       click_button 'login-submit'
-      
+
       page.should have_content("You have successfully logged in")
     end
 
@@ -48,7 +49,7 @@ describe 'CASServer' do
 
       fill_in 'username', :with => VALID_USERNAME
       fill_in 'password', :with => VALID_PASSWORD
-      
+
       click_button 'login-submit'
 
       page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?\?ticket=ST\-[1-9rA-Z]+/
@@ -76,6 +77,13 @@ describe 'CASServer' do
       page.should have_content("Username")
     end
 
+    it "is not vunerable to Cross Site Scripting" do
+      visit '/login?service=%22%2F%3E%3cscript%3ealert%2832%29%3c%2fscript%3e'
+      page.should_not have_content("alert(32)")
+      page.should_not have_xpath("//script")
+      #page.should have_xpath("<script>alert(32)</script>")
+    end
+
   end # describe '/login'
 
 
@@ -88,26 +96,26 @@ describe 'CASServer' do
 
     it "logs out successfully" do
       visit "/logout"
-      
+
       page.should have_content("You have successfully logged out")
     end
 
     it "logs out successfully and redirects to target service" do
       visit "/logout?gateway=true&service="+CGI.escape(@target_service)
-      
+
       page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?/
     end
 
   end # describe '/logout'
-  
+
   describe 'Configuration' do
     it "uri_path value changes prefix of routes" do
       load_server(File.dirname(__FILE__) + "/alt_config.yml")
       @target_service = 'http://my.app.test'
-      
+
       visit "/test/login"
       page.status_code.should_not == 404
-      
+
       visit "/test/logout"
       page.status_code.should_not == 404
     end
@@ -122,7 +130,7 @@ describe 'CASServer' do
 
       fill_in 'username', :with => VALID_USERNAME
       fill_in 'password', :with => VALID_PASSWORD
-      
+
       click_button 'login-submit'
 
       page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?\?ticket=ST\-[1-9rA-Z]+/

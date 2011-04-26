@@ -27,8 +27,8 @@
     <tr>
       <td />
       <td id="submit-container">
-        <input type="hidden" id="lt" name="lt" value="<%= @lt %>" />
-        <input type="hidden" id="service" name="service" value="<%= @service %>" />
+        <input type="hidden" id="lt" name="lt" value="<%= escape_html @lt %>" />
+        <input type="hidden" id="service" name="service" value="<%= escape_html @service %>" />
         <input type="submit" class="button" accesskey="l" value="<%= _("LOGIN") %>"
                tabindex="4" id="login-submit" />
       </td>
