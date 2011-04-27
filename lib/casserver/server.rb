@@ -252,10 +252,9 @@ module CASServer
     end
 
     def self.init_database!
-      #CASServer::Model::Base.establish_connection(config[:database])
-      ActiveRecord::Base.establish_connection(config[:database])
-      
+
       unless config[:disable_auto_migrations]
+        ActiveRecord::Base.establish_connection(config[:database])
         print_cli_message "Running migrations to make sure your database schema is up to date..."
         prev_db_log = ActiveRecord::Base.logger
         ActiveRecord::Base.logger = Logger.new(STDOUT)
@@ -264,6 +263,8 @@ module CASServer
         ActiveRecord::Base.logger = prev_db_log
         print_cli_message "Your database is now up to date."
       end
+      
+      CASServer::Model::Base.establish_connection(config[:database])
     end
 
     configure do
