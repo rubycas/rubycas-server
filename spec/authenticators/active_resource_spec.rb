@@ -7,20 +7,81 @@ describe CASServer::Authenticators::Helpers::Identity do
 
   it { should be_an ActiveResource::Base }
 
-  it { should respond_to? :autenticate }
+  it "class should respond to :authenticate" do
+    subject.class.should respond_to :authenticate
+  end
+
+  it "class should have a method_name accessor" do
+    CASServer::Authenticators::Helpers::Identity.method_name.should == :authenticate
+  end
+
+  it "class should have a method_name accessor" do
+    CASServer::Authenticators::Helpers::Identity.method_type.should == :post
+  end
+
+  it "class method_type accessor should validate type" do
+    expect {
+      CASServer::Authenticators::Helpers::Identity.method_type = :foo
+    }.to raise_error(ArgumentError)
+  end
+
 end
 
 describe CASServer::Authenticators::ActiveResource do
 
   describe "#setup" do
-    it "should configure the identity object"
+
+    it "should configure the identity object" do
+      CASServer::Authenticators::Helpers::Identity.should_receive(:user=).with('httpuser').once
+      CASServer::Authenticators::ActiveResource.setup :site => 'http://api.example.org', :user => 'httpuser'
+    end
+
+    it "should raise if site option is missing" do
+      expect {
+        CASServer::Authenticators::ActiveResource.setup({}).should
+      }.to raise_error(CASServer::AuthenticatorError, /site option/)
+    end
   end
 
   describe "#validate" do
 
-    it "should raise if site option is missing"
+    let(:credentials) { {:username => 'validusername',
+                         :password => 'validpassword',
+                         :service => 'test.service',
+                         :request => {}} }
 
-    it "should call Identity#autenticate with the given params"
+    let(:auth) { CASServer::Authenticators::ActiveResource.new }
 
+    def mock_authenticate identity = nil
+      identity = CASServer::Authenticators::Helpers::Identity.new if identity.nil?
+      CASServer::Authenticators::Helpers::Identity.stub!(:authenticate).and_return(identity)
+    end
+
+    def sample_identity attrs = {}
+      identity = CASServer::Authenticators::Helpers::Identity.new
+      attrs.each { |k,v| identity.send "#{k}=", v }
+      identity
+    end
+
+    it "should call Identity#autenticate with the given params" do
+      CASServer::Authenticators::Helpers::Identity.should_receive(:authenticate).with(credentials).once
+      auth.validate(credentials)
+    end
+
+    it "should return identity object attributes as extra attributes" do
+      identity = sample_identity({:email => 'foo@example.org'})
+      mock_authenticate identity
+      auth.validate(credentials).should be_true
+      auth.extra_attributes.should == identity.attributes
+    end
+
+    it "should return false when http raises" do
+      CASServer::Authenticators::Helpers::Identity.stub!(:authenticate).and_raise(ActiveResource::ForbiddenAccess.new({}))
+      auth.validate(credentials).should be_false
+    end
+
+    it "should apply extra_attribute filter"
+
+    it "should only extract given attributes"
   end
 end
