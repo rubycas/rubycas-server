@@ -78,7 +78,7 @@ module CASServer
       def validate(credentials)
         begin
           $LOG.debug("Starting Active Resource authentication")
-          result = Helpers::Identity.authenticate(credentials)
+          result = Helpers::Identity.authenticate(credentials.except(:request))
           extract_extra_attributes(result) if result
           !!result
         rescue ::ActiveResource::ConnectionError => e
