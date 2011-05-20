@@ -36,6 +36,11 @@ describe CASServer::Authenticators::ActiveResource do
       CASServer::Authenticators::ActiveResource.setup :site => 'http://api.example.org', :user => 'httpuser'
     end
 
+    it "should configure the method_type" do
+      CASServer::Authenticators::Helpers::Identity.should_receive(:method_type=).with('get').once
+      CASServer::Authenticators::ActiveResource.setup :site => 'http://api.example.org', :method_type => 'get'
+    end
+
     it "should raise if site option is missing" do
       expect {
         CASServer::Authenticators::ActiveResource.setup({}).should
@@ -47,8 +52,7 @@ describe CASServer::Authenticators::ActiveResource do
 
     let(:credentials) { {:username => 'validusername',
                          :password => 'validpassword',
-                         :service => 'test.service',
-                         :request => {}} }
+                         :service => 'test.service'} }
 
     let(:auth) { CASServer::Authenticators::ActiveResource.new }
 

@@ -35,7 +35,7 @@ module CASServer
 
         def self.method_type= type
           methods = [:get, :post, :put, :delete]
-          raise ArgumentError, "Method type should be one of #{methods.map { |m| m.to_s.upcase }.join(', ')}" unless methods.include? type
+          raise ArgumentError, "Method type should be one of #{methods.map { |m| m.to_s.upcase }.join(', ')}" unless methods.include? type.to_sym
           @@method_type = type
         end
 
