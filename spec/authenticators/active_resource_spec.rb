@@ -69,6 +69,7 @@ describe CASServer::Authenticators::ActiveResource do
     end
 
     it "should return identity object attributes as extra attributes" do
+      auth.configure({}.with_indifferent_access)
       identity = sample_identity({:email => 'foo@example.org'})
       mock_authenticate identity
       auth.validate(credentials).should be_true
@@ -80,8 +81,25 @@ describe CASServer::Authenticators::ActiveResource do
       auth.validate(credentials).should be_false
     end
 
-    it "should apply extra_attribute filter"
+    it "should apply extra_attribute filter" do
+      auth.configure({ :extra_attributes => 'age'}.with_indifferent_access)
+      mock_authenticate sample_identity({ :email => 'foo@example.org', :age => 28 })
+      auth.validate(credentials).should be_true
+      auth.extra_attributes.should == { "age" => "28" }
+    end
 
-    it "should only extract given attributes"
+    it "should only extract not filtered attributes" do
+      auth.configure({ :filter_attributes => 'age'}.with_indifferent_access)
+      mock_authenticate sample_identity({ :email => 'foo@example.org', :age => 28 })
+      auth.validate(credentials).should be_true
+      auth.extra_attributes.should == { "email" => 'foo@example.org' }
+    end
+
+    it "should filter password if filter attributes is not given" do
+      auth.configure({}.with_indifferent_access)
+      mock_authenticate sample_identity({ :email => 'foo@example.org', :password => 'secret' })
+      auth.validate(credentials).should be_true
+      auth.extra_attributes.should == { "email" => 'foo@example.org' }
+    end
   end
 end
