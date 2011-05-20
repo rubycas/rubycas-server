@@ -35,7 +35,7 @@ module CASServer
 
         def self.method_type= type
           methods = [:get, :post, :put, :delete]
-          raise ArgumentError, "Method type should be one of #{methods.map {|m| m.to_s.upcase}.join(', ')}" unless methods.include? type
+          raise ArgumentError, "Method type should be one of #{methods.map { |m| m.to_s.upcase }.join(', ')}" unless methods.include? type
           @@method_type = type
         end
 
@@ -46,7 +46,6 @@ module CASServer
           new.from_authentication_data(response)
         end
 
-        private
         # Used to load object attributes from the given response
         def from_authentication_data response
           load_attributes_from_response(response)
@@ -78,15 +77,49 @@ module CASServer
       # by calling #read_standard_credentials.
       def validate(credentials)
         begin
+          $LOG.debug("Starting Active Resource authentication")
           result = Helpers::Identity.authenticate(credentials)
-          @extra_attributes = result.attributes if result
+          extract_extra_attributes(result) if result
           !!result
         rescue ::ActiveResource::ConnectionError => e
-          $LOG.warn("Error during authenticate: #{e}")
+          $LOG.warn("Error during authentication: #{e}")
           false
         end
       end
 
+      private
+
+      def extract_extra_attributes(resource)
+        @extra_attributes = {}
+        $LOG.debug("Parsing extra attributes")
+        if @options[:extra_attributes]
+          extra_attributes_to_extract.each do |attr|
+            @extra_attributes[attr] = resource.send(attr).to_s
+          end
+        else
+          @extra_attributes = resource.attributes
+        end
+        # do filtering
+        extra_attributes_to_filter.each do |attr|
+          @extra_attributes.delete(attr)
+        end
+      end
+
+      # extract attributes to filter from the given configuration
+      def extra_attributes_to_filter
+        # default value if not set
+        return ['password'] unless @options[:filter_attributes]
+        # parse option value
+        if @options[:filter_attributes].kind_of? Array
+          attrs = @options[:filter_attributes]
+        elsif @options[:filter_attributes].kind_of? String
+          attrs = @options[:filter_attributes].split(',').collect { |col| col.strip }
+        else
+          $LOG.error("Can't figure out attribute list from #{@options[:filter_attributes].inspect}. This must be an Aarray of column names or a comma-separated list.")
+          attrs = []
+        end
+        attrs
+      end
     end
   end
 end
