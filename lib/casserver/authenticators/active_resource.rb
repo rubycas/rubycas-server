@@ -42,7 +42,7 @@ module CASServer
         # Autenticate an identity using the given method
         # @param [Hash] credentials
         def self.authenticate(credentials = {})
-          response = self.send(self.method_type, self.method_name, credentials)
+          response = send(method_type, method_name, credentials)
           new.from_authentication_data(response)
         end
 
