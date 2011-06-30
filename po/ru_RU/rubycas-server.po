@@ -70,7 +70,7 @@ msgid ""
 "Could not guess the CAS login URI. Please supply a submitToURI parameter "
 "with your request."
 msgstr ""
-"Не возможно угадать адрес входа на CAS. Пожалуйста, передайте с запросом "
+"Невозможно угадать адрес входа на CAS. Пожалуйста, передайте с запросом "
 "параметр submitToURI."
 
 #: lib/casserver/controllers.rb:168
@@ -99,7 +99,7 @@ msgstr " Центральный вход"
 
 #: lib/casserver/views.rb:68
 msgid "Please wait..."
-msgstr ""
+msgstr "Подождите..."
 
 #: lib/casserver/views.rb:74
 msgid "Username"
