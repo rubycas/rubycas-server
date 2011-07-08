@@ -48,6 +48,7 @@ to build the LOCALE_LC files.
   
   # for authenticator specs
   s.add_development_dependency("net-ldap", "~> 0.1.1")
+  s.add_development_dependency("activeresource", "~> 3.0.0")
 
   s.rdoc_options = [
     '--quiet', '--title', 'RubyCAS-Server Documentation', '--opname',

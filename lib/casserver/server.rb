@@ -252,10 +252,9 @@ module CASServer
     end
 
     def self.init_database!
-      #CASServer::Model::Base.establish_connection(config[:database])
-      ActiveRecord::Base.establish_connection(config[:database])
-      
+
       unless config[:disable_auto_migrations]
+        ActiveRecord::Base.establish_connection(config[:database])
         print_cli_message "Running migrations to make sure your database schema is up to date..."
         prev_db_log = ActiveRecord::Base.logger
         ActiveRecord::Base.logger = Logger.new(STDOUT)
@@ -264,6 +263,8 @@ module CASServer
         ActiveRecord::Base.logger = prev_db_log
         print_cli_message "Your database is now up to date."
       end
+      
+      CASServer::Model::Base.establish_connection(config[:database])
     end
 
     configure do
@@ -548,6 +549,37 @@ module CASServer
       else
         render @template_engine, :login
       end
+    end
+  
+  
+    # Handler for obtaining login tickets.
+    # This is useful when you want to build a custom login form located on a 
+    # remote server. Your form will have to include a valid login ticket
+    # value, and this can be fetched from the CAS server using the POST handler.
+
+    get "#{uri_path}/loginTicket" do
+      CASServer::Utils::log_controller_action(self.class, params)
+
+      $LOG.error("Tried to use login ticket dispenser with get method!")
+
+      status 422
+
+      "To generate a login ticket, you must make a POST request."
+    end
+
+
+    # Renders a page with a login ticket (and only the login ticket)
+    # in the response body.
+    post "#{uri_path}/loginTicket" do
+      CASServer::Utils::log_controller_action(self.class, params)
+
+      lt = generate_login_ticket
+
+      $LOG.debug("Dispensing login ticket #{lt} to host #{(@env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']).inspect}")
+
+      @lt = lt.ticket
+
+      @lt
     end
 
 
