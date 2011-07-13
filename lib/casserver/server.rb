@@ -315,6 +315,10 @@ module CASServer
       if tgt and !tgt_error
         @message = {:type => 'notice',
           :message => _("You are currently logged in as '%s'. If this is not you, please log in below.") % tgt.username }
+      elsif tgt_error
+        $LOG.debug("Ticket granting cookie could not be validated: #{tgt_error}")
+      elsif !tgt
+        $LOG.debug("No ticket granting ticket detected.")
       end
 
       if params['redirection_loop_intercepted']
@@ -324,7 +328,10 @@ module CASServer
 
       begin
         if @service
-          if !@renew && tgt && !tgt_error
+          if @renew
+            $LOG.info("Authentication renew explicitly requested. Proceeding with CAS login for service #{@service.inspect}.")
+          elsif tgt && !tgt_error
+            $LOG.debug("Valid ticket granting ticket detected.")
             st = generate_service_ticket(@service, tgt.username, tgt)
             service_with_ticket = service_uri_with_ticket(@service, st)
             $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
@@ -332,11 +339,15 @@ module CASServer
           elsif @gateway
             $LOG.info("Redirecting unauthenticated gateway request to service '#{@service}'.")
             redirect @service, 303
+          else
+            $LOG.info("Proceeding with CAS login for service #{@service.inspect}.")
           end
         elsif @gateway
             $LOG.error("This is a gateway request but no service parameter was given!")
             @message = {:type => 'mistake',
               :message => _("The server cannot fulfill this gateway request because no service parameter was given.")}
+        else
+          $LOG.info("Proceeding with CAS login without a target service.")
         end
       rescue URI::InvalidURIError
         $LOG.error("The service '#{@service}' is not a valid URI!")
