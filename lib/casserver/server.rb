@@ -458,7 +458,7 @@ module CASServer
           tgt = generate_ticket_granting_ticket(@username, extra_attributes)
           response.set_cookie('tgt', tgt.to_s)
 
-          $LOG.debug("Ticket granting cookie '#{request.cookies['tgt'].inspect}' granted to #{@username.inspect}")
+          $LOG.debug("Ticket granting cookie '#{tgt.inspect}' granted to #{@username.inspect}")
 
           if @service.blank?
             $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
