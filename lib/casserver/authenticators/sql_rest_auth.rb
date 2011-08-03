@@ -24,6 +24,9 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
     read_standard_credentials(credentials)
     raise_if_not_configured
 
+    raise CASServer::AuthenticatorError, "You must specify a 'site_key' in the SQLRestAuth authenticator's configuration!" unless  @options[:site_key]
+    raise CASServer::AuthenticatorError, "You must specify 'digest_streches' in the SQLRestAuth authenticator's configuration!" unless  @options[:digest_streches]
+
     user_model = self.class.user_model
 
     username_column = @options[:username_column] || "email"
@@ -56,12 +59,6 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
 
   module EncryptedPassword
 
-    # XXX: this constants MUST be defined in config.
-    # For more details # look at restful-authentication docs.
-    #
-    REST_AUTH_DIGEST_STRETCHES = $CONF.rest_auth_digest_streches
-    REST_AUTH_SITE_KEY         = $CONF.rest_auth_site_key
-
     def self.included(mod)
       raise "#{self} should be inclued in an ActiveRecord class!" unless mod.respond_to?(:before_save)
     end
@@ -75,9 +72,9 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
     end
 
     def password_digest(password, salt)
-      digest = REST_AUTH_SITE_KEY
-      REST_AUTH_DIGEST_STRETCHES.times do
-        digest = secure_digest(digest, salt, password, REST_AUTH_SITE_KEY)
+      digest = @options[:site_key]
+      @options[:digest_streches].times do
+        digest = secure_digest(digest, salt, password, @options[:site_key])
       end
       digest
     end
