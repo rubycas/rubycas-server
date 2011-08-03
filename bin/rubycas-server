@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Enables UTF-8 compatibility.
+# Enables UTF-8 compatibility in ruby 1.8.
 $KCODE = 'u' if RUBY_VERSION < '1.9'
 
 require 'rubygems'
@@ -8,9 +8,23 @@ require 'rubygems'
 $:.unshift File.dirname(__FILE__) + "/../lib"
 
 if ARGV.join.match('--debugger')
-  require 'ruby-debug' 
+  require 'ruby-debug'
+  puts
   puts "=> Debugger Enabled"
 end
+
+if ARGV.join.match('-c')
+  c = ARGV.join.match(/-c\s*([^\s]+)/)
+  if (c && c[1])
+    ENV['CONFIG_FILE'] = c[1]
+    puts
+    puts "=> Using custom config file #{ENV['CONFIG_FILE'].inspect}"
+  else
+    $stderr.puts("To specify a custom config file use `rubycas-server -c path/to/config_file_name.yml`.")
+    exit
+  end
+end
+
 require 'casserver'
 
 CASServer::Server.run!
