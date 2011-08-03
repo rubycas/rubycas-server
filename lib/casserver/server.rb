@@ -264,7 +264,7 @@ module CASServer
         print_cli_message "Your database is now up to date."
       end
       
-      CASServer::Model::Base.establish_connection(config[:database])
+      ActiveRecord::Base.establish_connection(config[:database])
     end
 
     configure do
