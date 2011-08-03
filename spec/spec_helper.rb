@@ -34,22 +34,22 @@ end
 #
 # This will likely break in the future when Capybara or RackTest are upgraded.
 class Capybara::Driver::RackTest
-  alias_method :original_follow_redirects!, :follow_redirects!
-  alias_method :original_current_url, :current_url
-
   def current_url
     if @redirected_to_external_url
       @redirected_to_external_url
     else
-      original_current_url
+      request.url rescue ""
     end
   end
 
   def follow_redirects!
-    if response['Location'] =~ /^http:/
+    if response.redirect? && response['Location'] =~ /^http[s]?:/
       @redirected_to_external_url = response['Location']
     else
-      original_follow_redirects!
+      5.times do
+        follow_redirect! if response.redirect?
+      end
+      raise Capybara::InfiniteRedirectError, "redirected more than 5 times, check for infinite redirects." if response.redirect?
     end
   end
 end
