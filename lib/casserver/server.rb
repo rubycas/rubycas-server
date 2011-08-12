@@ -627,6 +627,7 @@ module CASServer
 			@service = clean_service_url(params['service'])
 			@ticket = params['ticket']
 			# optional
+			@pgtUrl = params['pgtUrl']
 			@renew = params['renew']
 
 			st, @error = validate_service_ticket(@service, @ticket)
