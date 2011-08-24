@@ -22,7 +22,7 @@ If it complains mysql connectivity, do this
 	apt-get install libmysqlclient16-dev
 	sudo gem install mysql2
 
-copy resources/config.example.yml into /etc/rubycas-server/config.yml, there's way to put the config in other place, yet to document. Change the config to meet your requests.
+copy config/config.example.yml into /etc/rubycas-server/config.yml, there's way to put the config in other place, yet to document. Change the config to meet your requests.
 
 You might also want to change config/unicorn.conf
 
@@ -32,5 +32,5 @@ For info and detailed installation instructions please see http://code.google.co
 
 ## License
 
-RubyCAS-Server is licensed for use under the terms of the MIT License. 
+RubyCAS-Server is licensed for use under the terms of the MIT License.
 See the LICENSE file bundled with the official RubyCAS-Server distribution for details.
