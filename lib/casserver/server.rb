@@ -8,7 +8,13 @@ $LOG ||= Logger.new(STDOUT)
 
 module CASServer
   class Server < Sinatra::Base
-    CONFIG_FILE = ENV['CONFIG_FILE'] || "/etc/rubycas-server/config.yml"
+    if ENV['CONFIG_FILE']
+      CONFIG_FILE = ENV['CONFIG_FILE']
+    elsif !(c_file = File.dirname(__FILE__) + "/../../config.yml").nil? && File.exist?(c_file)
+      CONFIG_FILE = c_file
+    else
+      CONFIG_FILE = "/etc/rubycas-server/config.yml"
+    end
     
     include CASServer::CAS # CAS protocol helpers
     include Localization
