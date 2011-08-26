@@ -25,9 +25,8 @@ module CASServer
       class Identity < ActiveResource::Base
 
         # define method_name accessor
-        cattr_accessor(:method_name) do
-          :authenticate # default value
-        end
+        cattr_accessor(:method_name)
+        self.method_name = :authenticate
 
         def self.method_type
           @@method_type ||= :post
@@ -82,6 +81,9 @@ module CASServer
           extract_extra_attributes(result) if result
           !!result
         rescue ::ActiveResource::ConnectionError => e
+          if e.response.blank? # band-aid for ARes 2.3.x -- craps out if to_s is called without a response
+            e = e.class.to_s
+          end
           $LOG.warn("Error during authentication: #{e}")
           false
         end

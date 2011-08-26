@@ -1,4 +1,13 @@
-=== 1.0.0 :: In Progress...
+=== 1.0.1 :: In Progress...
+
+* NEW:
+  * On startup the server now checks for a config.yml file in its own root directory,
+    then in /etc/rubycas-server.
+
+* FIXED:
+  * Specs now pass under Active Record 2.3.12
+
+=== 1.0.0 :: 2011-08-03
 
 * NEW:
 	* Rewrite to replace Camping/Picnic with Sinatra
