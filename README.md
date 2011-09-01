@@ -1,4 +1,4 @@
-= MOVED!
+# MOVED!
 
 This repo has been moved to https://github.com/rubycas/rubycas-server. 
 
