@@ -3,6 +3,7 @@ require 'casserver/authenticators/sql'
 require 'digest/sha1'
 require 'digest/sha2'
 require 'crypt-isaac'
+require 'bcrypt'
 
 # This is a more secure version of the SQL authenticator. Passwords are encrypted
 # rather than being stored in plain text.
