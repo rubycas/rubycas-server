@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    rubycas-server (1.0)
-      activerecord (~> 2.3.12)
-      activesupport (~> 2.3.12)
+    rubycas-server (1.0.1)
+      activerecord (>= 2.3.12, < 3.1)
+      activesupport (>= 2.3.12, < 3.1)
       crypt-isaac (~> 0.9.1)
       gettext (~> 2.1.0)
       sinatra (~> 1.0)
@@ -70,7 +70,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activeresource (~> 2.3.12)
+  activeresource (< 3.1, >= 2.3.12)
   capybara
   net-ldap (~> 0.1.1)
   rack-test
