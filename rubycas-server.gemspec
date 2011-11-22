@@ -24,14 +24,15 @@ $gemspec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md"]
 
   s.has_rdoc = true
-  s.post_install_message = %q{
+  s.post_install_message = "
 For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
 
 If you plan on using RubyCAS-Server with languages other than English, please cd into the
-RubyCAS-Server installation directory (where the gem is installed) and type `rake localization:mo`
+RubyCAS-Server installation directory (where this gem is installed, for example: 
+'/usr/lib/ruby/gems/1.x/gems/rubycas-server-1.x.x/') and type `rake localization:mo`
 to build the LOCALE_LC files.
 
-}
+"
 
   s.add_dependency("activerecord", ">= 2.3.12", "< 3.1")
   s.add_dependency("activesupport", ">= 2.3.12", "< 3.1")

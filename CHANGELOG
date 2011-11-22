@@ -1,11 +1,15 @@
-=== 1.0.1 :: In Progress...
+=== 1.0.1 :: 2011-11-22
 
 * NEW:
   * On startup the server now checks for a config.yml file in its own root directory,
     then in /etc/rubycas-server.
 
 * FIXED:
-  * Specs now pass under Active Record 2.3.12
+  * Compatibilty with Sinatra 1.3 (:public changed to :public_folder).
+  * Database migration files should now be correctly bundled with the gem distribution.
+  * Should work with both ActiveRecord >= 2.3.12 and < 3.1. Previously the dependency
+    was erronously set to accept only the 2.3.12 series.
+  * Specs now pass under ActiveRecord 2.3.12 in both Ruby 1.8 and 1.9
 
 === 1.0.0 :: 2011-08-03
 
