@@ -38,7 +38,7 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
     if results.size > 0
       $LOG.warn("Multiple matches found for user '#{@username}'") if results.size > 1
       user = results.first
-      if user.crypted_password == user.encrypt(@password)
+      if user.crypted_password == user.encrypt(@password,@options[:site_key],@options[:digest_streches])
         unless @options[:extra_attributes].blank?
           extract_extra(user)
           log_extra
@@ -63,18 +63,18 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
       raise "#{self} should be inclued in an ActiveRecord class!" unless mod.respond_to?(:before_save)
     end
 
-    def encrypt(password)
-      password_digest(password, self.salt)
+    def encrypt(password,site_key,digest_streches)
+      password_digest(password, self.salt,site_key,digest_streches)
     end
 
     def secure_digest(*args)
       Digest::SHA1.hexdigest(args.flatten.join('--'))
     end
 
-    def password_digest(password, salt)
-      digest = @options[:site_key]
-      @options[:digest_streches].times do
-        digest = secure_digest(digest, salt, password, @options[:site_key])
+    def password_digest(password, salt,site_key,digest_streches)
+      digest = site_key
+      digest_streches.times do
+        digest = secure_digest(digest, salt, password, site_key) 
       end
       digest
     end
