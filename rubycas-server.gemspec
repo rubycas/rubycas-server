@@ -28,7 +28,7 @@ $gemspec = Gem::Specification.new do |s|
 For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
 
 If you plan on using RubyCAS-Server with languages other than English, please cd into the
-RubyCAS-Server installation directory (where this gem is installed, for example: 
+RubyCAS-Server installation directory (where this gem is installed, for example:
 '/usr/lib/ruby/gems/1.x/gems/rubycas-server-1.x.x/') and type `rake localization:mo`
 to build the LOCALE_LC files.
 
@@ -44,8 +44,9 @@ to build the LOCALE_LC files.
   s.add_development_dependency("capybara")
   s.add_development_dependency("rspec")
   s.add_development_dependency("rspec-core")
+  s.add_development_dependency("rake", "0.8.7")
   s.add_development_dependency("sqlite3", "~> 1.3.1")
-  
+
   # for authenticator specs
   s.add_development_dependency("net-ldap", "~> 0.1.1")
   s.add_development_dependency("activeresource", ">= 2.3.12", "< 3.1")
