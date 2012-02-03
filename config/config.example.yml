@@ -15,7 +15,7 @@
 # passenger -- served out by Apache via the mod_rails/mod_rack module
 #              (see http://www.modrails.com/)
 #
-# The following are exampe configurations for each of these three methods:
+# The following are example configurations for each of these three methods:
 #
 
 
