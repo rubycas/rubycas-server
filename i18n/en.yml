@@ -1,0 +1,22 @@
+cas:
+  no_login_ticket: "Your login request did not include a login ticket. There may be a problem with the authentication system."
+  login_ticket_already_used: "The login ticket you provided has already been used up. Please try logging in again."
+  login_timeout: "You took too long to enter your credentials. Please try again."
+  invalid_login_ticket: "The login ticket you provided is invalid. There may be a problem with the authentication system."
+server:
+  logged_in_as: "You are currently logged in as '%1'. If this is not you, please log in below."
+  unable_to_authenticate: "The client and server are unable to negotiate authentication. Please try logging in again later."
+  no_service_parameter_given: "The server cannot fulfill this gateway request because no service parameter was given."
+  invalid_target_service: "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."
+  invalid_submit_to_uri: "Could not guess the CAS login URI. Please supply a submitToURI parameter with your request."
+  successfull_logged_in: "You have successfully logged in."
+  incorrect_username_or_password: "Incorrect username or password."
+  successfull_logged_out: "You have successfully logged out."
+  click_to_continue: " Please click on the following link to continue:"
+  login_ticket_needs_post_request: "To generate a login ticket, you must make a POST request."
+interface:
+  please_wait: "Please wait..."
+  username: "Username"
+  password: "Password"
+  login_button: "LOGIN"
+  central_login_title: " Central Login"

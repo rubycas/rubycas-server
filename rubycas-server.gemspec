@@ -1,6 +1,6 @@
 $gemspec = Gem::Specification.new do |s|
   s.name     = 'rubycas-server'
-  s.version  = '1.0.1'
+  s.version  = '1.1.0'
   s.authors  = ["Matt Zukowski"]
   s.email    = ["matt@zukowski.ca"]
   s.homepage = 'http://code.google.com/p/rubycas-server/'
@@ -27,17 +27,12 @@ $gemspec = Gem::Specification.new do |s|
   s.post_install_message = "
 For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
 
-If you plan on using RubyCAS-Server with languages other than English, please cd into the
-RubyCAS-Server installation directory (where this gem is installed, for example:
-'/usr/lib/ruby/gems/1.x/gems/rubycas-server-1.x.x/') and type `rake localization:mo`
-to build the LOCALE_LC files.
-
 "
 
   s.add_dependency("activerecord", ">= 2.3.12", "< 3.1")
   s.add_dependency("activesupport", ">= 2.3.12", "< 3.1")
   s.add_dependency("sinatra", "~> 1.0")
-  s.add_dependency("gettext", "~> 2.1.0")
+  s.add_dependency("sinatra-r18n")
   s.add_dependency("crypt-isaac", "~> 0.9.1")
 
   s.add_development_dependency("rack-test")
