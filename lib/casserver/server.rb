@@ -319,7 +319,7 @@ module CASServer
 
       if tgt and !tgt_error
         @message = {:type => 'notice',
-          :message => t.server.logged_in_as(tgt.username)}
+          :message => t.notice.logged_in_as(tgt.username)}
       elsif tgt_error
         $LOG.debug("Ticket granting cookie could not be validated: #{tgt_error}")
       elsif !tgt
@@ -328,7 +328,7 @@ module CASServer
 
       if params['redirection_loop_intercepted']
         @message = {:type => 'mistake',
-          :message => t.server.unable_to_authenticate}
+          :message => t.error.unable_to_authenticate}
       end
 
       begin
@@ -350,14 +350,14 @@ module CASServer
         elsif @gateway
             $LOG.error("This is a gateway request but no service parameter was given!")
             @message = {:type => 'mistake',
-              :message => t.server.no_service_parameter_given}
+              :message => t.error.no_service_parameter_given}
         else
           $LOG.info("Proceeding with CAS login without a target service.")
         end
       rescue URI::InvalidURIError
         $LOG.error("The service '#{@service}' is not a valid URI!")
         @message = {:type => 'mistake',
-          :message => t.server.invalid_target_service}
+          :message => t.error.invalid_target_service}
       end
 
       lt = generate_login_ticket
@@ -386,7 +386,7 @@ module CASServer
           render :login_form
         else
           status 500
-          render t.server.invalid_submit_to_uri
+          render t.error.invalid_submit_to_uri
         end
       else
         render @template_engine, :login
@@ -467,7 +467,7 @@ module CASServer
 
           if @service.blank?
             $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
-            @message = {:type => 'confirmation', :message => t.server.successfull_logged_in}
+            @message = {:type => 'confirmation', :message => t.notice.successfull_logged_in}
           else
             @st = generate_service_ticket(@service, @username, tgt)
 
@@ -480,13 +480,13 @@ module CASServer
               $LOG.error("The service '#{@service}' is not a valid URI!")
               @message = {
                 :type => 'mistake',
-                :message => t.server.invalid_target_service
+                :message => t.error.invalid_target_service
               }
             end
           end
         else
           $LOG.warn("Invalid credentials given for user '#{@username}'")
-          @message = {:type => 'mistake', :message => t.server.incorrect_username_or_password}
+          @message = {:type => 'mistake', :message => t.error.incorrect_username_or_password}
           status 401
         end
       rescue CASServer::AuthenticatorError => e
@@ -552,9 +552,9 @@ module CASServer
         $LOG.warn("User tried to log out without a valid ticket-granting ticket.")
       end
 
-      @message = {:type => 'confirmation', :message => t.server.successfull_logged_out}
+      @message = {:type => 'confirmation', :message => t.notice.successfull_logged_out}
 
-      @message[:message] += t.server.click_to_continue if @continue_url
+      @message[:message] += t.notice.click_to_continue if @continue_url
 
       @lt = generate_login_ticket
 
@@ -580,7 +580,7 @@ module CASServer
 
       status 422
 
-      t.server.login_ticket_needs_post_request
+      t.error.login_ticket_needs_post_request
     end
 
 

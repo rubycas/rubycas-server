@@ -119,20 +119,20 @@ module CASServer::CAS
 
     success = false
     if ticket.nil?
-      error = t.cas.no_login_ticket
+      error = t.error.no_login_ticket
       $LOG.warn "Missing login ticket."
     elsif lt = LoginTicket.find_by_ticket(ticket)
       if lt.consumed?
-        error = t.cas.login_ticket_already_used
+        error = t.error.login_ticket_already_used
         $LOG.warn "Login ticket '#{ticket}' previously used up"
       elsif Time.now - lt.created_on < settings.config[:maximum_unused_login_ticket_lifetime]
         $LOG.info "Login ticket '#{ticket}' successfully validated"
       else
-        error = t.cas.login_timeout
+        error = t.error.login_timeout
         $LOG.warn "Expired login ticket '#{ticket}'"
       end
     else
-      error = t.cas.invalid_login_ticket
+      error = t.error.invalid_login_ticket
       $LOG.warn "Invalid login ticket '#{ticket}'"
     end
 
