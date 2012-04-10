@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "你的登录请求没包含登录凭证，这可能是认证系统的问题"
+  login_ticket_already_used: "你提供的登录凭证已经使用过了，请重新登录"
+  login_timeout: "你的认证花了太长时间，请重新认证"
+  invalid_login_ticket: "你所提供的登录凭证是无效的，这可能是认证系统的问题"
+  login_ticket_needs_post_request: "你必须使用 POST 来产生登录凭证"
+  incorrect_username_or_password: "错误的帐号或密码"
+  invalid_submit_to_uri: "无法判断 CAS 的登录地址。请提供 submitToURI 的参数"
+  invalid_target_service: "你的浏览器提供的网址是无效的，请联系你的系统管理员"
+  unable_to_authenticate: "现在无法认证，请稍后重试"
+  no_service_parameter_given: "无法完成网关请求，因为没有提供服务的参数"
+
+notice:
+  logged_in_as: "你正以 '%1' 的身份登入。如果这不是你，请重新登录"
+  click_to_continue: "请点击下列连接继续"
+  successfull_logged_out: "你成功登出了"
+  successfull_logged_in: "你成功登录了"
+
+label:
+  please_wait: "请稍候..."
+  username: "用户名"
+  password: "密码"
+  central_login_title: "整合登录"
+
+button:
+  login: "登录"

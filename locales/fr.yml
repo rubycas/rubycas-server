@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "Votre requête d'identification n'a pas inclus de ticket d'identification. Il se peut qu'il y ait un problème avec le système d'identification."
+  login_ticket_already_used: "Le ticket d'identification que vous avez fourni a été consommé. Veuillez essayer de vous reconnecter"
+  login_timeout: "Le délai de saisie de vos login et mot de passe a expiré. Veuillez réessayer."
+  invalid_login_ticket: "Le ticket d'identification que vous avez fourni n'est pas valide. Il se peut qu'il y ait un problème avec le système d'identification."
+  login_ticket_needs_post_request: "Pour générer un ticket de connexion, vous devez faire une requête POST."
+  incorrect_username_or_password: "Les informations transmises n'ont pas permis de vous authentifier"
+  invalid_submit_to_uri: "Impossible de trouver l'URI de connection de CAS. Veuillez fournir le paramètre submitToURI avec votre requête."
+  invalid_target_service: "Le service cible que votre navigateur a fourni semble incorrect. Veuillez contacter votre administrateur système pour assistance."
+  unable_to_authenticate: "Le client et le serveur ne peuvent négocier l'identification. Veuillez réessayer ultérieurement."
+  no_service_parameter_given: "Le serveur ne peut pas répondre à cette demande (aucun paramètre de service n'a été donné)."
+
+notice:
+  logged_in_as: "Vous êtes actuellement connecté en tant que '%1'. Si ce n'est pas vous, veuillez vous connecter ci-dessous."
+  click_to_continue: "S'il vous plaît cliquer sur le lien suivant pour continuer:"
+  successfull_logged_out: "Vous vous êtes déconnecté(e) du Service Central d'Identification."
+  successfull_logged_in: "Vous vous êtes authentifié(e) auprès du Service Central d'Identification."
+
+label:
+  please_wait: "Veuillez patienter..."
+  username: "Identifiant"
+  password: "Mot de passe"
+  central_login_title: "Service Central d'Identification."
+
+button:
+  login: "SE CONNECTER"

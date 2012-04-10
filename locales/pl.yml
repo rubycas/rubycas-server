@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "Twoje żądanie nie zawiera paraametru 'login ticket'. Prawdopodobnie jest to problem systemu autentykacji."
+  login_ticket_already_used: "Parametr 'login ticket' który przyszedł w żądaniu został już wykorzystany. Proszę spróbować ponownie."
+  login_timeout: "You took too long to enter your credentials. Please try again."
+  invalid_login_ticket: "Parametr 'login ticket' który przyszedł w żądaniu jest nieprawidłowy. Prawdopodobnie jest to problem systemu autentykacji."
+  login_ticket_needs_post_request: "Aby wygenerować parametr 'login ticket', musisz użyć żądania POST"
+  incorrect_username_or_password: "Niepoprawny użytkownik lub hasło."
+  invalid_submit_to_uri: "System nie może odgadnąć URI w celu zalogowania się. Proszę w tym celu dostarczyć parametr 'submitToURI'"
+  invalid_target_service: "Podany parametr 'service' jest nie prawidłowy. Skontaktuj się z administratorem systemu aby uzyskać pomoc."
+  unable_to_authenticate: "System nie jest wstanie przeprowadzić autentykacji. Proszę spróbować poźniej"
+  no_service_parameter_given: "System nie może spełnić żądania ponieważ brakuje parametru 'service'."
+
+notice:
+  logged_in_as: "Jesteś aktualnie zalogowany jako '%1'. Jeżeli to nie jesteś ty, zaloguj się tutaj."
+  click_to_continue: "Proszę kliknąć na poniższy link, aby kontynuować:"
+  successfull_logged_out: "Zostałeś poprawnie zalogowany."
+  successfull_logged_in: "Zostałeś poprawnie wylogowany."
+
+label:
+  please_wait: "Proszę czekać..."
+  username: "Użytkownik"
+  password: "Hasło"
+  central_login_title: "Centralna Usługa Uwierzytelniania"
+
+button:
+  login: "Zaloguj"

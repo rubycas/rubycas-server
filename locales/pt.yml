@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "Your login request did not include a login ticket. There may be a problem with the authentication system."
+  login_ticket_already_used: "The login ticket you provided has already been used up. Please try logging in again."
+  login_timeout: "You took too long to enter your credentials. Please try again."
+  invalid_login_ticket: "The login ticket you provided is invalid. There may be a problem with the authentication system."
+  login_ticket_needs_post_request: "Para gerar um ticket de acceso, você deve fazer uma requisição via POST."
+  incorrect_username_or_password: "Usuário ou Senha está incorreto."
+  invalid_submit_to_uri: "Não encontramos a URI de acesso ao CAS. Por favor, informe corretamente no submitToURI com sua solicitação."
+  invalid_target_service: "O seu navegador está aparentemente com problemas. Por favor, contate o administrador do sistema para obter ajuda."
+  unable_to_authenticate: "O cliente e o servidor não puderam efetuar a autenticação. por favor, tente novamente mais tarde."
+  no_service_parameter_given: "O servidor não pode completar a solicitação porque não foi enviado o paramêtro do serviço."
+
+notice:
+  logged_in_as: "Você está logado como '%1'. Se este não for você, Por favor, faça o login a baixo."
+  click_to_continue: "Por favor, clique no seguinte link para continuar:"
+  successfull_logged_out: "Você saiu do sistema com sucesso."
+  successfull_logged_in: "Login efetuado com sucesso."
+
+label:
+  please_wait: "Please wait..."
+  username: "Usuário"
+  password: "Senha"
+  central_login_title: "Central de Autenticação"
+
+button:
+  login: "ENTRAR"
