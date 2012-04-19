@@ -1,12 +1,22 @@
-=== 1.1.0 :: 2012-02-24
+=== 1.1.0 :: 2012-04-19
 
  * NEW:
-   * Phased out gettext localization support as it's buggy right now.
-   * Added R18n localization support as a substitute for gettext.
+   * Localization is now done using R18n instead of Gettext.
+   * Restored compatibility with Sinatra 1.2
+   * Now compatibile with Ruby 1.9.3
+   * Can now run without Bundler if all required dependencies are already installed.
+   * es_AR translations.
 
  * CHANGED:
-   * Requires Sinatra 1.3.2
-   * Compatibility with Ruby 1.9.3
+   * It is no longer possible to select the locale by adding a 'lang=xx' attribute to the 
+   	 request URL. The locale is selected using the 'Accept-Lanuage' header sent in the 
+   	 request. However the old 'lang' functionality may be restored in a future version.
+   * Certain localized string keys have changed. If you are using your own custom views
+     you may need to modify them accordingly.
+
+ * FIXED:
+   * Removed unnecessary bcrypt requirement for encrypted sql authenticators.
+   * Single Sign Out requests should now work with SSL-enabled services.
 
 === 1.0.1 :: 2011-11-22
 
