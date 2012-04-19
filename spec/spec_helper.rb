@@ -33,7 +33,7 @@ end
 # external services.
 #
 # This will likely break in the future when Capybara or RackTest are upgraded.
-class Capybara::Driver::RackTest
+class Capybara::RackTest::Browser
   def current_url
     if @redirected_to_external_url
       @redirected_to_external_url
@@ -43,13 +43,14 @@ class Capybara::Driver::RackTest
   end
 
   def follow_redirects!
-    if response.redirect? && response['Location'] =~ /^http[s]?:/
-      @redirected_to_external_url = response['Location']
+    if last_response.redirect? && last_response['Location'] =~ /^http[s]?:/
+      puts "FOLLOWING REDIECT: #{last_response['Location']}"
+      @redirected_to_external_url = last_response['Location']
     else
       5.times do
-        follow_redirect! if response.redirect?
+        follow_redirect! if last_response.redirect?
       end
-      raise Capybara::InfiniteRedirectError, "redirected more than 5 times, check for infinite redirects." if response.redirect?
+      raise Capybara::InfiniteRedirectError, "redirected more than 5 times, check for infinite redirects." if last_response.redirect?
     end
   end
 end
