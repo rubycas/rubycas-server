@@ -15,9 +15,9 @@ notice:
   click_to_continue: "请点击下列连接继续"
   successfull_logged_out: "你成功登出了"
   successfull_logged_in: "你成功登录了"
+  please_wait: "请稍候..."
 
 label:
-  please_wait: "请稍候..."
   username: "用户名"
   password: "密码"
   central_login_title: "整合登录"

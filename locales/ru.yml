@@ -13,11 +13,11 @@ error:
 notice:
   logged_in_as: "Вы авторизированы как '%s'."
   click_to_continue: "Перейдите по ссылке чтобы продолжить:"
-  successfull_logged_out: "Вы успешно вышли."
-  successfull_logged_in: "Вы успешно вошли."
+  successful_logged_out: "Вы успешно вышли."
+  successful_logged_in: "Вы успешно вошли."
+  please_wait: "Подождите..."
 
 label:
-  please_wait: "Подождите..."
   username: "Логин"
   password: "Пароль"
   central_login_title: "Центральный вход"

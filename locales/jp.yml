@@ -13,11 +13,11 @@ error:
 notice:
   logged_in_as: "'%1'としてログインしています。違うユーザーでログインするには下に入力してくだ さい。"
   click_to_continue: "継続するには、以下のリンクをクリックしてください："
-  successfull_logged_out: "ログアウトしました。"
-  successfull_logged_in: "ログインしました"
+  successful_logged_out: "ログアウトしました。"
+  successful_logged_in: "ログインしました"
+  please_wait: "待つ"
 
 label:
-  please_wait: "Please wait..."
   username: "ユーザー名"
   password: "パスワード"
   central_login_title: "統合ログイン"

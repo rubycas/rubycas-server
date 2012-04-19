@@ -13,11 +13,11 @@ error:
 notice:
   logged_in_as: "你正以 '%1' 的身分登入。如果這不是你，請重新登入"
   click_to_continue: "請點以下的連結繼續"
-  successfull_logged_out: "你成功登出了"
-  successfull_logged_in: "你成功登入了"
+  successful_logged_out: "你成功登出了"
+  successful_logged_in: "你成功登入了"
+  please_wait: "請稍候..."
 
 label:
-  please_wait: "請稍候..."
   username: "帳號"
   password: "密碼"
   central_login_title: "整合登入"
