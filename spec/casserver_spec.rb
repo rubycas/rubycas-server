@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 $LOG = Logger.new(File.basename(__FILE__).gsub('.rb','.log'))
 
 RSpec.configure do |config|
-  config.include Capybara
+  config.include Capybara::DSL
 end
 
 VALID_USERNAME = 'spec_user'
@@ -66,14 +66,21 @@ describe 'CASServer' do
       page.should have_xpath('//input[@id="service"]', :value => @target_service)
     end
 
-    it "uses appropriate localization when 'lang' prameter is given (make sure you've run `rake localization:mo` first!!)" do
-      visit "/login?lang=pl"
+    it "uses appropriate localization based on Accept-Language header" do
+      
+      page.driver.options[:headers] = {'HTTP_ACCEPT_LANGUAGE' => 'pl'}
+      #visit "/login?lang=pl"
+      visit "/login"
       page.should have_content("Użytkownik")
 
-      visit "/login?lang=pt_BR"
+      page.driver.options[:headers] = {'HTTP_ACCEPT_LANGUAGE' => 'pt_BR'}
+      #visit "/login?lang=pt_BR"
+      visit "/login"
       page.should have_content("Usuário")
 
-      visit "/login?lang=en"
+      page.driver.options[:headers] = {'HTTP_ACCEPT_LANGUAGE' => 'en'}
+      #visit "/login?lang=en"
+      visit "/login"
       page.should have_content("Username")
     end
 
