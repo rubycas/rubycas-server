@@ -13,8 +13,8 @@ error:
 notice:
   logged_in_as: "Sie sind derzeit angemeldet als '%1'. Sollten dies nicht Sie sein, melden Sie sich bitte unten an."
   click_to_continue: "Bitte klicken Sie auf den folgenden Link, um fortzufahren:"
-  successful_logged_out: "Sie haben sich erfolgreich vom Central Authentication Service abgemeldet."
-  successful_logged_in: "Sie haben sich erfolgreich am Central Authentication Service angemeldet."
+  success_logged_out: "Sie haben sich erfolgreich vom Central Authentication Service abgemeldet."
+  success_logged_in: "Sie haben sich erfolgreich am Central Authentication Service angemeldet."
   please_wait: "Bitte warten ..."
 
 label:

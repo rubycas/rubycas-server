@@ -13,8 +13,8 @@ error:
 notice:
   logged_in_as: "Вы авторизированы как '%s'."
   click_to_continue: "Перейдите по ссылке чтобы продолжить:"
-  successful_logged_out: "Вы успешно вышли."
-  successful_logged_in: "Вы успешно вошли."
+  success_logged_out: "Вы успешно вышли."
+  success_logged_in: "Вы успешно вошли."
   please_wait: "Подождите..."
 
 label:

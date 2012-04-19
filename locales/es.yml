@@ -13,8 +13,8 @@ error:
 notice:
   logged_in_as: "Actualmente está logueado como '%1'. Si este no es usted, por favor ingrese sus datos debajo."
   click_to_continue: "Por favor, haga click en el siguiente link para continuar:"
-  successful_logged_out: "Ha finalizado correctamente su sesión de usuario."
-  successful_logged_in: "Has ingresado satisfactoreamente."
+  success_logged_out: "Ha finalizado correctamente su sesión de usuario."
+  success_logged_in: "Has ingresado satisfactoreamente."
   please_wait: "Por favor aguarde..."
 
 label:

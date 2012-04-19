@@ -467,7 +467,7 @@ module CASServer
 
           if @service.blank?
             $LOG.info("Successfully authenticated user '#{@username}' at '#{tgt.client_hostname}'. No service param was given, so we will not redirect.")
-            @message = {:type => 'confirmation', :message => t.notice.successfull_logged_in}
+            @message = {:type => 'confirmation', :message => t.notice.success_logged_in}
           else
             @st = generate_service_ticket(@service, @username, tgt)
 
@@ -552,7 +552,7 @@ module CASServer
         $LOG.warn("User tried to log out without a valid ticket-granting ticket.")
       end
 
-      @message = {:type => 'confirmation', :message => t.notice.successfull_logged_out}
+      @message = {:type => 'confirmation', :message => t.notice.success_logged_out}
 
       @message[:message] += t.notice.click_to_continue if @continue_url
 

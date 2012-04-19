@@ -13,8 +13,8 @@ error:
 notice:
   logged_in_as: "You are currently logged in as '%1'. If this is not you, please log in below."
   click_to_continue: "Please click on the following link to continue:"
-  successful_logged_out: "You have successfully logged out."
-  successful_logged_in: "You have successfully logged in."
+  success_logged_out: "You have successfully logged out."
+  success_logged_in: "You have successfully logged in."
   please_wait: "Please wait..."
 
 label:

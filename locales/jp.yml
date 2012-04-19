@@ -13,8 +13,8 @@ error:
 notice:
   logged_in_as: "'%1'としてログインしています。違うユーザーでログインするには下に入力してくだ さい。"
   click_to_continue: "継続するには、以下のリンクをクリックしてください："
-  successful_logged_out: "ログアウトしました。"
-  successful_logged_in: "ログインしました"
+  success_logged_out: "ログアウトしました。"
+  success_logged_in: "ログインしました"
   please_wait: "待つ"
 
 label:

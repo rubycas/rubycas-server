@@ -13,8 +13,8 @@ error:
 notice:
   logged_in_as: "你正以 '%1' 的身份登入。如果这不是你，请重新登录"
   click_to_continue: "请点击下列连接继续"
-  successfull_logged_out: "你成功登出了"
-  successfull_logged_in: "你成功登录了"
+  success_logged_out: "你成功登出了"
+  success_logged_in: "你成功登录了"
   please_wait: "请稍候..."
 
 label:
