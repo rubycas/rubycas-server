@@ -19,8 +19,13 @@ module CASServer
     include CASServer::CAS # CAS protocol helpers
     include Localization
 
+    # Use :public_folder for Sinatra >= 1.3, and :public for older versions.
+    def self.use_public_folder?
+      Sinatra.const_defined?("VERSION") && Gem::Version.new(Sinatra::VERSION) >= Gem::Version.new("1.3.0")
+    end
+
     set :app_file, __FILE__
-    set( settings.public ? :public_folder : :public, # Workaround for differences in Sinatra versions.
+    set( use_public_folder? ? :public_folder : :public, # Workaround for differences in Sinatra versions.
          Proc.new { settings.config[:public_dir] || File.join(root, "..", "..", "public") } )
 
     config = HashWithIndifferentAccess.new(
@@ -35,12 +40,12 @@ module CASServer
     def self.uri_path
       config[:uri_path]
     end
-    
+
     # Strip the config.uri_path from the request.path_info...
     # FIXME: do we really need to override all of Sinatra's #static! to make this happen?
     def static!
       # Workaround for differences in Sinatra versions.
-      public_dir = settings.public_folder ? settings.public_folder : settings.public
+      public_dir = Server.use_public_folder? ? settings.public_folder : settings.public
       return if public_dir.nil?
       public_dir = File.expand_path(public_dir)
       
