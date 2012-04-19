@@ -50,7 +50,6 @@ input.button {
   vertical-align: top;
 }
 
-
 #username,
 #password {
   width: 10em;
@@ -76,6 +75,12 @@ input.button {
   text-align: right;
   padding-right: 10px;
 }
+
+#form-layout #username-label-container,
+#form-layout #password-label-container {
+  text-align: right;
+}
+
 
 #infoline {
   font-size: 9px;
