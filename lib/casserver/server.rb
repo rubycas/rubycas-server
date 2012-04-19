@@ -20,7 +20,8 @@ module CASServer
     include Localization
 
     set :app_file, __FILE__
-    set :public_folder, Proc.new { settings.config[:public_dir] || File.join(root, "..", "..", "public") }
+    set( settings.public ? :public_folder : :public, # Workaround for differences in Sinatra versions.
+         Proc.new { settings.config[:public_dir] || File.join(root, "..", "..", "public") } )
 
     config = HashWithIndifferentAccess.new(
       :maximum_unused_login_ticket_lifetime => 5.minutes,
@@ -38,7 +39,9 @@ module CASServer
     # Strip the config.uri_path from the request.path_info...
     # FIXME: do we really need to override all of Sinatra's #static! to make this happen?
     def static!
-      return if (public_dir = settings.public_folder).nil?
+      # Workaround for differences in Sinatra versions.
+      public_dir = settings.public_folder ? settings.public_folder : settings.public
+      return if public_dir.nil?
       public_dir = File.expand_path(public_dir)
       
       path = File.expand_path(public_dir + unescape(request.path_info.gsub(/^#{settings.config[:uri_path]}/,'')))
