@@ -36,7 +36,7 @@ For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-ser
   s.add_dependency("crypt-isaac", "~> 0.9.1")
 
   s.add_development_dependency("rack-test")
-  s.add_development_dependency("capybara")
+  s.add_development_dependency("capybara", '1.1.2')
   s.add_development_dependency("rspec")
   s.add_development_dependency("rspec-core")
   s.add_development_dependency("rake", "0.8.7")
