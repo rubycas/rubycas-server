@@ -420,7 +420,7 @@ module CASServer
         # generate another login ticket to allow for re-submitting the form
         @lt = generate_login_ticket.ticket
         status 500
-        render @template_engine, :login
+        return render @template_engine, :login
       end
 
       # generate another login ticket to allow for re-submitting the form after a post
