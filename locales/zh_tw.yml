@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "你沒有傳送登入憑証，這可能是認證系統的問題"
+  login_ticket_already_used: "你所提供的登入憑証已經被使用過了，請重新登入"
+  login_timeout: "你的認證花了太多時間，請再試一次"
+  invalid_login_ticket: "你所傳送的登入憑証是無效的，這可能是認證系統的問題"
+  login_ticket_needs_post_request: "你必須使用 POST 來產生登入憑証"
+  incorrect_username_or_password: "你所輸入的帳號或是密碼是錯誤的"
+  invalid_submit_to_uri: "無法判斷 CAS 的登入網址。請提供 submitToURI 的參數"
+  invalid_target_service: "你的瀏覽器傳送的服務網址是無效的，請向你的系統管理員尋求協助"
+  unable_to_authenticate: "現在無法認證，請稍候再嘗試登入"
+  no_service_parameter_given: "無法完成 gateway request 因為沒有提供 service 的參數"
+
+notice:
+  logged_in_as: "你正以 '%1' 的身分登入。如果這不是你，請重新登入"
+  click_to_continue: "請點以下的連結繼續"
+  successfull_logged_out: "你成功登出了"
+  successfull_logged_in: "你成功登入了"
+
+label:
+  please_wait: "請稍候..."
+  username: "帳號"
+  password: "密碼"
+  central_login_title: "整合登入"
+
+button:
+  login: "登入"

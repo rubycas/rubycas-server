@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "Your login request did not include a login ticket. There may be a problem with the authentication system."
+  login_ticket_already_used: "The login ticket you provided has already been used up. Please try logging in again."
+  login_timeout: "You took too long to enter your credentials. Please try again."
+  invalid_login_ticket: "The login ticket you provided is invalid. There may be a problem with the authentication system."
+  login_ticket_needs_post_request: "Чтобы сгенерировать входной билет вы должны делать POST запрос."
+  incorrect_username_or_password: "Неверное имя пользователя или пароль."
+  invalid_submit_to_uri: "Невозможно угадать адрес входа на CAS. Пожалуйста, передайте с запросом параметр submitToURI."
+  invalid_target_service: "Сервис, указанный вашим браузером, неверен. Свяжитесь с вашим системным администратором."
+  unable_to_authenticate: "Клиент и сервер не могут провести проверку прав. Попробуйте войти позже."
+  no_service_parameter_given: "Этот сервер не может выполнить этот запрос, поскольку не были указаны праметры сервиса."
+
+notice:
+  logged_in_as: "Вы авторизированы как '%s'."
+  click_to_continue: "Перейдите по ссылке чтобы продолжить:"
+  successfull_logged_out: "Вы успешно вышли."
+  successfull_logged_in: "Вы успешно вошли."
+
+label:
+  please_wait: "Подождите..."
+  username: "Логин"
+  password: "Пароль"
+  central_login_title: "Центральный вход"
+
+button:
+  login: "Войти"

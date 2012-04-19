@@ -1,0 +1,27 @@
+error:
+  no_login_ticket: "Your login request did not include a login ticket. There may be a problem with the authentication system."
+  login_ticket_already_used: "The login ticket you provided has already been used up. Please try logging in again."
+  login_timeout: "You took too long to enter your credentials. Please try again."
+  invalid_login_ticket: "The login ticket you provided is invalid. There may be a problem with the authentication system."
+  login_ticket_needs_post_request: "Für die Generierung eines Login-Tickets, ist eine POST-Anfrage erforderlich."
+  incorrect_username_or_password: "Falscher Benutzername oder Passwort."
+  invalid_submit_to_uri: "Der CAS-Login-URI konnte nicht erraten werden. Bitte ergänzen Sie Ihre Anfrage  um einen submitToURI Parameter."
+  invalid_target_service: "Das Ziel-Service, welches Ihr Browsers geliefert hat, scheint ungültig zu sein. Bitte wenden Sie sich an Ihren Systemadministrator, um Hilfe zu erhalten."
+  unable_to_authenticate: "Client und Server sind nicht in der Lage eine Authentifizierung auszuhandeln. Bitte versuchen Sie, sich zu einem späteren Zeitpunkt erneut anzumelden."
+  no_service_parameter_given: "Der Server kann diese Gateway-Anfrage nicht erfüllen, da keine Service-Parameter übergeben wurden."
+
+notice:
+  logged_in_as: "Sie sind derzeit angemeldet als '%1'. Sollten dies nicht Sie sein, melden Sie sich bitte unten an."
+  click_to_continue: "Bitte klicken Sie auf den folgenden Link, um fortzufahren:"
+  successfull_logged_out: "Sie haben sich erfolgreich vom Central Authentication Service abgemeldet."
+  successfull_logged_in: "Sie haben sich erfolgreich am Central Authentication Service angemeldet."
+
+label:
+  please_wait: "Please wait..."
+  username: "Benutzername"
+  password: "Passwort"
+  central_login_title: "Zentrales Login"
+
+button:
+  login: "ANMELDEN"
+

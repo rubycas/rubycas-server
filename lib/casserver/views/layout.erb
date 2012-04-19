@@ -6,7 +6,7 @@
       xml:lang="en" lang="en" >
 
   <head>
-    <title><%= escape_html @organization %><%= _(" Central Login") %></title>
+    <title><%= escape_html @organization %><%= t.label.central_login_title %></title>
     <link rel="stylesheet" type="text/css" href="<%= escape_html @uri_path %>/themes/cas.css" />
     <link rel="stylesheet" type="text/css" href="<%= escape_html @uri_path %>/themes/<%= escape_html @theme %>/theme.css" />
     <link rel="icon" type="image/png" href="<%= escape_html @uri_path %>/themes/<%= escape_html @theme %>/favicon.png" />

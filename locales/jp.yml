@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "ログインリクエストにログインチケットが含まれていません。認証システムに問題があるようです。"
+  login_ticket_already_used: "ログインチケットはすでに使い切られています。もう一度ログインしてください。"
+  login_timeout: "クレデンシャルの入力に時間が掛かりすぎました。もう一度試してください。"
+  invalid_login_ticket: "指定されたログインチケットが無効です。認証システムに問題があるようです。"
+  login_ticket_needs_post_request: "ログインチケットを発行するには、POSTリクエストを送る必要があります。"
+  incorrect_username_or_password: "ユーザー名またはパスワードが間違っています"
+  invalid_submit_to_uri: "CASのURIを推測することができませんでした。リクエストにsubmitToURIパラメータを指定してください。"
+  invalid_target_service: "ブラウザが示す対象サービスは無効のようです。システム管理者に連絡してください。"
+  unable_to_authenticate: "クライアントとサーバー間で認証ができませんでした。しばらくしてから再度ログインしてください。"
+  no_service_parameter_given: "サービスパラメーターが指定されていないので、サーバーはゲートウェイリクエストを満たす事ができません。"
+
+notice:
+  logged_in_as: "'%1'としてログインしています。違うユーザーでログインするには下に入力してくだ さい。"
+  click_to_continue: "継続するには、以下のリンクをクリックしてください："
+  successfull_logged_out: "ログアウトしました。"
+  successfull_logged_in: "ログインしました"
+
+label:
+  please_wait: "Please wait..."
+  username: "ユーザー名"
+  password: "パスワード"
+  central_login_title: "統合ログイン"
+
+button:
+  login: "ログイン"

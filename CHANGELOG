@@ -1,3 +1,13 @@
+=== 1.1.0 :: 2012-02-24
+
+ * NEW:
+   * Phased out gettext localization support as it's buggy right now.
+   * Added R18n localization support as a substitute for gettext.
+
+ * CHANGED:
+   * Requires Sinatra 1.3.2
+   * Compatibility with Ruby 1.9.3
+
 === 1.0.1 :: 2011-11-22
 
 * NEW:

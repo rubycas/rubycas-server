@@ -1,11 +1,11 @@
 <%# coding: UTF-8 -%>
 <form method="post" action="<%= @form_action || "login" %>" id="login-form"
-      onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='<%= _("Please wait...") %>'; submitbutton.disabled=true; return true;">
+      onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='<%= t.notice.please_wait %>'; submitbutton.disabled=true; return true;">
   <table id="form-layout">
     <tr>
       <td id="username-label-container">
         <label id="username-label" for="username">
-          <%= _("Username") %>
+          <%= t.label.username %>
         </label>
       </td>
       <td id="username-container">
@@ -16,7 +16,7 @@
     <tr>
       <td id="password-label-container">
         <label id="password-label" for="password">
-          <%= _("Password") %>
+          <%= t.label.password %>
         </label>
       </td>
       <td id="password-container">
@@ -29,7 +29,7 @@
       <td id="submit-container">
         <input type="hidden" id="lt" name="lt" value="<%= escape_html @lt %>" />
         <input type="hidden" id="service" name="service" value="<%= escape_html @service %>" />
-        <input type="submit" class="button" accesskey="l" value="<%= _("LOGIN") %>"
+        <input type="submit" class="button" accesskey="l" value="<%= t.button.login %>"
                tabindex="4" id="login-submit" />
       </td>
     </tr>
