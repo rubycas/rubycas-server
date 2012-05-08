@@ -78,8 +78,6 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     # the user. If a :filter was specified in the :ldap config, the filter will be
     # added to the LDAP query for the username.
     def bind_by_username
-      username_attribute = options[:ldap][:username_attribute] || default_username_attribute
-
       @ldap.bind_as(:base => @options[:ldap][:base], :password => @password, :filter => user_filter)
     end
 
