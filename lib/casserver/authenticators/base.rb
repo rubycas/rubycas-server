@@ -52,7 +52,7 @@ module CASServer
         elsif @options[:extra_attributes].kind_of? String
           attrs = @options[:extra_attributes].split(',').collect{|col| col.strip}
         else
-          $LOG.error("Can't figure out attribute list from #{@options[:extra_attributes].inspect}. This must be an Aarray of column names or a comma-separated list.")
+          $LOG.error("Can't figure out attribute list from #{@options[:extra_attributes].inspect}. This must be an Array of column names or a comma-separated list.")
           attrs = []
         end
 
