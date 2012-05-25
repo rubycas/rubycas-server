@@ -13,6 +13,11 @@ class CASServer::Authenticators::Google < CASServer::Authenticators::Base
 
     return false if @username.blank? || @password.blank?
 
+    if @options[:restricted_domain]
+      return false if @username.count('@') != 1
+      return false if @username.split('@').last != @options[:restricted_domain]
+    end
+
     auth_data = {
       'Email'   => @username,
       'Passwd'  => @password,

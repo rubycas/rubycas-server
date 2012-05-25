@@ -282,6 +282,15 @@ database:
 #    username: nil
 #    password: nil
 #
+# If you want to restrict access to only those Google accounts in a
+# particular domain, as might be the case for an organization that
+# uses Google for its domain's e-mail, add the restricted_domain
+# option:
+#
+#authenticator:
+#  class: CASServer::Authenticators::Google
+#  restricted_domain: example.com
+#
 # Note that as with all authenticators, it is possible to use the Google 
 # authenticator alongside other authenticators. For example, CAS can first
 # attempt to validate the account with Google, and if that fails, fall back
