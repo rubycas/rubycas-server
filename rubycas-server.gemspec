@@ -34,7 +34,6 @@ For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-ser
   s.add_dependency("sinatra", "~> 1.0")
   s.add_dependency("sinatra-r18n")
   s.add_dependency("crypt-isaac", "~> 0.9.1")
-  s.add_dependency("bcrypt-ruby")
 
   s.add_development_dependency("rack-test")
   s.add_development_dependency("capybara", '1.1.2')
