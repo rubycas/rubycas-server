@@ -1,3 +1,13 @@
+=== 1.1.1 :: 2012-06-08
+
+* NEW:
+   * Google authenticator now has a "restricted_domain" option to allow logins only
+     from Google accounts (email addressed) under a specific domain name.
+
+* FIXED:
+   * When installed as a gem, localization should now work correctly thanks to fixed
+     translations path.
+
 === 1.1.0 :: 2012-04-19
 
  * NEW:
