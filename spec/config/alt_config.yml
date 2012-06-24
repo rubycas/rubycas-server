@@ -8,20 +8,20 @@ uri_path: /test
 #   adapter: mysql
 #   database: casserver
 #   username: root
-#   password: 
+#   password:
 #   host: localhost
 #   reconnect: true
 database:
  adapter: sqlite3
  database: spec/casserver_spec.db
- 
+
 disable_auto_migrations: true
 
 quiet: true
 
-authenticator:
-  class: CASServer::Authenticators::Test
-  password: spec_password
+authenticators:
+  - class: CASServer::Authenticators::Test
+    password: spec_password
 
 theme: simple
 

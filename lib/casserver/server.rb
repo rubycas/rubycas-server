@@ -4,53 +4,7 @@ require 'casserver/base'
 
 module CASServer
   class Server < CASServer::Base
-    if ENV['CONFIG_FILE']
-      CONFIG_FILE = ENV['CONFIG_FILE']
-    elsif !(c_file = File.dirname(__FILE__) + "/../../config.yml").nil? && File.exist?(c_file)
-      CONFIG_FILE = c_file
-    else
-      CONFIG_FILE = "/etc/rubycas-server/config.yml"
-    end
-
     include CASServer::CAS # CAS protocol helpers
-
-    # Use :public_folder for Sinatra >= 1.3, and :public for older versions.
-    def self.use_public_folder?
-      Sinatra.const_defined?("VERSION") && Gem::Version.new(Sinatra::VERSION) >= Gem::Version.new("1.3.0")
-    end
-
-    set :app_file, __FILE__
-    set( use_public_folder? ? :public_folder : :public, # Workaround for differences in Sinatra versions.
-         Proc.new { settings.config[:public_dir] || File.join(root, "..", "..", "public") } )
-
-    config = HashWithIndifferentAccess.new(
-      :maximum_unused_login_ticket_lifetime => 5.minutes,
-      :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
-      :maximum_session_lifetime => 2.days, # all tickets are deleted after this period of time
-      :log => {:file => 'casserver.log', :level => 'DEBUG'},
-      :uri_path => ""
-    )
-    set :config, config
-
-    def self.uri_path
-      config[:uri_path]
-    end
-
-    # Strip the config.uri_path from the request.path_info...
-    # FIXME: do we really need to override all of Sinatra's #static! to make this happen?
-    def static!
-      # Workaround for differences in Sinatra versions.
-      public_dir = Server.use_public_folder? ? settings.public_folder : settings.public
-      return if public_dir.nil?
-      public_dir = File.expand_path(public_dir)
-
-      path = File.expand_path(public_dir + unescape(request.path_info.gsub(/^#{settings.config[:uri_path]}/,'')))
-      return if path[0, public_dir.length] != public_dir
-      return unless File.file?(path)
-
-      env['sinatra.static_file'] = path
-      send_file path, :disposition => nil
-    end
 
     def self.run!(options={})
       set options
@@ -59,12 +13,12 @@ module CASServer
       handler_name = handler.name.gsub(/.*::/, '')
 
       puts "== RubyCAS-Server is starting up " +
-        "on port #{config[:port] || port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
+        "on port #{settings.port || port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
 
       begin
         opts = handler_options
       rescue Exception => e
-        print_cli_message e, :error
+        $LOG.error(e)
         raise e
       end
 
@@ -82,79 +36,25 @@ module CASServer
       puts "\n== RubyCAS-Server is shutting down" unless handler_name =~/cgi/i
     end
 
-    def self.print_cli_message(msg, type = :info)
-      if respond_to?(:config) && config && config[:quiet]
-        return
-      end
-
-      if type == :error
-        io = $stderr
-        prefix = "!!! "
-      else
-        io = $stdout
-        prefix = ">>> "
-      end
-
-      io.puts
-      io.puts "#{prefix}#{msg}"
-      io.puts
-    end
-
-    def self.load_config_file(config_file)
-      begin
-        config_file = File.open(config_file)
-      rescue Errno::ENOENT => e
-
-        print_cli_message "Config file #{config_file} does not exist!", :error
-        print_cli_message "Would you like the default config file copied to #{config_file.inspect}? [y/N]"
-        if gets.strip.downcase == 'y'
-          require 'fileutils'
-          default_config = File.dirname(__FILE__) + '/../../config/config.example.yml'
-
-          if !File.exists?(File.dirname(config_file))
-            print_cli_message "Creating config directory..."
-            FileUtils.mkdir_p(File.dirname(config_file), :verbose => true)
-          end
-
-          print_cli_message "Copying #{default_config.inspect} to #{config_file.inspect}..."
-          FileUtils.cp(default_config, config_file, :verbose => true)
-          print_cli_message "The default config has been copied. You should now edit it and try starting again."
-          exit
-        else
-          print_cli_message "Cannot start RubyCAS-Server without a valid config file.", :error
-          raise e
-        end
-      rescue Errno::EACCES => e
-        print_cli_message "Config file #{config_file.inspect} is not readable (permission denied)!", :error
-        raise e
-      rescue => e
-        print_cli_message "Config file #{config_file.inspect} could not be read!", :error
-        raise e
-      end
-
-      config.merge! HashWithIndifferentAccess.new(YAML.load(config_file))
-      set :server, config[:server] || 'webrick'
-    end
-
     def self.handler_options
       handler_options = {
-        :Host => bind || config[:bind_address],
-        :Port => config[:port] || 443
+        :Host => bind || settings.bind_address,
+        :Port => settings.port || 443
       }
 
       handler_options.merge(handler_ssl_options).to_hash.symbolize_keys!
     end
 
     def self.handler_ssl_options
-      return {} unless config[:ssl_cert]
+      return {} unless settings.ssl_cert
 
-      cert_path = config[:ssl_cert]
-      key_path = config[:ssl_key] || config[:ssl_cert]
+      cert_path = settings.ssl_cert
+      key_path = settings.ssl_key || settings.ssl_cert
 
       unless cert_path.nil? && key_path.nil?
         raise "The ssl_cert and ssl_key options cannot be used with mongrel. You will have to run your " +
           " server behind a reverse proxy if you want SSL under mongrel." if
-            config[:server] == 'mongrel'
+            settings.server == 'mongrel'
 
         raise "The specified certificate file #{cert_path.inspect} does not exist or is not readable. " +
           " Your 'ssl_cert' configuration setting must be a path to a valid " +
@@ -181,111 +81,19 @@ module CASServer
       end
     end
 
-    def self.init_authenticators!
-      auth = []
-
-      if config[:authenticator].nil?
-        print_cli_message "No authenticators have been configured. Please double-check your config file (#{CONFIG_FILE.inspect}).", :error
-        exit 1
-      end
-
-      begin
-        # attempt to instantiate the authenticator
-        config[:authenticator] = [config[:authenticator]] unless config[:authenticator].instance_of? Array
-        config[:authenticator].each { |authenticator| auth << authenticator[:class].constantize}
-      rescue NameError
-        if config[:authenticator].instance_of? Array
-          config[:authenticator].each do |authenticator|
-            if !authenticator[:source].nil?
-              # config.yml explicitly names source file
-              require authenticator[:source]
-            else
-              # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
-              auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
-              require 'casserver/'+auth_rb
-            end
-            auth << authenticator[:class].constantize
-          end
-        else
-          if config[:authenticator][:source]
-            # config.yml explicitly names source file
-            require config[:authenticator][:source]
-          else
-            # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
-            auth_rb = config[:authenticator][:class].underscore.gsub('cas_server/', '')
-            require 'casserver/'+auth_rb
-          end
-
-          auth << config[:authenticator][:class].constantize
-          config[:authenticator] = [config[:authenticator]]
-        end
-      end
-
-      auth.zip(config[:authenticator]).each_with_index{ |auth_conf, index|
-        authenticator, conf = auth_conf
-        $LOG.debug "About to setup #{authenticator} with #{conf.inspect}..."
-        authenticator.setup(conf.merge('auth_index' => index)) if authenticator.respond_to?(:setup)
-        $LOG.debug "Done setting up #{authenticator}."
-      }
-
-      set :auth, auth
-    end
-
-    def self.init_logger!
-      if config[:log]
-        if $LOG && config[:log][:file]
-          print_cli_message "Redirecting RubyCAS-Server log to #{config[:log][:file]}"
-          #$LOG.close
-          $LOG = Logger.new(config[:log][:file])
-        end
-        $LOG.level = Logger.const_get(config[:log][:level]) if config[:log][:level]
-      end
-
-      if config[:db_log]
-        if $LOG && config[:db_log][:file]
-          $LOG.debug "Redirecting ActiveRecord log to #{config[:log][:file]}"
-          #$LOG.close
-          ActiveRecord::Base.logger = Logger.new(config[:db_log][:file])
-        end
-        ActiveRecord::Base.logger.level = Logger.const_get(config[:db_log][:level]) if config[:db_log][:level]
-      end
-    end
-
-    def self.init_database!
-
-      unless config[:disable_auto_migrations]
-        ActiveRecord::Base.establish_connection(config[:database])
-        print_cli_message "Running migrations to make sure your database schema is up to date..."
-        prev_db_log = ActiveRecord::Base.logger
-        ActiveRecord::Base.logger = Logger.new(STDOUT)
-        ActiveRecord::Migration.verbose = true
-        ActiveRecord::Migrator.migrate(File.dirname(__FILE__) + "/../../db/migrate")
-        ActiveRecord::Base.logger = prev_db_log
-        print_cli_message "Your database is now up to date."
-      end
-
-      ActiveRecord::Base.establish_connection(config[:database])
-    end
-
-    configure do
-      load_config_file(CONFIG_FILE)
-      init_logger!
-      init_database!
-      init_authenticators!
-    end
-
     before do
       content_type :html, 'charset' => 'utf-8'
-      @theme = settings.config[:theme]
-      @organization = settings.config[:organization]
-      @uri_path = settings.config[:uri_path]
-      @infoline = settings.config[:infoline]
-      @custom_views = settings.config[:custom_views]
-      @template_engine = settings.config[:template_engine] || :erb
+      @theme = settings.theme
+      @organization = settings.organization
+      @uri_path = settings.uri_path
+      @infoline = settings.infoline
+      @custom_views = settings.custom_views if settings.respond_to? "custom_views"
+      @template_engine = settings.template_engine || :erb
       if @template_engine != :erb
         require @template_engine
         @template_engine = @template_engine.to_sym
       end
+      CASServer::Utils::log_controller_action(self.class, params)
     end
 
     # The #.#.# comments (e.g. "2.1.3") refer to section numbers in the CAS protocol spec
@@ -294,9 +102,7 @@ module CASServer
     # 2.1 :: Login
 
     # 2.1.1
-    get "#{uri_path}/login" do
-      CASServer::Utils::log_controller_action(self.class, params)
-
+    get "#{settings.uri_path}/login" do
       # make sure there's no caching
       headers['Pragma'] = 'no-cache'
       headers['Cache-Control'] = 'no-store'
@@ -360,8 +166,7 @@ module CASServer
 
       @lt = lt.ticket
 
-      #$LOG.debug(env)
-
+      # TODO: consider remove this functionality after adding API
       # If the 'onlyLoginForm' parameter is specified, we will only return the
       # login form part of the page. This is useful for when you want to
       # embed the login form in some external page (as an IFRAME, or otherwise).
@@ -389,7 +194,7 @@ module CASServer
 
 
     # 2.2
-    post "#{uri_path}/login" do
+    post "#{settings.uri_path}/login" do
       Utils::log_controller_action(self.class, params)
 
       # 2.2.1 (optional)
@@ -403,7 +208,7 @@ module CASServer
       # Remove leading and trailing widespace from username.
       @username.strip! if @username
 
-      if @username && settings.config[:downcase_username]
+      if @username && settings.downcase_username
         $LOG.debug("Converting username #{@username.inspect} to lowercase because 'downcase_username' option is enabled.")
         @username.downcase!
       end
@@ -413,26 +218,22 @@ module CASServer
         # generate another login ticket to allow for re-submitting the form
         @lt = generate_login_ticket.ticket
         status 500
-        return render @template_engine, :login
+        render @template_engine, :login
       end
 
       # generate another login ticket to allow for re-submitting the form after a post
       @lt = generate_login_ticket.ticket
 
-      $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{settings.auth.inspect}")
+      $LOG.debug("Logging in with username: #{@username}, lt: #{@lt}, service: #{@service}, auth: #{settings.authenticators.inspect}")
 
       credentials_are_valid = false
       extra_attributes = {}
       successful_authenticator = nil
       begin
-        auth_index = 0
-        settings.auth.each do |auth_class|
-          auth = auth_class.new
-
-          auth_config = settings.config[:authenticator][auth_index]
-          # pass the authenticator index to the configuration hash in case the authenticator needs to know
-          # it splace in the authenticator queue
-          auth.configure(auth_config.merge('auth_index' => auth_index))
+        settings.authenticators.each_with_index do |authenticator, index|
+          require authenticator["source"] if authenticator["source"].present?
+          auth = authenticator["class"].constantize.new
+          auth.configure(HashWithIndifferentAccess.new(authenticator.merge('auth_index' => index)))
 
           credentials_are_valid = auth.validate(
             :username => @username,
@@ -445,8 +246,6 @@ module CASServer
             successful_authenticator = auth
             break
           end
-
-          auth_index += 1
         end
 
         if credentials_are_valid
@@ -494,15 +293,9 @@ module CASServer
       render @template_engine, :login
     end
 
-    get /^#{uri_path}\/?$/ do
-      redirect "#{config['uri_path']}/login", 303
-    end
-
-
     # 2.3
-
     # 2.3.1
-    get "#{uri_path}/logout" do
+    get "#{settings.uri_path}/logout" do
       CASServer::Utils::log_controller_action(self.class, params)
 
       # The behaviour here is somewhat non-standard. Rather than showing just a blank
@@ -522,7 +315,7 @@ module CASServer
         CASServer::Model::TicketGrantingTicket.transaction do
           $LOG.debug("Deleting Service/Proxy Tickets for '#{tgt}' for user '#{tgt.username}'")
           tgt.granted_service_tickets.each do |st|
-            send_logout_notification_for_service_ticket(st) if config[:enable_single_sign_out]
+            send_logout_notification_for_service_ticket(st) if settings.enable_single_sign_out
             # TODO: Maybe we should do some special handling if send_logout_notification_for_service_ticket fails?
             #       (the above method returns false if the POST results in a non-200 HTTP response).
             $LOG.debug "Deleting #{st.class.name.demodulize} #{st.ticket.inspect} for service #{st.service}."
@@ -567,7 +360,7 @@ module CASServer
     # remote server. Your form will have to include a valid login ticket
     # value, and this can be fetched from the CAS server using the POST handler.
 
-    get "#{uri_path}/loginTicket" do
+    get "#{settings.uri_path}/loginTicket" do
       CASServer::Utils::log_controller_action(self.class, params)
 
       $LOG.error("Tried to use login ticket dispenser with get method!")
@@ -580,7 +373,7 @@ module CASServer
 
     # Renders a page with a login ticket (and only the login ticket)
     # in the response body.
-    post "#{uri_path}/loginTicket" do
+    post "#{settings.uri_path}/loginTicket" do
       CASServer::Utils::log_controller_action(self.class, params)
 
       lt = generate_login_ticket
@@ -592,50 +385,48 @@ module CASServer
       @lt
     end
 
+    # 2.4
+    # 2.4.1
+    get "#{settings.uri_path}/validate" do
+      CASServer::Utils::log_controller_action(self.class, params)
 
-		# 2.4
+      # required
+      @service = clean_service_url(params['service'])
+      @ticket = params['ticket']
+      # optional
+      @renew = params['renew']
 
-		# 2.4.1
-		get "#{uri_path}/validate" do
-			CASServer::Utils::log_controller_action(self.class, params)
+      st, @error = validate_service_ticket(@service, @ticket)
+      @success = st && !@error
 
-			# required
-			@service = clean_service_url(params['service'])
-			@ticket = params['ticket']
-			# optional
-			@renew = params['renew']
-
-			st, @error = validate_service_ticket(@service, @ticket)
-			@success = st && !@error
-
-			@username = st.username if @success
+      @username = st.username if @success
 
       status response_status_from_error(@error) if @error
 
-			render @template_engine, :validate, :layout => false
-		end
+      render @template_engine, :validate, :layout => false
+    end
 
 
     # 2.5
 
     # 2.5.1
-    get "#{uri_path}/serviceValidate" do
-			CASServer::Utils::log_controller_action(self.class, params)
+    get "#{settings.uri_path}/serviceValidate" do
+      CASServer::Utils::log_controller_action(self.class, params)
 
       # force xml content type
       content_type 'text/xml', :charset => 'utf-8'
 
-			# required
-			@service = clean_service_url(params['service'])
-			@ticket = params['ticket']
-			# optional
-			@pgt_url = params['pgtUrl']
-			@renew = params['renew']
+      # required
+      @service = clean_service_url(params['service'])
+      @ticket = params['ticket']
+      # optional
+      @pgt_url = params['pgtUrl']
+      @renew = params['renew']
 
-			st, @error = validate_service_ticket(@service, @ticket)
-			@success = st && !@error
+      st, @error = validate_service_ticket(@service, @ticket)
+      @success = st && !@error
 
-			if @success
+      if @success
         @username = st.username
         if @pgt_url
           pgt = generate_proxy_granting_ticket(@pgt_url, st)
@@ -646,14 +437,12 @@ module CASServer
 
       status response_status_from_error(@error) if @error
 
-			render :builder, :proxy_validate
-		end
-
+      render :builder, :proxy_validate
+    end
 
     # 2.6
-
     # 2.6.1
-    get "#{uri_path}/proxyValidate" do
+    get "#{settings.uri_path}/proxyValidate" do
       CASServer::Utils::log_controller_action(self.class, params)
 
       # force xml content type
@@ -694,7 +483,7 @@ module CASServer
 
 
     # 2.7
-    get "#{uri_path}/proxy" do
+    get "#{settings.uri_path}/proxy" do
       CASServer::Utils::log_controller_action(self.class, params)
 
       # required
@@ -742,7 +531,7 @@ module CASServer
 
     def compile_template(engine, data, options, views)
       super engine, data, options, @custom_views || views
-    rescue Errno::ENOENT
+      rescue Errno::ENOENT
       raise unless @custom_views
       super engine, data, options, views
     end

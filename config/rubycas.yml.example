@@ -43,7 +43,6 @@ ssl_cert: /path/to/your/ssl.pem
 #  ssl_cert: ssl/cert.pem
 #  ssl_key: ssl/key.pem
 
-
 # By default the login page will be available at the root path
 # (e.g. https://login.example.net/). The uri_path option lets you serve it from a
 # different path (e.g. https://login.example.net/cas).
@@ -148,6 +147,9 @@ database:
 # SQL, ActiveDirectory, LDAP, and GoogleAccounts. If none of these work for you,
 # it is relatively easy to write your own custom Authenticator class (see below).
 #
+# Authenticators are stored in yml table, which means that you can have
+# one or more authenticators.
+#
 # === SQL Authentication =======================================================
 #
 # The simplest method is to validate against a SQL database. This assumes
@@ -165,17 +167,17 @@ database:
 #
 # Example:
 #
-#authenticator:
-#  class: CASServer::Authenticators::SQL
-#  database:
-#    adapter: mysql
-#    database: some_database_with_users_table
-#    username: root
-#    password:
-#    host: localhost
-#  user_table: users
-#  username_column: username
-#  password_column: password
+#authenticators:
+#  - class: CASServer::Authenticators::SQL
+#    database:
+#      adapter: mysql
+#      database: some_database_with_users_table
+#      username: root
+#      password:
+#      host: localhost
+#    user_table: users
+#    username_column: username
+#    password_column: password
 #
 # When replying to a CAS client's validation request, the server will normally
 # provide the client with the authenticated user's username. However it is
@@ -189,15 +191,15 @@ database:
 # For example, with this configuration, the 'full_name' and 'access_level'
 # columns will be provided to your CAS clients along with the username:
 #
-#authenticator:
-#  class: CASServer::Authenticators::SQL
-#  database:
-#    adapter: mysql
-#    database: some_database_with_users_table
-#  user_table: users
-#  username_column: username
-#  password_column: password
-#  extra_attributes: full_name, access_level
+#authenticators:
+#  - class: CASServer::Authenticators::SQL
+#    database:
+#      adapter: mysql
+#      database: some_database_with_users_table
+#    user_table: users
+#    username_column: username
+#    password_column: password
+#    extra_attributes: full_name, access_level
 #
 #
 #
@@ -208,27 +210,27 @@ database:
 # would use to log in to Google services like Gmail). This authenticator
 # requires no special configuration -- just specify its class name:
 #
-#authenticator:
-#  class: CASServer::Authenticators::Google
+#authenticators:
+#  - class: CASServer::Authenticators::Google
 #
 # If you are behind an http proxy, you can try specifying proxy settings as follows:
 #
-#authenticator:
-#  class: CASServer::Authenticators::Google
-#  proxy:
-#    host: your-proxy-server
-#    port: 8080
-#    username: nil
-#    password: nil
+#authenticators:
+#  - class: CASServer::Authenticators::Google
+#    proxy:
+#      host: your-proxy-server
+#      port: 8080
+#      username: nil
+#      password: nil
 #
 # If you want to restrict access to only those Google accounts in a
 # particular domain, as might be the case for an organization that
 # uses Google for its domain's e-mail, add the restricted_domain
 # option:
 #
-#authenticator:
-#  class: CASServer::Authenticators::Google
-#  restricted_domain: example.com
+#authenticators:
+#  - class: CASServer::Authenticators::Google
+#    restricted_domain: example.com
 #
 # Note that as with all authenticators, it is possible to use the Google
 # authenticator alongside other authenticators. For example, CAS can first
@@ -237,7 +239,7 @@ database:
 #
 # For example:
 #
-#authenticator:
+#authenticators:
 #  - class: CASServer::Authenticators::Google
 #  - class: CASServer::Authenticators::SQL
 #    database:
@@ -267,31 +269,31 @@ database:
 #
 # For example:
 #
-#authenticator:
-#  class: CASServer::Authenticators::ActiveDirectoryLDAP
-#  ldap:
-#    host: ad.example.net
-#    port: 389
-#    base: dc=example,dc=net
-#    filter: (objectClass=person)
-#    auth_user: authenticator
-#    auth_password: itsasecret
+#authenticators:
+#  - class: CASServer::Authenticators::ActiveDirectoryLDAP
+#    ldap:
+#      host: ad.example.net
+#      port: 389
+#      base: dc=example,dc=net
+#      filter: (objectClass=person)
+#      auth_user: authenticator
+#      auth_password: itsasecret
 #
 # A more complicated example, where the authenticator will use TLS encryption,
 # will ignore users with disabled accounts, and will pass on the 'cn' and 'mail'
 # attributes to CAS clients:
 #
-#authenticator:
-#  class: CASServer::Authenticators::ActiveDirectoryLDAP
-#  ldap:
-#    host: ad.example.net
-#    port: 636
-#    base: dc=example,dc=net
-#    filter: (objectClass=person) & !(msExchHideFromAddressLists=TRUE)
-#    auth_user: authenticator
-#    auth_password: itsasecret
-#    encryption: simple_tls
-#  extra_attributes: cn, mail
+#authenticators:
+#  - class: CASServer::Authenticators::ActiveDirectoryLDAP
+#    ldap:
+#      host: ad.example.net
+#      port: 636
+#      base: dc=example,dc=net
+#      filter: (objectClass=person) & !(msExchHideFromAddressLists=TRUE)
+#      auth_user: authenticator
+#      auth_password: itsasecret
+#      encryption: simple_tls
+#    extra_attributes: cn, mail
 #
 # It is possible to authenticate against Active Directory without the
 # authenticator user, but this requires that users type in their CN as
@@ -308,14 +310,14 @@ database:
 # username or password. The following example has been reported to work
 # for a basic OpenLDAP setup.
 #
-#authenticator:
-#  class: CASServer::Authenticators::LDAP
-#  ldap:
-#    host: ldap.example.net
-#    port: 389
-#    base: dc=example,dc=net
-#    username_attribute: uid
-#    filter: (objectClass=person)
+#authenticators:
+#  - class: CASServer::Authenticators::LDAP
+#    ldap:
+#      host: ldap.example.net
+#      port: 389
+#      base: dc=example,dc=net
+#      username_attribute: uid
+#      filter: (objectClass=person)
 #
 # If you need more secure connections via TSL, specify the 'encryption'
 # option and change the port. This example also forces the authenticator
@@ -323,29 +325,29 @@ database:
 # username and password (see the ActiveDirectoryLDAP authenticator
 # explanation above):
 #
-#authenticator:
-#  class: CASServer::Authenticators::LDAP
-#  ldap:
-#    host: ldap.example.net
-#    port: 636
-#    base: dc=example,dc=net
-#    filter: (objectClass=person)
-#    encryption: simple_tls
-#    auth_user: cn=admin,dc=example,dc=net
-#    auth_password: secret
+#authenticators:
+#  - class: CASServer::Authenticators::LDAP
+#    ldap:
+#      host: ldap.example.net
+#      port: 636
+#      base: dc=example,dc=net
+#      filter: (objectClass=person)
+#      encryption: simple_tls
+#      auth_user: cn=admin,dc=example,dc=net
+#      auth_password: secret
 #
 # If you need additional data about the user passed to the client (for example,
 # their 'cn' and 'mail' attributes, you can specify the list of attributes
 # under the extra_attributes config option:
 #
-#authenticator:
-#  class: CASServer::Authenticators::LDAP
-#  ldap:
-#    host: ldap.example.net
-#    port: 389
-#    base: dc=example,dc=net
-#    filter: (objectClass=person)
-#  extra_attributes: cn, mail
+#authenticators:
+#  - class: CASServer::Authenticators::LDAP
+#    ldap:
+#      host: ldap.example.net
+#      port: 389
+#      base: dc=example,dc=net
+#      filter: (objectClass=person)
+#    extra_attributes: cn, mail
 #
 # Note that the above functionality is somewhat limited by client compatibility.
 # See the SQL authenticator notes above for more info.
@@ -369,28 +371,26 @@ database:
 #
 # Example:
 #
-#authenticator:
-#  class: FooModule::MyCustomAuthenticator
-#  source: /path/to/source.rb
-#  option_a: foo
-#  another_option: yeeha
+#authenticators:
+#  - class: FooModule::MyCustomAuthenticator
+#    source: /path/to/source.rb
+#    option_a: foo
+#    another_option: yeeha
 #
 # === Multiple Authenticators ==================================================
 #
 # If you need to have more than one source for authentication, such as an LDAP
-# directory and a database, you can use multiple authenticators by making
-# :authenticator an array of authenticators.
+# directory and a database, you can use multiple authenticators by adding them
+# into yaml array.
 #
-#authenticator:
-#  -
-#    class: CASServer::Authenticators::ActiveDirectoryLDAP
+#authenticators:
+#  - class: CASServer::Authenticators::ActiveDirectoryLDAP
 #    ldap:
 #      host: ad.example.net
 #      port: 389
 #      base: dc=example,dc=net
 #      filter: (objectClass=person)
-#  -
-#    class: CASServer::Authenticators::SQL
+#  - class: CASServer::Authenticators::SQL
 #    database:
 #      adapter: mysql
 #      database: some_database_with_users_table
@@ -402,8 +402,8 @@ database:
 #    password_column: password
 #
 # During authentication, the user credentials will be checked against the first
-# authenticator and on failure fall through to the second authenticator.
-#
+# authenticator and on failure fall through to the second authenticator and so
+# on.
 
 
 ##### LOOK & FEEL ##############################################################
@@ -523,7 +523,6 @@ log:
 # the maximum lifetime of tickets on the CAS server.
 
 #maximum_session_lifetime: 172800
-
 
 # If you want the usernames entered on the login page to be automatically
 # downcased (converted to lowercase), enable the following option. When this
