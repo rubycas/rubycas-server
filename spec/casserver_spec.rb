@@ -147,10 +147,14 @@ describe 'CASServer' do
     it "should have extra attributes in proper format" do
       visit "/serviceValidate?service=#{CGI.escape(@target_service)}&ticket=#{@ticket}"
 
-      encoded_utf_string = "&#1070;&#1090;&#1092;" # actual string is "Ютф"
-      page.body.should match("<test_utf_string>#{encoded_utf_string}</test_utf_string>")
+      #builder 3.0+ doesn't mangle utf strings like this any more
+      if Builder::VERSION < '3.0'
+        encoded_utf_string = "&#1070;&#1090;&#1092;" # actual string is "Ютф"
+        page.body.should match("<test_utf_string>#{encoded_utf_string}</test_utf_string>")
+      else
+        page.body.should match("<test_utf_string>Ютф</test_utf_string>")
+      end
       page.body.should match("<test_numeric>123.45</test_numeric>")
-      page.body.should match("<test_utf_string>&#1070;&#1090;&#1092;</test_utf_string>")
     end
   end
 end

@@ -10,6 +10,11 @@ require 'ostruct'
 require 'capybara'
 require 'capybara/dsl'
 
+# require builder because it doesn't pull in the version
+# info automatically...
+require 'builder'
+require 'builder/version'
+
 # set test environment
 set :environment, :test
 set :run, false
