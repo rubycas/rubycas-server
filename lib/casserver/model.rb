@@ -32,9 +32,12 @@ module CASServer::Model
   end
 
   class Base < ActiveRecord::Base
+    self.abstract_class = true if ActiveRecord::VERSION::STRING >= '3.2'
   end
 
   class Ticket < Base
+    self.abstract_class = true if ActiveRecord::VERSION::STRING >= '3.2'
+
     def to_s
       ticket
     end
