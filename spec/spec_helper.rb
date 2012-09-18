@@ -12,8 +12,12 @@ require 'capybara/dsl'
 
 # require builder because it doesn't pull in the version
 # info automatically...
-require 'builder'
-require 'builder/version'
+begin
+  require 'builder'
+  require 'builder/version'
+rescue LoadError
+  puts "builder not found, testing ActiveRecord 2.3?"
+end
 
 # set test environment
 set :environment, :test
