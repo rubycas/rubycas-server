@@ -11,7 +11,27 @@ See http://github.com/gunark/rubycas-server/commits/
 
 ## Installation
 
-See http://code.google.com/p/rubycas-server
+1. `git clone git://github.com/rubycas/rubycas-server.git`
+2. `cd rubycas-server`
+3. `cp config/config.example.yml config.yml`
+4. Customize your server by modifying the `config.yml` file. It is well commented but make sure that you take care of the following:
+    1. Change the database driver to `mysql2`
+    2. Configure at least one authenticator
+    3. You might want to change `log.file` to something local, so that you don't need root. For example just `casserver.log`
+    4. You might also want to disable SSL for now by commenting out the `ssl_cert` line and changing the port to something like `8888`
+5. Create the database (i.e. `mysqladmin -u root create casserver` or whatever you have in `config.yml`)
+6. In the rubycas-server directory you cloned there should be a `Gemfile` with two lines (`source "http://rubygems.org"` and `gemspec`). 
+    Add these two lines to the bottom:
+        gem "mysql2"
+        gem "activerecord-mysql2-adapter"
+7. Run `bundle install`
+8. `bundle exec rubycas-server -c config.yml`
+
+Your RubyCAS-Server should now be running. Once you've confirmed that everything looks good, try switching to a Passenger deployment. You should be able to point Apache or whatever to the `rubycas-server/public` directory, and everything should just work.
+
+Some more info is available at http://code.google.com/p/rubycas-server/w/list
+
+If you have questions, try https://groups.google.com/forum/?fromgroups#!forum/rubycas-server
 
 ## License
 
