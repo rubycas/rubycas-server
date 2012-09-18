@@ -41,6 +41,7 @@ For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-ser
   s.add_development_dependency("rspec-core")
   s.add_development_dependency("rake", "0.8.7")
   s.add_development_dependency("sqlite3", "~> 1.3.1")
+  s.add_development_dependency("appraisal", "~> 0.4.1")
 
   # for authenticator specs
   s.add_development_dependency("net-ldap", "~> 0.1.1")
