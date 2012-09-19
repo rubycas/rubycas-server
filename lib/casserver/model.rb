@@ -17,7 +17,7 @@ module CASServer::Model
     end
   end
 
-  class ServiceTicket < ActiveRecord::Base
+  class SPTicket < ActiveRecord::Base
     include Consumable
     include Ticket
 
@@ -27,19 +27,21 @@ module CASServer::Model
       set_table_name 'casserver_st'
     end
 
-    belongs_to :granted_by_tgt,
-      :class_name => 'CASServer::Model::TicketGrantingTicket',
-      :foreign_key => :granted_by_tgt_id
-    has_one :proxy_granting_ticket,
-      :foreign_key => :created_by_st_id
-
     def matches_service?(service)
       CASServer::CAS.clean_service_url(self.service) ==
         CASServer::CAS.clean_service_url(service)
     end
   end
 
-  class ProxyTicket < ServiceTicket
+  class ServiceTicket < SPTicket
+    belongs_to :granted_by_tgt,
+      :class_name => 'CASServer::Model::TicketGrantingTicket',
+      :foreign_key => :granted_by_tgt_id
+    has_one :proxy_granting_ticket,
+      :foreign_key => :created_by_st_id
+  end
+
+  class ProxyTicket < SPTicket
     belongs_to :granted_by_pgt,
       :class_name => 'CASServer::Model::ProxyGrantingTicket',
       :foreign_key => :granted_by_pgt_id
