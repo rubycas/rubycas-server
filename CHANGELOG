@@ -1,3 +1,9 @@
+=== 1.1.2 :: 2012-09-19
+
+* FIXED:
+   * Upgraded sinatra-r18n dependency to 1.1.0. This should fix localization issues
+     for some users.
+
 === 1.1.1 :: 2012-06-08
 
 * NEW:
