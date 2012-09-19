@@ -2,49 +2,30 @@ require 'active_record'
 require 'active_record/base'
 
 require 'casserver/model/consumable'
+require 'casserver/model/ticket'
 
 module CASServer::Model
 
-  class Base < ActiveRecord::Base
-    self.abstract_class = true if ActiveRecord::VERSION::STRING >= '3.2'
-  end
+  class LoginTicket < ActiveRecord::Base
+    include Consumable
+    include Ticket
 
-  class Ticket < Base
-    self.abstract_class = true if ActiveRecord::VERSION::STRING >= '3.2'
-
-    def to_s
-      ticket
-    end
-
-    def self.cleanup(max_lifetime)
-      transaction do
-        conditions = ["created_on < ?", Time.now - max_lifetime]
-        expired_tickets_count = count(:conditions => conditions)
-
-        $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
-          "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
-
-        destroy_all(conditions)
-      end
-    end
-  end
-
-  class LoginTicket < Ticket
     if ActiveRecord::VERSION::STRING >= '3.2'
       self.table_name = 'casserver_lt'
     else
       set_table_name 'casserver_lt'
     end
-    include Consumable
   end
 
-  class ServiceTicket < Ticket
+  class ServiceTicket < ActiveRecord::Base
+    include Consumable
+    include Ticket
+
     if ActiveRecord::VERSION::STRING >= '3.2'
       self.table_name = 'casserver_st'
     else
       set_table_name 'casserver_st'
     end
-    include Consumable
 
     belongs_to :granted_by_tgt,
       :class_name => 'CASServer::Model::TicketGrantingTicket',
@@ -64,7 +45,9 @@ module CASServer::Model
       :foreign_key => :granted_by_pgt_id
   end
 
-  class TicketGrantingTicket < Ticket
+  class TicketGrantingTicket < ActiveRecord::Base
+    include Ticket
+
     if ActiveRecord::VERSION::STRING >= '3.2'
       self.table_name = 'casserver_tgt'
     else
@@ -78,7 +61,9 @@ module CASServer::Model
       :foreign_key => :granted_by_tgt_id
   end
 
-  class ProxyGrantingTicket < Ticket
+  class ProxyGrantingTicket < ActiveRecord::Base
+    include Ticket
+
     if ActiveRecord::VERSION::STRING >= '3.2'
       self.table_name = 'casserver_pgt'
     else
