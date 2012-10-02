@@ -1,12 +1,6 @@
 # Misc utility function used throughout by the RubyCAS-Server.
 module CASServer
   module Utils
-    def random_string(max_length = 29)
-      puts "Utils.random_string is deprecated, please use String.random! (#{caller[0]})"
-      String.random(max_length)
-    end
-    module_function :random_string
-
     def log_controller_action(controller, params)
       $LOG << "\n"
 
