@@ -13,6 +13,7 @@ module CASServer
         # with Ruby 1.8
         def random(length = 29)
           str = "#{Time.now.to_i}r#{SecureRandom.urlsafe_base64(length)}"
+          str.gsub!('_','-')
           str[0..(length - 1)]
         end
       end
