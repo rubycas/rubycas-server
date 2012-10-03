@@ -85,7 +85,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activeresource (< 3.1, >= 2.3.12)
+  activeresource (>= 2.3.12, < 3.1)
   capybara (= 1.1.2)
   net-ldap (~> 0.1.1)
   rack-test
