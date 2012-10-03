@@ -68,4 +68,34 @@ describe CASServer::CAS do
       @tgt.client_hostname.should == @client_hostname
     end
   end
+
+  describe "#generate_service_ticket(service, username, tgt)" do
+    before do
+      @username = 'testuser'
+      @service = 'myservice.test'
+      @tgt = double(CASServer::Model::TicketGrantingTicket)
+      @tgt.stub(:id => rand(10000))
+      @st = @host.generate_service_ticket(@service, @username, @tgt)
+    end
+
+    it "should return a ServiceTicket" do
+      @st.class.should == CASServer::Model::ServiceTicket
+    end
+
+    it "should not include the service identifer in the ticket string" do
+      @st.ticket.should_not match /#{@service}/
+    end
+
+    it "should not mark the ST as consumed" do
+      @st.consumed.should be_nil
+    end
+
+    it "MUST generate a ticket that starts with 'ST-'" do
+      @st.ticket.should match /^ST-/
+    end
+
+    it "should assoicate the ST with the supplied TGT" do
+      @st.granted_by_tgt_id.should == @tgt.id
+    end
+  end
 end
