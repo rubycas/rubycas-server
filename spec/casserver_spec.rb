@@ -21,7 +21,7 @@ describe 'CASServer' do
 
   describe "/login" do
     before do
-      load_server(File.dirname(__FILE__) + "/default_config.yml")
+      load_server("default_config")
       reset_spec_database
     end
 
@@ -97,7 +97,7 @@ describe 'CASServer' do
   describe '/logout' do
 
     before do
-      load_server(File.dirname(__FILE__) + "/default_config.yml")
+      load_server("default_config")
       reset_spec_database
     end
 
@@ -117,7 +117,7 @@ describe 'CASServer' do
 
   describe 'Configuration' do
     it "uri_path value changes prefix of routes" do
-      load_server(File.dirname(__FILE__) + "/alt_config.yml")
+      load_server("alt_config")
       @target_service = 'http://my.app.test'
 
       visit "/test/login"
@@ -130,7 +130,7 @@ describe 'CASServer' do
 
   describe "proxyValidate" do
     before do
-      load_server(File.dirname(__FILE__) + "/default_config.yml")
+      load_server("default_config")
       reset_spec_database
 
       visit "/login?service="+CGI.escape(@target_service)

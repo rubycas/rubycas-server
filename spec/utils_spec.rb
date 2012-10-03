@@ -7,7 +7,7 @@ require 'casserver/utils'
 
 describe CASServer::Utils, '#random_string(max_length = 29)' do
   before do
-    load_server(File.dirname(__FILE__) + "/default_config.yml")
+    load_server("default_config")
     reset_spec_database
   end
   

@@ -10,7 +10,7 @@ describe CASServer::Model::LoginTicket, '.cleanup(max_lifetime, max_unconsumed_l
   let(:max_unconsumed_lifetime) { -2 }
 
   before do
-    load_server(File.dirname(__FILE__) + "/default_config.yml")
+    load_server("default_config")
     reset_spec_database
     
     CASServer::Model::LoginTicket.create :ticket => 'test', :client_hostname => 'test.local'
