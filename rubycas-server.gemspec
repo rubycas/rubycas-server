@@ -41,6 +41,19 @@ For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-ser
   s.add_development_dependency("rspec-core")
   s.add_development_dependency("rake", "0.8.7")
   s.add_development_dependency("sqlite3", "~> 1.3.1")
+  s.add_development_dependency("guard", "~> 1.4.0")
+  s.add_development_dependency("guard-rspec", "2.0.0")
+
+  # pull in os specific FS monitoring lib for guard
+  case RUBY_PLATFORM
+  when /darwin/i
+    s.add_development_dependency("rb-fsevent", "~> 0.9.2")
+  when /linux/i
+    s.add_development_dependency("rb-inotify", "~> 0.8.8")
+  when /mswin|bccwin|wince/i
+    s.add_development_dependency('wdm', '~> 0.0.3') if RUBY_VERSION >= '1.9.2'
+    s.add_development_dependency('win32console', "~> 1.3.2")
+  end
 
   # for authenticator specs
   s.add_development_dependency("net-ldap", "~> 0.1.1")
