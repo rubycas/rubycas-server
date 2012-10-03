@@ -44,7 +44,7 @@ class Capybara::RackTest::Browser
 
   def follow_redirects!
     if last_response.redirect? && last_response['Location'] =~ /^http[s]?:/
-      puts "FOLLOWING REDIECT: #{last_response['Location']}"
+      #puts "FOLLOWING REDIECT: #{last_response['Location']}"
       @redirected_to_external_url = last_response['Location']
     else
       5.times do
