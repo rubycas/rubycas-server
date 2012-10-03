@@ -41,4 +41,31 @@ describe CASServer::CAS do
       @lt.consumed.should be_nil
     end
   end
+
+  describe "#generate_ticket_granting_ticket(username, extra_attributes = {})" do
+    before do
+      @username = 'myuser'
+      @tgt = @host.generate_ticket_granting_ticket(@username)
+    end
+
+    it "should return a TicketGrantingTicket" do
+      @tgt.class.should == CASServer::Model::TicketGrantingTicket
+    end
+
+    it "should set the tgt's ticket string" do
+      @tgt.ticket.should_not be_nil
+    end
+
+    it "should generate a ticket string starting with 'TGC'" do
+      @tgt.ticket.should match /^TGC/
+    end
+
+    it "should set the tgt's username string" do
+      @tgt.username.should == @username
+    end
+
+    it "should set the tgt's client_hostname" do
+      @tgt.client_hostname.should == @client_hostname
+    end
+  end
 end
