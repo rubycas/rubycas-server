@@ -1,10 +1,14 @@
 # encoding: UTF-8
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 require 'casserver/authenticators/ldap'
 
 describe CASServer::Authenticators::LDAP do
   before do
+    if $LOG.nil?
+      load_server('default_config') # a lazy way to make sure the logger is set up
+    end
+
     @ldap_entry = mock(Net::LDAP::Entry.new)
     @ldap_entry.stub!(:[]).and_return("Test")
     

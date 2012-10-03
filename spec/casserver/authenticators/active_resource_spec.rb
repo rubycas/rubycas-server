@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 require 'casserver/authenticators/active_resource'
 
