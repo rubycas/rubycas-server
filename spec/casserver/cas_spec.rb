@@ -98,4 +98,33 @@ describe CASServer::CAS do
       @st.granted_by_tgt_id.should == @tgt.id
     end
   end
+
+  describe "#generate_proxy_ticket(target_service, pgt)" do
+    before do
+      @target_service = 'remoteservice.test'
+      @st = CASServer::Model::ServiceTicket.new({
+        :username => 'joe',
+        :granted_by_tgt_id => rand(10000)
+      })
+      @pgt = double(CASServer::Model::ProxyGrantingTicket)
+      @pgt.stub({
+        :id => rand(10000),
+        :service_ticket => @st,
+        :ticket => 'some ticket'
+      })
+      @pt = @host.generate_proxy_ticket(@target_service, @pgt)
+    end
+
+    it "should return a ProxyGrantingTicket" do
+      @pt.class.should == CASServer::Model::ProxyTicket
+    end
+
+    it "should not consume the generated ticket" do
+      @pt.consumed.should be_nil
+    end
+
+    it "should start the ticket string with PT-" do
+      @pt.ticket.should match /^PT-/
+    end
+  end
 end
