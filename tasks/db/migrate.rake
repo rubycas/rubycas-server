@@ -5,7 +5,7 @@ namespace :db do
     
     require 'casserver/server'
     
-    CASServer::Model::Base.logger = Logger.new(STDOUT)
+    CASServer::Model::Ticket.logger = Logger.new(STDOUT)
     ActiveRecord::Migration.verbose = true
     ActiveRecord::Migrator.migrate("db/migrate")
   end
