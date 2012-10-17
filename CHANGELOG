@@ -1,3 +1,15 @@
+=== 1.1.3 :: In progress...
+
+* CHANGED:
+   * XML responses now start with a correct XML declaration specifying UTF-8 encoding
+     (<?xml version="1.0" encoding="UTF-8" ?>).
+
+* FIXED:
+   * Extra attributes with UTF-8 characters should be correctly encoded under ruby 1.8.7.
+   * Improved compatibility with various versions of ActiveRecord, ActiveSupport and
+     other dependencies.
+   * Minor code reorganization and cleanup.
+
 === 1.1.2 :: 2012-09-19
 
 * FIXED:

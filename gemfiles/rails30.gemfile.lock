@@ -1,7 +1,7 @@
 PATH
-  remote: .
+  remote: /Users/tyler/src/rubycas-server
   specs:
-    rubycas-server (1.1.2)
+    rubycas-server (1.1.1)
       activerecord (>= 2.3.12, < 4.0)
       activesupport (>= 2.3.12, < 4.0)
       crypt-isaac (~> 0.9.1)
@@ -11,26 +11,25 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (3.2.8)
-      activesupport (= 3.2.8)
-      builder (~> 3.0.0)
-    activerecord (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
-      arel (~> 3.0.2)
-      tzinfo (~> 0.3.29)
-    activeresource (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
-    activesupport (3.2.8)
-      i18n (~> 0.6)
-      multi_json (~> 1.0)
+    activemodel (3.0.17)
+      activesupport (= 3.0.17)
+      builder (~> 2.1.2)
+      i18n (~> 0.5.0)
+    activerecord (3.0.17)
+      activemodel (= 3.0.17)
+      activesupport (= 3.0.17)
+      arel (~> 2.0.10)
+      tzinfo (~> 0.3.23)
+    activeresource (3.0.17)
+      activemodel (= 3.0.17)
+      activesupport (= 3.0.17)
+    activesupport (3.0.17)
     addressable (2.3.2)
     appraisal (0.4.1)
       bundler
       rake
-    arel (3.0.2)
-    builder (3.0.3)
+    arel (2.0.10)
+    builder (2.1.2)
     capybara (1.1.2)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -43,7 +42,7 @@ GEM
     crypt-isaac (0.9.1)
     diff-lcs (1.1.3)
     ffi (1.1.5)
-    i18n (0.6.1)
+    i18n (0.5.0)
     libwebsocket (0.1.5)
       addressable
     mime-types (1.19)
@@ -68,7 +67,6 @@ GEM
     rubyzip (0.9.9)
     selenium-webdriver (2.25.0)
       childprocess (>= 0.2.5)
-      ffi (~> 1.0)
       libwebsocket (~> 0.1.3)
       multi_json (~> 1.0)
       rubyzip
@@ -89,7 +87,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activeresource (>= 2.3.12, < 4.0)
+  activerecord (~> 3.0.12)
+  activeresource (~> 3.0.12)
+  activesupport (~> 3.0.12)
   appraisal (~> 0.4.1)
   capybara (= 1.1.2)
   net-ldap (~> 0.1.1)

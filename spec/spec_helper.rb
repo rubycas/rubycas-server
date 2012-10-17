@@ -10,6 +10,15 @@ require 'ostruct'
 require 'capybara'
 require 'capybara/dsl'
 
+# require builder because it doesn't pull in the version
+# info automatically...
+begin
+  require 'builder'
+  require 'builder/version'
+rescue LoadError
+  puts "builder not found, testing ActiveRecord 2.3?"
+end
+
 # set test environment
 set :environment, :test
 set :run, false
@@ -44,7 +53,6 @@ class Capybara::RackTest::Browser
 
   def follow_redirects!
     if last_response.redirect? && last_response['Location'] =~ /^http[s]?:/
-      #puts "FOLLOWING REDIECT: #{last_response['Location']}"
       @redirected_to_external_url = last_response['Location']
     else
       5.times do
