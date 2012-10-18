@@ -1,71 +1,31 @@
 require 'active_record'
 require 'active_record/base'
 
+require 'casserver/model/consumable'
+require 'casserver/model/ticket'
+
 module CASServer::Model
 
-  module Consumable
-    def consume!
-      self.consumed = Time.now
-      self.save!
-    end
-
-    def self.included(mod)
-      mod.extend(ClassMethods)
-    end
-
-    module ClassMethods
-      def cleanup(max_lifetime, max_unconsumed_lifetime)
-        transaction do
-          conditions = ["created_on < ? OR (consumed IS NULL AND created_on < ?)",
-                          Time.now - max_lifetime,
-                          Time.now - max_unconsumed_lifetime]
-                        
-          expired_tickets_count = count(:conditions => conditions)
-
-          $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
-            "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
-
-          destroy_all(conditions)
-        end
-      end
-    end
-  end
-
-  class Base < ActiveRecord::Base
-  end
-
-  class Ticket < Base
-    def to_s
-      ticket
-    end
-
-    def self.cleanup(max_lifetime)
-      transaction do
-        conditions = ["created_on < ?", Time.now - max_lifetime]
-        expired_tickets_count = count(:conditions => conditions)
-
-        $LOG.debug("Destroying #{expired_tickets_count} expired #{self.name.demodulize}"+
-          "#{'s' if expired_tickets_count > 1}.") if expired_tickets_count > 0
-
-        destroy_all(conditions)
-      end
-    end
-  end
-
-  class LoginTicket < Ticket
-    set_table_name 'casserver_lt'
+  class LoginTicket < ActiveRecord::Base
     include Consumable
+    include Ticket
+
+    if ActiveRecord::VERSION::STRING >= '3.2'
+      self.table_name = 'casserver_lt'
+    else
+      set_table_name 'casserver_lt'
+    end
   end
 
-  class ServiceTicket < Ticket
-    set_table_name 'casserver_st'
+  class SPTicket < ActiveRecord::Base
     include Consumable
+    include Ticket
 
-    belongs_to :granted_by_tgt,
-      :class_name => 'CASServer::Model::TicketGrantingTicket',
-      :foreign_key => :granted_by_tgt_id
-    has_one :proxy_granting_ticket,
-      :foreign_key => :created_by_st_id
+    if ActiveRecord::VERSION::STRING >= '3.2'
+      self.table_name = 'casserver_st'
+    else
+      set_table_name 'casserver_st'
+    end
 
     def matches_service?(service)
       CASServer::CAS.clean_service_url(self.service) ==
@@ -73,14 +33,28 @@ module CASServer::Model
     end
   end
 
-  class ProxyTicket < ServiceTicket
+  class ServiceTicket < SPTicket
+    belongs_to :granted_by_tgt,
+      :class_name => 'CASServer::Model::TicketGrantingTicket',
+      :foreign_key => :granted_by_tgt_id
+    has_one :proxy_granting_ticket,
+      :foreign_key => :created_by_st_id
+  end
+
+  class ProxyTicket < SPTicket
     belongs_to :granted_by_pgt,
       :class_name => 'CASServer::Model::ProxyGrantingTicket',
       :foreign_key => :granted_by_pgt_id
   end
 
-  class TicketGrantingTicket < Ticket
-    set_table_name 'casserver_tgt'
+  class TicketGrantingTicket < ActiveRecord::Base
+    include Ticket
+
+    if ActiveRecord::VERSION::STRING >= '3.2'
+      self.table_name = 'casserver_tgt'
+    else
+      set_table_name 'casserver_tgt'
+    end
 
     serialize :extra_attributes
 
@@ -89,8 +63,14 @@ module CASServer::Model
       :foreign_key => :granted_by_tgt_id
   end
 
-  class ProxyGrantingTicket < Ticket
-    set_table_name 'casserver_pgt'
+  class ProxyGrantingTicket < ActiveRecord::Base
+    include Ticket
+
+    if ActiveRecord::VERSION::STRING >= '3.2'
+      self.table_name = 'casserver_pgt'
+    else
+      set_table_name 'casserver_pgt'
+    end
     belongs_to :service_ticket
     has_many :granted_proxy_tickets,
       :class_name => 'CASServer::Model::ProxyTicket',
