@@ -636,6 +636,9 @@ module CASServer
     get "#{uri_path}/serviceValidate" do
 			CASServer::Utils::log_controller_action(self.class, params)
 
+      # force xml content type
+      content_type 'text/xml', :charset => 'utf-8'
+
 			# required
 			@service = clean_service_url(params['service'])
 			@ticket = params['ticket']
@@ -666,6 +669,9 @@ module CASServer
     # 2.6.1
     get "#{uri_path}/proxyValidate" do
       CASServer::Utils::log_controller_action(self.class, params)
+
+      # force xml content type
+      content_type 'text/xml', :charset => 'utf-8'
 
       # required
       @service = clean_service_url(params['service'])
