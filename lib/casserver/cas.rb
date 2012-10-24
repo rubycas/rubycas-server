@@ -12,7 +12,7 @@ module CASServer::CAS
   def generate_login_ticket
     # 3.5 (login ticket)
     lt = LoginTicket.new
-    lt.ticket = "LT-" + CASServer::Utils.random_string
+    lt.ticket = "LT-" + String.random
 
     lt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     lt.save!
@@ -30,7 +30,7 @@ module CASServer::CAS
   def generate_ticket_granting_ticket(username, extra_attributes = {})
     # 3.6 (ticket granting cookie/ticket)
     tgt = TicketGrantingTicket.new
-    tgt.ticket = "TGC-" + CASServer::Utils.random_string
+    tgt.ticket = "TGC-" + String.random
     tgt.username = username
     tgt.extra_attributes = extra_attributes
     tgt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
@@ -44,7 +44,7 @@ module CASServer::CAS
   def generate_service_ticket(service, username, tgt)
     # 3.1 (service ticket)
     st = ServiceTicket.new
-    st.ticket = "ST-" + CASServer::Utils.random_string
+    st.ticket = "ST-" + String.random
     st.service = service
     st.username = username
     st.granted_by_tgt_id = tgt.id
@@ -58,7 +58,7 @@ module CASServer::CAS
   def generate_proxy_ticket(target_service, pgt)
     # 3.2 (proxy ticket)
     pt = ProxyTicket.new
-    pt.ticket = "PT-" + CASServer::Utils.random_string
+    pt.ticket = "PT-" + String.random
     pt.service = target_service
     pt.username = pgt.service_ticket.username
     pt.granted_by_pgt_id = pgt.id
@@ -88,8 +88,8 @@ module CASServer::CAS
       path += '?' + uri.query unless (uri.query.nil? || uri.query.empty?)
       
       pgt = ProxyGrantingTicket.new
-      pgt.ticket = "PGT-" + CASServer::Utils.random_string(60)
-      pgt.iou = "PGTIOU-" + CASServer::Utils.random_string(57)
+      pgt.ticket = "PGT-" + String.random(60)
+      pgt.iou = "PGTIOU-" + String.random(57)
       pgt.service_ticket_id = st.id
       pgt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
 
@@ -243,7 +243,7 @@ module CASServer::CAS
     uri = URI.parse(st.service)
     uri.path = '/' if uri.path.empty?
     time = Time.now
-    rand = CASServer::Utils.random_string
+    rand = String.random
     path = uri.path
     req = Net::HTTP::Post.new(path)
     req.set_form_data('logoutRequest' => %{<samlp:LogoutRequest ID="#{rand}" Version="2.0" IssueInstant="#{time.rfc2822}">
