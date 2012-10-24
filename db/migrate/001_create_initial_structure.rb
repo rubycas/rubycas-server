@@ -8,7 +8,6 @@ class CreateInitialStructure < ActiveRecord::Migration
       t.datetime  'consumed',        :null => true
       t.string    'client_hostname', :null => false
     end
-    add_index :casserver_lt,  :ticket
 
     create_table 'casserver_st', :force => true do |t|
       t.string    'ticket',            :null => false
@@ -21,7 +20,6 @@ class CreateInitialStructure < ActiveRecord::Migration
       t.integer   'granted_by_pgt_id', :null => true
       t.integer   'granted_by_tgt_id', :null => true
     end
-    add_index :casserver_st,  :ticket
 
     create_table 'casserver_tgt', :force => true do |t|
       t.string    'ticket',           :null => false
@@ -30,7 +28,6 @@ class CreateInitialStructure < ActiveRecord::Migration
       t.string    'username',         :null => false
       t.text      'extra_attributes', :null => true
     end
-    add_index :casserver_tgt, :ticket
 
     create_table 'casserver_pgt', :force => true do |t|
       t.string    'ticket',            :null => false
@@ -39,14 +36,9 @@ class CreateInitialStructure < ActiveRecord::Migration
       t.string    'iou',               :null => false
       t.integer   'service_ticket_id', :null => false
     end
-    add_index :casserver_pgt, :ticket
   end # self.up
 
   def self.down
-    remove_index  :casserver_pgt, :ticket
-    remove_index  :casserver_st,  :ticket
-    remove_index  :casserver_lt,  :ticket
-    remove_index  :casserver_tgt, :ticket
     drop_table 'casserver_pgt'
     drop_table 'casserver_tgt'
     drop_table 'casserver_st'
