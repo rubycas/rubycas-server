@@ -62,7 +62,7 @@ module CASServer::CAS
     pt.service = target_service
     pt.username = pgt.service_ticket.username
     pt.granted_by_pgt_id = pgt.id
-    pt.granted_by_tgt_id = pgt.service_ticket.granted_by_tgt.id
+    pt.granted_by_tgt_id = pgt.service_ticket.granted_by_tgt_id
     pt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     pt.save!
     $LOG.debug("Generated proxy ticket '#{pt.ticket}' for target service '#{pt.service}'" +
