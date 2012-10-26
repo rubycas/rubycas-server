@@ -14,6 +14,7 @@ ATTACK_USERNAME = '%3E%22%27%3E%3Cscript%3Ealert%2826%29%3C%2Fscript%3E&password
 INVALID_PASSWORD = 'invalid_password'
 
 describe 'CASServer' do
+  include Rack::Test::Methods
 
   before do
     @target_service = 'http://my.app.test'
@@ -145,11 +146,10 @@ describe 'CASServer' do
     end
 
     it "should have extra attributes in proper format" do
-      visit "/serviceValidate?service=#{CGI.escape(@target_service)}&ticket=#{@ticket}"
+      get "/serviceValidate?service=#{CGI.escape(@target_service)}&ticket=#{@ticket}"
 
-      page.body.should match("<test_utf_string>Ютф</test_utf_string>")
-
-      page.body.should match("<test_numeric>123.45</test_numeric>")
+      last_response.content_type.should match 'text/xml'
+      last_response.body.should match "<test_utf_string>Ютф</test_utf_string>"
     end
   end
 end

@@ -58,67 +58,6 @@ ssl_cert: /path/to/your/ssl.pem
 
 
 ###
-### Mongrel example 
-###
-# Mongrel is much faster than WEBrick, but there are two caveats:
-#  1. Since Mongrel can't serve out encrypted HTTP on its own (and CAS requires this),
-#     you will have to set up a reverse proxy like Pound or Apache's mod_proxy and
-#     route through it requests to the Mongrel server. So for example,
-#     your Pound server will receive all of the requests to RubyCAS-Server on port 443,
-#     and forward them to the Mongrel server listening on port 11011.
-#  2. Some of Mongrel's components are compiled into native binaries, so if you are 
-#     installing on Linux, make sure you have all of the standard build tools
-#     available. The binaries should be automatically compiled for you when you
-#     install the mogrel gem (if you're runnings Windows, pre-compiled
-#     binaries will be downloaded and installed, so don't worry about this).
-
-#server: mongrel
-#port: 11011
-
-
-# Bind the server to a specific address. Use 0.0.0.0 to listen on all
-# available interfaces (this is the default).
-
-#bind_address: 0.0.0.0
-
-### Reverse proxy configuration examples
-# If you're using mod_proxy, your Apache vhost config should look something like this:
-#
-#  Listen 443
-#  <VirtualHost *:443>
-#    ServerAdmin admin@example.net
-#    ServerName login.example.net
-#  
-#    SSLEngine On
-#    SSLCertificateFile /etc/apache2/ssl.crt/example.pem
-#  
-#    # Don't do forward proxying, we only want reverse proxying
-#    ProxyRequests Off
-#  
-#    <Proxy balancer://rubycas>
-#      Order allow,deny
-#      Allow from all
-#      BalancerMember http://127.0.0.1:11011
-#    </Proxy>
-#  </VirtualHost>
-#
-# For Pound, the config should be something like:
-#
-#  ListenHTTPS
-#    Address 0.0.0.0
-#    Port    11011
-#    Cert    "/etc/ssl/example.pem"
-#  
-#    Service
-#      BackEnd
-#        Address localhost
-#        Port    443
-#      End
-#    End
-#  End
-
-
-###
 ### Phusion Passenger (running under Apache configured for SSL)
 ###
 

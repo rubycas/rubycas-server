@@ -1,7 +1,7 @@
 PATH
   remote: /Users/tyler/src/rubycas-server
   specs:
-    rubycas-server (1.1.1)
+    rubycas-server (1.1.3.pre)
       activerecord (>= 2.3.12, < 4.0)
       activesupport (>= 2.3.12, < 4.0)
       crypt-isaac (~> 0.9.1)

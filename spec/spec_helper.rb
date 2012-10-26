@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'sinatra'
 require 'rack/test'
 require 'rspec'
 #require 'spec/autorun'
@@ -18,13 +17,6 @@ begin
 rescue LoadError
   puts "builder not found, testing ActiveRecord 2.3?"
 end
-
-# set test environment
-set :environment, :test
-set :run, false
-set :raise_errors, true
-set :logging, false
-
 
 if Dir.getwd =~ /\/spec$/
   # Avoid potential weirdness by changing the working directory to the CASServer root
@@ -75,11 +67,21 @@ def load_server(config_file = 'default_config')
     load File.dirname(__FILE__) + '/../lib/casserver/server.rb'
   end
   
+  # set test environment
+  CASServer::Server.set :environment, :test
+  CASServer::Server.set :run, false
+  CASServer::Server.set :raise_errors, true
+  CASServer::Server.set :logging, false
+
   CASServer::Server.enable(:raise_errors)
   CASServer::Server.disable(:show_exceptions)
 
   #Capybara.current_driver = :selenium
   Capybara.app = CASServer::Server
+
+  def app
+    CASServer::Server
+  end
 end
 
 # Deletes the sqlite3 database specified in the app's config
