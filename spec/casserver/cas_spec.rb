@@ -5,7 +5,7 @@ require 'casserver/cas'
 
 describe CASServer::CAS do
   before do
-    load_server
+    load_server(File.dirname(__FILE__) + "/../default_config.yml")
     @klass = Class.new {
       include CASServer::CAS
     }
