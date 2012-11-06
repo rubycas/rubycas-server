@@ -141,15 +141,6 @@ module CASServer
       set :server, config[:server] || 'webrick'
     end
     
-    def self.reconfigure!(config)
-      config.each do |key, val|
-        self.config[key] = val
-      end
-      init_database!
-      init_logger!
-      init_authenticators!
-    end
-
     def self.handler_options
       handler_options = {
         :Host => bind || config[:bind_address],
