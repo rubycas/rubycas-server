@@ -2,6 +2,7 @@ require 'uri'
 require 'net/https'
 
 require 'casserver/model'
+require 'casserver/core_ext'
 
 # Encapsulates CAS functionality. This module is meant to be included in
 # the CASServer::Controllers module.
