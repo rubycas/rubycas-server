@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module CASServer::Model
   module Consumable
     def consume!

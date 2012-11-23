@@ -1,3 +1,7 @@
+require 'active_support'
+require 'active_support/hash_with_indifferent_access'
+require 'active_support/core_ext'
+
 module CASServer
   module Authenticators
     class Base

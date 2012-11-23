@@ -1,8 +1,6 @@
-require 'active_record'
-require 'active_record/base'
-
 require 'casserver/model/consumable'
 require 'casserver/model/ticket'
+require 'active_record'
 
 module CASServer::Model
 

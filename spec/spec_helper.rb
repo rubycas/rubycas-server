@@ -60,8 +60,8 @@ end
 # we're forced to delay loading of the server code
 # until the start of each test so that certain 
 # configuraiton options can be changed (e.g. `uri_path`)
-def load_server(config_file)
-  ENV['CONFIG_FILE'] = config_file
+def load_server(config_file = 'default_config')
+  ENV['CONFIG_FILE'] = File.join(File.dirname(__FILE__),'config',"#{config_file}.yml")
   
   silence_warnings do
     load File.dirname(__FILE__) + '/../lib/casserver/server.rb'
