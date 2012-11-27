@@ -8,6 +8,15 @@ require 'ostruct'
 
 require 'capybara'
 require 'capybara/dsl'
+require 'casserver/authenticators/base'
+
+CASServer::Authenticators.autoload :LDAP, 'casserver/authenticators/ldap.rb'
+CASServer::Authenticators.autoload :ActiveDirectoryLDAP, 'casserver/authenticators/active_directory_ldap/'
+CASServer::Authenticators.autoload :SQL, 'casserver/authenticators/sql.rb'
+CASServer::Authenticators.autoload :SQLEncrypted, 'lib/casserver/authenticators/sql_encrypted.rb'
+CASServer::Authenticators.autoload :Google, 'casserver/authenticators/google.rb'
+CASServer::Authenticators.autoload :ActiveResource, 'casserver/authenticators/active_resource.rb'
+#CASServer::Authenticators.autoload :Test, 'casserver/authenticators/test.rb'
 
 # require builder because it doesn't pull in the version
 # info automatically...
@@ -58,15 +67,15 @@ end
 # This called in specs' `before` block.
 # Due to the way Sinatra applications are loaded,
 # we're forced to delay loading of the server code
-# until the start of each test so that certain 
+# until the start of each test so that certain
 # configuraiton options can be changed (e.g. `uri_path`)
 def load_server(config_file = 'default_config')
   ENV['CONFIG_FILE'] = File.join(File.dirname(__FILE__),'config',"#{config_file}.yml")
-  
+
   silence_warnings do
     load File.dirname(__FILE__) + '/../lib/casserver/server.rb'
   end
-  
+
   # set test environment
   CASServer::Server.set :environment, :test
   CASServer::Server.set :run, false
@@ -91,9 +100,17 @@ def reset_spec_database
     CASServer::Server.config[:database] && CASServer::Server.config[:database][:database]
 
   FileUtils.rm_f(CASServer::Server.config[:database][:database])
-  
+
   ActiveRecord::Base.logger = Logger.new(STDOUT)
   ActiveRecord::Base.logger.level = Logger::ERROR
   ActiveRecord::Migration.verbose = false
   ActiveRecord::Migrator.migrate("db/migrate")
+end
+
+def gem_available?(name)
+  if Gem::Specification.methods.include?(:find_all_by_name)
+    not Gem::Specification.find_all_by_name(name).empty?
+  else
+    Gem.available?(name)
+  end
 end

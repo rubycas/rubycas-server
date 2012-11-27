@@ -1,22 +1,7 @@
-require 'casserver/authenticators/base'
-
 begin
   require 'net/ldap'
 rescue LoadError
-  require 'rubygems'
-  begin
-    gem 'net-ldap', '~> 0.1.1'
-  rescue Gem::LoadError
-    $stderr.puts
-    $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    $stderr.puts
-    $stderr.puts "To use the LDAP/AD authenticator, you must first install the 'net-ldap' gem."
-    $stderr.puts "        See http://github.com/RoryO/ruby-net-ldap for details."
-    $stderr.puts
-    $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    exit 1
-  end
-  require 'net/ldap'
+  $stderr.puts "To use the LDAP/AD authenticator, you must first install gems from ldap group. See: Gemfile"
 end
 
 # Basic LDAP authenticator. Should be compatible with OpenLDAP and other similar LDAP servers,

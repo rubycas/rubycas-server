@@ -28,7 +28,6 @@ $gemspec = Gem::Specification.new do |s|
 For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
 
 "
-
   s.add_dependency("activerecord", ">= 2.3.12", "< 4.0")
   s.add_dependency("activesupport", ">= 2.3.12", "< 4.0")
   s.add_dependency("sinatra", "~> 1.0")
@@ -55,10 +54,6 @@ For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-ser
     s.add_development_dependency('wdm', '~> 0.0.3') if RUBY_VERSION >= '1.9.2'
     s.add_development_dependency('win32console', "~> 1.3.2")
   end
-
-  # for authenticator specs
-  s.add_development_dependency("net-ldap", "~> 0.1.1")
-  s.add_development_dependency("activeresource", ">= 2.3.12", "< 4.0")
 
   s.rdoc_options = [
     '--quiet', '--title', 'RubyCAS-Server Documentation', '--opname',
