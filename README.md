@@ -26,7 +26,7 @@ See http://github.com/gunark/rubycas-server/commits/
 
 Your RubyCAS-Server should now be running. Once you've confirmed that everything looks good, try switching to a [Passenger](http://www.modrails.com/) deployment. You should be able to point Apache (or whatever) to the `rubycas-server/public` directory, and everything should just work.
 
-Some more info is available at the [RubyCAS-Server Wiki](http://code.google.com/p/rubycas-server/w/list).
+Some more info is available at the [RubyCAS-Server Wiki](https://github.com/rubycas/rubycas-server/wiki).
 
 If you have questions, try the [RubyCAS Google Group](https://groups.google.com/forum/?fromgroups#!forum/rubycas-server) or #rubycas on [freenode](http://freenode.net).
 
