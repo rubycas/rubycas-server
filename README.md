@@ -28,7 +28,7 @@ Your RubyCAS-Server should now be running. Once you've confirmed that everything
 
 Some more info is available at the [RubyCAS-Server Wiki](http://code.google.com/p/rubycas-server/w/list).
 
-If you have questions, try the [RubyCAS Google Group](https://groups.google.com/forum/?fromgroups#!forum/rubycas-server).
+If you have questions, try the [RubyCAS Google Group](https://groups.google.com/forum/?fromgroups#!forum/rubycas-server) or #rubycas on [freenode](http://freenode.net).
 
 ## License
 
