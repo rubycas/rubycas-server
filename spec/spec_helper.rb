@@ -5,6 +5,7 @@ require 'rspec'
 #require 'spec/interop/test'
 require 'logger'
 require 'ostruct'
+require 'webmock/rspec'
 
 require 'capybara'
 require 'capybara/dsl'

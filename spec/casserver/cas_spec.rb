@@ -2,6 +2,8 @@ require 'spec_helper'
 
 module CASServer; end
 require 'casserver/cas'
+require 'nokogiri'
+require 'cgi'
 
 describe CASServer::CAS do
   before do
@@ -125,6 +127,22 @@ describe CASServer::CAS do
 
     it "should start the ticket string with PT-" do
       @pt.ticket.should match /^PT-/
+    end
+  end
+
+  describe "#send_logout_notification_for_service_ticket(st)" do
+    it "should send valid single sign out XML to the service URL" do
+      service_stub = stub_request(:post, 'http://example.com')
+      st = CASServer::Model::ServiceTicket.new(
+        :ticket => 'ST-0123456789ABCDEFGHIJKLMNOPQRS',
+        :service => 'http://example.com'
+      )
+      @host.send_logout_notification_for_service_ticket(st)
+
+      a_request(:post, 'example.com').with{ |req|
+        xml = CGI.parse(req.body)['logoutRequest'].first
+        Nokogiri::XML(xml).at_xpath('//samlp:SessionIndex').text.strip == st.ticket
+      }.should have_been_made
     end
   end
 end
