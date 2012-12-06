@@ -7,7 +7,7 @@ Other portions are copyright of their respective authors.
 
 ## Authors
 
-See http://github.com/gunark/rubycas-server/commits/
+See https://github.com/rubycas/rubycas-server/commits
 
 ## Installation
 
