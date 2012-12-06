@@ -426,7 +426,7 @@ organization: CAS
 
 # A short bit of text that shows up on the login page. You can make this blank 
 # if you prefer to have no extra text shown at the bottom of the login box.
-infoline: Powered by <a href="http://code.google.com/p/rubycas-server/">RubyCAS-Server</a>
+infoline: Powered by <a href="http://rubycas.github.com">RubyCAS-Server</a>
 
 # Custom views directory. If set, this will be used instead of 'lib/casserver/views'.
 #custom_views: /path/to/custom/views
