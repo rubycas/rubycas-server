@@ -755,5 +755,15 @@ module CASServer
       raise unless @custom_views
       super engine, data, options, views
     end
+
+    helpers do
+      def authenticated?
+        @authenticated
+      end
+
+      def authenticated_username
+        @authenticated_username
+      end
+    end
   end
 end
