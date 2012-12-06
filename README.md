@@ -11,6 +11,8 @@ See http://github.com/gunark/rubycas-server/commits/
 
 ## Installation
 
+Example with mysql database:
+
 1. `git clone git://github.com/rubycas/rubycas-server.git`
 2. `cd rubycas-server`
 3. `cp config/config.example.yml config.yml`
@@ -20,7 +22,7 @@ See http://github.com/gunark/rubycas-server/commits/
     3. You might want to change `log.file` to something local, so that you don't need root. For example just `casserver.log`
     4. You might also want to disable SSL for now by commenting out the `ssl_cert` line and changing the port to something like `8888`
 5. Create the database (i.e. `mysqladmin -u root create casserver` or whatever you have in `config.yml`)
-6. Modify the existing Gemfile by adding drivers for your database server. For example, if you configured `mysql2` in config.yml, add this to the Gemfile: `gem "mysql2"` and `gem "activerecord-mysql2-adapter"`
+6. Modify the existing Gemfile by adding drivers for your database server. For example, if you configured `mysql2` in config.yml, add this to the Gemfile: `gem "mysql2"`
 7. Run `bundle install`
 8. `bundle exec rubycas-server -c config.yml`
 
