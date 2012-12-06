@@ -24,10 +24,7 @@ $gemspec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md"]
 
   s.has_rdoc = true
-  s.post_install_message = "
-For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
-
-"
+  s.post_install_message = "For more information on RubyCAS-Server, see http://rubycas.github.com"
 
   s.add_dependency("activerecord", ">= 2.3.12", "< 4.0")
   s.add_dependency("activesupport", ">= 2.3.12", "< 4.0")
