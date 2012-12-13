@@ -99,3 +99,12 @@ def reset_spec_database
   ActiveRecord::Migration.verbose = false
   ActiveRecord::Migrator.migrate("db/migrate")
 end
+
+def get_ticket_for(service, username = 'spec_user', password = 'spec_password')
+  visit "/login?service=#{CGI.escape(service)}"
+  fill_in 'username', :with => username
+  fill_in 'password', :with => password
+  click_button 'login-submit'
+
+  page.current_url.match(/ticket=(.*)$/)[1]
+end

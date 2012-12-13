@@ -48,3 +48,6 @@ enable_single_sign_out: true
 #maximum_session_lifetime: 172800
 
 #downcase_username: true
+
+allowed_service_ips:
+  - 127.0.0.0/24
