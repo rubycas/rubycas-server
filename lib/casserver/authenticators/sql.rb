@@ -1,5 +1,3 @@
-require 'casserver/authenticators/base'
-
 begin
   require 'active_record'
 rescue LoadError
@@ -78,13 +76,13 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
   def validate(credentials)
     read_standard_credentials(credentials)
     raise_if_not_configured
-    
+
     $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).length}/#{user_model.connection_pool.instance_variable_get(:@connections).length}"
     user_model.connection_pool.checkin(user_model.connection)
-       
+
     if matching_users.size > 0
       $LOG.warn("#{self.class}: Multiple matches found for user #{@username.inspect}") if matching_users.size > 1
-      
+
       unless @options[:extra_attributes].blank?
         if matching_users.size > 1
           $LOG.warn("#{self.class}: Unable to extract extra_attributes because multiple matches were found for #{@username.inspect}")
@@ -111,7 +109,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
   def username_column
     @options[:username_column] || 'username'
   end
-    
+
   def password_column
     @options[:password_column] || 'password'
   end

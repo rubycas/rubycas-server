@@ -1,21 +1,7 @@
-require 'casserver/authenticators/base'
-
 begin
   require 'active_resource'
 rescue LoadError
-  require 'rubygems'
-  begin
-    gem 'activeresource', '~> 3.0.0'
-  rescue Gem::LoadError
-    $stderr.puts
-    $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    $stderr.puts
-    $stderr.puts "To use the ActiveResource authenticator, you must first install the 'activeresource' gem."
-    $stderr.puts
-    $stderr.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    exit 1
-  end
-  require 'active_resource'
+  $stderr.puts "To use the ActiveResource authenticator, you must first install gems from active_resource group. See: Gemfile"
 end
 
 module CASServer
