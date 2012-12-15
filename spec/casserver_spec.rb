@@ -68,7 +68,7 @@ describe 'CASServer' do
     end
 
     it "uses appropriate localization based on Accept-Language header" do
-      
+
       page.driver.options[:headers] = {'HTTP_ACCEPT_LANGUAGE' => 'pl'}
       #visit "/login?lang=pl"
       visit "/login"
@@ -96,22 +96,34 @@ describe 'CASServer' do
 
 
   describe '/logout' do
+    describe 'user logged in' do
+      before do
+        load_server("default_config")
+        reset_spec_database
+        visit "/login"
+        fill_in 'username', :with => VALID_USERNAME
+        fill_in 'password', :with => VALID_PASSWORD
+        click_button 'login-submit'
+        page.should have_content("You have successfully logged in")
+      end
 
-    before do
-      load_server("default_config")
-      reset_spec_database
+      it "logs out user who is looged in" do
+        visit "/logout"
+        page.should have_content("You have successfully logged out")
+      end
+
+      it "logs out successfully and redirects to target service" do
+        visit "/logout?gateway=true&service="+CGI.escape(@target_service)
+
+        page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?/
+      end
     end
 
-    it "logs out successfully" do
-      visit "/logout"
-
-      page.should have_content("You have successfully logged out")
-    end
-
-    it "logs out successfully and redirects to target service" do
-      visit "/logout?gateway=true&service="+CGI.escape(@target_service)
-
-      page.current_url.should =~ /^#{Regexp.escape(@target_service)}\/?/
+    describe "user not logged in" do
+      it "try logs out user which is not logged in" do
+        visit "/logout"
+        page.should have_content("You have successfully logged out")
+      end
     end
 
   end # describe '/logout'

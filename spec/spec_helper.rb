@@ -5,10 +5,12 @@ require 'rspec'
 #require 'spec/interop/test'
 require 'logger'
 require 'ostruct'
+require 'webmock/rspec'
 
 require 'capybara'
 require 'capybara/dsl'
 require 'casserver/authenticators/base'
+require 'casserver/core_ext.rb'
 
 CASServer::Authenticators.autoload :LDAP, 'casserver/authenticators/ldap.rb'
 CASServer::Authenticators.autoload :ActiveDirectoryLDAP, 'casserver/authenticators/active_directory_ldap/'
@@ -16,7 +18,7 @@ CASServer::Authenticators.autoload :SQL, 'casserver/authenticators/sql.rb'
 CASServer::Authenticators.autoload :SQLEncrypted, 'lib/casserver/authenticators/sql_encrypted.rb'
 CASServer::Authenticators.autoload :Google, 'casserver/authenticators/google.rb'
 CASServer::Authenticators.autoload :ActiveResource, 'casserver/authenticators/active_resource.rb'
-#CASServer::Authenticators.autoload :Test, 'casserver/authenticators/test.rb'
+CASServer::Authenticators.autoload :Test, 'casserver/authenticators/test.rb'
 
 # require builder because it doesn't pull in the version
 # info automatically...

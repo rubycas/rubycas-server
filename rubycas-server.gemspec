@@ -24,10 +24,8 @@ $gemspec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md"]
 
   s.has_rdoc = true
-  s.post_install_message = "
-For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-server
+  s.post_install_message = "For more information on RubyCAS-Server, see http://rubycas.github.com"
 
-"
   s.add_dependency("activerecord", ">= 2.3.12", "< 4.0")
   s.add_dependency("activesupport", ">= 2.3.12", "< 4.0")
   s.add_dependency("sinatra", "~> 1.0")
@@ -43,6 +41,8 @@ For more information on RubyCAS-Server, see http://code.google.com/p/rubycas-ser
   s.add_development_dependency("appraisal", "~> 0.4.1")
   s.add_development_dependency("guard", "~> 1.4.0")
   s.add_development_dependency("guard-rspec", "2.0.0")
+  s.add_development_dependency("webmock", "~> 1.8")
+  s.add_development_dependency("nokogiri", "~> 1.3")
 
   # pull in os specific FS monitoring lib for guard
   case RUBY_PLATFORM

@@ -2,6 +2,7 @@ require 'uri'
 require 'net/https'
 
 require 'casserver/model'
+require 'casserver/core_ext'
 
 # Encapsulates CAS functionality. This module is meant to be included in
 # the CASServer::Controllers module.
@@ -246,7 +247,7 @@ module CASServer::CAS
     rand = String.random
     path = uri.path
     req = Net::HTTP::Post.new(path)
-    req.set_form_data('logoutRequest' => %{<samlp:LogoutRequest ID="#{rand}" Version="2.0" IssueInstant="#{time.rfc2822}">
+    req.set_form_data('logoutRequest' => %{<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="#{rand}" Version="2.0" IssueInstant="#{time.rfc2822}">
  <saml:NameID></saml:NameID>
  <samlp:SessionIndex>#{st.ticket}</samlp:SessionIndex>
  </samlp:LogoutRequest>})
