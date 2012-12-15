@@ -9,9 +9,9 @@ $gemspec = Gem::Specification.new do |s|
   s.description  = %q{Provides single sign-on authentication for web applications using the CAS protocol.}
 
   s.files  = [
-    "CHANGELOG", "LICENSE", "README.md", "Rakefile", "setup.rb",
+    "CHANGELOG", "LICENSE", "README.md", "Rakefile",
     "bin/*", "db/**/*", "lib/**/*.rb", "public/**/*", "locales/**/*", "resources/*.*",
-    "config.ru", "config/**/*", "tasks/**/*.rake", "vendor/**/*", "script/*", "lib/**/*.erb", "lib/**/*.builder",
+    "config.ru", "config/**/*", "tasks/**/*.rake", "lib/**/*.erb", "lib/**/*.builder",
     "Gemfile", "rubycas-server.gemspec"
   ].map{|p| Dir[p]}.flatten
 
