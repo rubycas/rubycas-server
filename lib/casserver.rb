@@ -7,8 +7,8 @@ require 'builder' # for XML views
 require 'logger'
 $LOG = Logger.new(STDOUT)
 
-require 'casserver/server'
 require 'casserver/authenticators/base'
+require 'casserver/server'
 
 CASServer::Authenticators.autoload :LDAP, 'casserver/authenticators/ldap.rb'
 CASServer::Authenticators.autoload :ActiveDirectoryLDAP, 'casserver/authenticators/active_directory_ldap/'
