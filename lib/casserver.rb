@@ -1,7 +1,9 @@
 require 'active_record'
 require 'active_support'
 require 'builder' # for XML views
+
 require 'casserver/authenticators/base'
+require 'casserver/server'
 
 CASServer::Authenticators.autoload :LDAP, 'casserver/authenticators/ldap.rb'
 CASServer::Authenticators.autoload :ActiveDirectoryLDAP, 'casserver/authenticators/active_directory_ldap/'
