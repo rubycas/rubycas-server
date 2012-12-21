@@ -312,6 +312,8 @@ module CASServer
       end
 
       if tgt and !tgt_error
+        @authenticated = true
+        @authenticated_username = tgt.username
         @message = {:type => 'notice',
           :message => t.notice.logged_in_as(tgt.username)}
       elsif tgt_error
@@ -441,6 +443,8 @@ module CASServer
             :request => @env
           )
           if credentials_are_valid
+            @authenticated = true
+            @authenticated_username = @username
             extra_attributes.merge!(auth.extra_attributes) unless auth.extra_attributes.blank?
             successful_authenticator = auth
             break
@@ -745,6 +749,16 @@ module CASServer
     rescue Errno::ENOENT
       raise unless @custom_views
       super engine, data, options, views
+    end
+
+    helpers do
+      def authenticated?
+        @authenticated
+      end
+
+      def authenticated_username
+        @authenticated_username
+      end
     end
   end
 end
