@@ -532,3 +532,12 @@ log:
 # convert this to "jsmith".
 
 #downcase_username: true
+
+# If you'd like to limit the service hosts that can use CAS for authentication,
+# add the individual IPs and IP ranges in CIDR notation below. Leaving this
+# setting blank will allow any server to authenticate users via the CAS server
+# and potentially harvest sensitive user information.
+
+#allowed_service_ips:
+#  - 127.0.0.1
+#  - 192.168.0.0/24

@@ -109,6 +109,14 @@ def reset_spec_database
   ActiveRecord::Migrator.migrate("db/migrate")
 end
 
+def get_ticket_for(service, username = 'spec_user', password = 'spec_password')
+  visit "/login?service=#{CGI.escape(service)}"
+  fill_in 'username', :with => username
+  fill_in 'password', :with => password
+  click_button 'login-submit'
+
+  page.current_url.match(/ticket=(.*)$/)[1]
+end
 def gem_available?(name)
   if Gem::Specification.methods.include?(:find_all_by_name)
     not Gem::Specification.find_all_by_name(name).empty?
