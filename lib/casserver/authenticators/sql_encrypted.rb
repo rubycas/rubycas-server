@@ -1,5 +1,3 @@
-require 'casserver/authenticators/sql'
-
 require 'digest/sha1'
 require 'digest/sha2'
 require 'crypt-isaac'

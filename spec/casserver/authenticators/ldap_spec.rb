@@ -5,9 +5,6 @@ describe "CASServer::Authenticators::LDAP" do
   before do
     pending("Skip LDAP test due to missing gems") unless gem_available?("net-ldap")
 
-    if $LOG.nil?
-      load_server('default_config') # a lazy way to make sure the logger is set up
-    end
     # Trigger autoload to load net ldap
     CASServer::Authenticators::LDAP
 
