@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-module CASServer; end
+require 'casserver'
 require 'casserver/cas'
 require 'nokogiri'
 require 'cgi'
 
 describe CASServer::CAS do
   before do
-    load_server("default_config")
+    load_server
     @klass = Class.new {
       include CASServer::CAS
     }
