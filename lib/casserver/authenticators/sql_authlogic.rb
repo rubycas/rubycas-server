@@ -55,7 +55,7 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
     password_column = @options[:password_column] || "crypted_password"
     salt_column     = @options[:salt_column]
 
-    $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).length}/#{user_model.connection_pool.instance_variable_get(:@connections).length}"
+    log_connection_pool_size
     results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
     user_model.connection_pool.checkin(user_model.connection)
 
