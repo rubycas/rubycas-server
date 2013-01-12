@@ -65,8 +65,18 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
 
     @user_model = const_get(user_model_name)
     @user_model.establish_connection(options[:database])
-    @user_model.set_table_name(options[:user_table] || 'users')
+    if ActiveRecord::VERSION::STRING >= '3.2'
+      @user_model.table_name = (options[:user_table] || 'users')
+    else
+      @user_model.set_table_name(options[:user_table] || 'users')
+    end
     @user_model.inheritance_column = 'no_inheritance_column' if options[:ignore_type_column]
+    begin
+     @user_model.connection
+    rescue => e
+      $LOG.debug e
+      raise "SQL Authenticator can not connect to database"
+    end
   end
 
   def self.user_model
@@ -77,7 +87,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     read_standard_credentials(credentials)
     raise_if_not_configured
 
-    $LOG.debug "#{self.class}: [#{user_model}] " + "Connection pool size: #{user_model.connection_pool.instance_variable_get(:@checked_out).length}/#{user_model.connection_pool.instance_variable_get(:@connections).length}"
+    log_connection_pool_size
     user_model.connection_pool.checkin(user_model.connection)
 
     if matching_users.size > 0
@@ -133,6 +143,13 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
     else
       $LOG.debug("#{self.class}: Read the following extra_attributes for user #{@username.inspect}: #{@extra_attributes.inspect}")
     end
+  end
+
+  def log_connection_pool_size
+    log_msg = "#{self.class}: [#{user_model}] "
+    log_msg += "Connection pool size: #{user_model.connection_pool.connections.length}"
+    log_msg += "/#{user_model.connection_pool.instance_variable_get(:@size)}"
+    $LOG.debug log_msg
   end
 
   def matching_users
