@@ -1,0 +1,26 @@
+error:
+  no_login_ticket: "La sua richiesta di accesso non include il login ticket. Potrebbero esserci problemi con il sistema di autenticazione."
+  login_ticket_already_used: "Il login ticket fornito é già in uso. Provi a rieseguire l'accesso."
+  login_timeout: "Superato il limite di tempo per inserire le credenziali. Per favore riprovi."
+  invalid_login_ticket: "Il login ticket che ha provveduto è invalido. Potrebbe esserci problemi con il sistema di autenticazione."
+  login_ticket_needs_post_request: "Per generare un login ticket, é necessario eseguire una richiesta post"
+  incorrect_username_or_password: "Nome utente o password errata."
+  invalid_submit_to_uri: "Non é possibile indovinare l'URI CAS login, Per favore fornisca un parametro submitToURI nella sua richiesta."
+  invalid_target_service: "Il servizio di destinazione del browser non risulta valido. Contatti l'amministratore di sistema per assistenza."
+  unable_to_authenticate: "il client ed il server non sono in gradi di negoziare l'autenticazione. Provi ad accedere più tardi."
+  no_service_parameter_given: " Il server non supporta questa richiesta gateway perché non é stato fornito nessun parametro di servizio"
+
+notice:
+  logged_in_as: "Accesso effettuato come '%1'. Se l'utente è errato esegua un nuovo accesso."
+  click_to_continue: "Per favore apra il seguente link per continuare:"
+  success_logged_out: "Disconnessione eseguita con successo."
+  success_logged_in: "Accesso eseguito con successo."
+  please_wait: "Attendere prego..."
+
+label:
+  username: "Nome utente"
+  password: "Password"
+  central_login_title: "Accesso centralizzato"
+
+button:
+  login: "ACCEDI"
