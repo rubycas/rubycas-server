@@ -57,6 +57,7 @@ class CASServer::Authenticators::LDAP < CASServer::Authenticators::Base
     # Add prefix to username, if :username_prefix was specified in the :ldap config.
     def preprocess_username
       @username = @options[:ldap][:username_prefix] + @username if @options[:ldap][:username_prefix]
+      @username = @username + @options[:ldap][:username_postfix] if @options[:ldap][:username_postfix]
     end
 
     # Attempt to bind with the LDAP server using the username and password entered by
