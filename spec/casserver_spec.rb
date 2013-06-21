@@ -185,7 +185,7 @@ describe 'CASServer' do
         it { should be_ok }
         its(:content_type) { should match 'text/xml' }
         its(:body) { should match /cas:authenticationSuccess/i }
-        its(:body) { should match '<test_utf_string>Ютф</test_utf_string>' }
+        its(:body) { should match '<cas:test_utf_string>Ютф</cas:test_utf_string>' }
       end
 
       context 'from unallowed IP' do
