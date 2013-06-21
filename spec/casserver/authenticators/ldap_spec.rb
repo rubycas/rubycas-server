@@ -50,7 +50,7 @@ describe "CASServer::Authenticators::LDAP" do
         :request => {}
       ).should == true
 
-      auth.extra_attributes.should == {:full_name => 'Test', :address => 'Test'}
+      auth.extra_attributes.should == {"full_name" => 'Test', "address" => 'Test'}
     end
 
   end
