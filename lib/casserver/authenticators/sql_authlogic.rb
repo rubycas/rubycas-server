@@ -56,7 +56,7 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
     salt_column     = @options[:salt_column]
 
     log_connection_pool_size
-    results = user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
+    results = matching_users
     user_model.connection_pool.checkin(user_model.connection)
 
     begin
@@ -89,5 +89,11 @@ class CASServer::Authenticators::SQLAuthlogic < CASServer::Authenticators::SQL
     else
       return false
     end
+  end
+
+  protected
+
+  def matching_users
+    user_model.find(:all, :conditions => ["#{username_column} = ?", @username])
   end
 end
