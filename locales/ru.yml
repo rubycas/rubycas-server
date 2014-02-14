@@ -1,8 +1,8 @@
 error:
-  no_login_ticket: "Your login request did not include a login ticket. There may be a problem with the authentication system."
-  login_ticket_already_used: "The login ticket you provided has already been used up. Please try logging in again."
-  login_timeout: "You took too long to enter your credentials. Please try again."
-  invalid_login_ticket: "The login ticket you provided is invalid. There may be a problem with the authentication system."
+  no_login_ticket: "Ваш запрос не включает в себя входной билет. Могут возникнуть проблемы с системой аутентификации."
+  login_ticket_already_used: "Предоставленный входной билет уже был использован. Попробуйте войти заново."
+  login_timeout: "Вы слишком долго вводили свои учётные данные. Попробуйте ещё раз."
+  invalid_login_ticket: "Предоставленный входной билет недействителен. Могут возникнуть проблемы с системой аутентификации."
   login_ticket_needs_post_request: "Чтобы сгенерировать входной билет вы должны делать POST запрос."
   incorrect_username_or_password: "Неверное имя пользователя или пароль."
   invalid_submit_to_uri: "Невозможно угадать адрес входа на CAS. Пожалуйста, передайте с запросом параметр submitToURI."
