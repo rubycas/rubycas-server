@@ -18,3 +18,4 @@ resources/dev
 .bundle
 .vagrant
 Vagrantfile
+Gemfile.lock

@@ -133,7 +133,7 @@ class CASServer::Authenticators::SQL < CASServer::Authenticators::Base
   def extract_extra user
     @extra_attributes = {}
     extra_attributes_to_extract.each do |col|
-      @extra_attributes[col] = user.send(col)
+      @extra_attributes[col] = user[col.to_sym]
     end
   end
 
