@@ -7,5 +7,6 @@ require "casserver"
 use Rack::ShowExceptions
 use Rack::Runtime
 use Rack::CommonLogger
+use ActiveRecord::ConnectionAdapters::ConnectionManagement
 
 run CASServer::Server.new
