@@ -1,23 +1,20 @@
 appraise "rails2" do
-  gem 'activerecord', '~> 2.3.5'
-  gem 'activesupport', '~> 2.3.5'
-  gem 'activeresource', '~> 2.3.5'
+  gem 'activerecord', '~> 2.3.18'
+  gem 'activesupport', '~> 2.3.18'
+  gem 'iconv'
 end
 
 appraise "rails30" do
-  gem 'activerecord', '~> 3.0.12'
-  gem 'activesupport', '~> 3.0.12'
-  gem 'activeresource', '~> 3.0.12'
+  gem 'activerecord', '~> 3.0.20'
+  gem 'activesupport', '~> 3.0.20'
 end
 
 appraise "rails31" do
-  gem 'activerecord', '~> 3.1.1'
-  gem 'activesupport', '~> 3.1.1'
-  gem 'activeresource', '~> 3.1.1'
+  gem 'activerecord', '~> 3.1.12'
+  gem 'activesupport', '~> 3.1.12'
 end
 
 appraise "rails32" do
-  gem 'activerecord', '~> 3.2.0'
-  gem 'activesupport', '~> 3.2.0'
-  gem 'activeresource', '~> 3.2.0'
+  gem 'activerecord', '~> 3.2.18'
+  gem 'activesupport', '~> 3.2.18'
 end

@@ -38,7 +38,7 @@ $gemspec = Gem::Specification.new do |s|
   s.add_development_dependency("rspec-core")
   s.add_development_dependency("rake", "0.8.7")
   s.add_development_dependency("sqlite3", "~> 1.3.1")
-  s.add_development_dependency("appraisal", "~> 0.4.1")
+  s.add_development_dependency("appraisal", ">= 1.0.0")
   s.add_development_dependency("guard", "~> 1.4.0")
   s.add_development_dependency("guard-rspec", "2.0.0")
   s.add_development_dependency("webmock", "~> 1.8")
