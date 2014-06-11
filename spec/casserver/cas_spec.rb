@@ -8,6 +8,7 @@ require 'cgi'
 describe CASServer::CAS do
   before do
     load_server("default_config")
+    reset_spec_database
     @klass = Class.new {
       include CASServer::CAS
     }
