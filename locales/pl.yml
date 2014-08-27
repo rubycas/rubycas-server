@@ -13,8 +13,8 @@ error:
 notice:
   logged_in_as: "Jesteś aktualnie zalogowany jako '%1'. Jeżeli to nie jesteś ty, zaloguj się tutaj."
   click_to_continue: "Proszę kliknąć na poniższy link, aby kontynuować:"
-  success_logged_out: "Zostałeś poprawnie zalogowany."
-  success_logged_in: "Zostałeś poprawnie wylogowany."
+  success_logged_out: "Zostałeś poprawnie wylogowany."
+  success_logged_in: "Zostałeś poprawnie zalogowany."
   please_wait: "Chwileczkę..."
 
 label:
