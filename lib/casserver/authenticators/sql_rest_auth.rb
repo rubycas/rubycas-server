@@ -27,8 +27,6 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
     raise CASServer::AuthenticatorError, "You must specify a 'site_key' in the SQLRestAuth authenticator's configuration!" unless  @options[:site_key]
     raise CASServer::AuthenticatorError, "You must specify 'digest_streches' in the SQLRestAuth authenticator's configuration!" unless  @options[:digest_streches]
 
-    user_model = self.class.user_model
-
     username_column = @options[:username_column] || "email"
 
     log_connection_pool_size
