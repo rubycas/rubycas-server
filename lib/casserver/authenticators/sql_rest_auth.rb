@@ -52,6 +52,7 @@ class CASServer::Authenticators::SQLRestAuth < CASServer::Authenticators::SQLEnc
 
   def self.setup(options)
     super(options)
+    user_model = user_models[options[:auth_index]]
     user_model.__send__(:include, EncryptedPassword)
   end
 
