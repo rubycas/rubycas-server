@@ -48,8 +48,6 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::SQL
     read_standard_credentials(credentials)
     raise_if_not_configured
 
-    user_model = self.user_model
-
     username_column = @options[:username_column] || "username"
     encrypt_function = @options[:encrypt_function] || 'user.encrypted_password == Digest::SHA256.hexdigest("#{user.encryption_salt}::#{@password}")'
 
