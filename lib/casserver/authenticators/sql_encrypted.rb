@@ -40,7 +40,8 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::SQL
 
   def self.setup(options)
     super(options)
-    user_models.each { |auth_index, model| model.__send__(:include, EncryptedPassword) }
+    user_model = user_models[options[:auth_index]]
+    user_model.__send__(:include, EncryptedPassword)
   end
 
   def validate(credentials)
