@@ -40,14 +40,13 @@ class CASServer::Authenticators::SQLEncrypted < CASServer::Authenticators::SQL
 
   def self.setup(options)
     super(options)
-    user_models.each { |auth_index, model| model.__send__(:include, EncryptedPassword) }
+    user_model = user_models[options[:auth_index]]
+    user_model.__send__(:include, EncryptedPassword)
   end
 
   def validate(credentials)
     read_standard_credentials(credentials)
     raise_if_not_configured
-
-    user_model = self.user_model
 
     username_column = @options[:username_column] || "username"
     encrypt_function = @options[:encrypt_function] || 'user.encrypted_password == Digest::SHA256.hexdigest("#{user.encryption_salt}::#{@password}")'
