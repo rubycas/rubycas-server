@@ -304,6 +304,12 @@ module CASServer
 
       # optional params
       @service = clean_service_url(params['service'])
+      @from = clean_service_url(params['from'])
+      @return_url = if @from.blank?
+                      @service
+                    else
+                      @service + @from
+                    end
       @renew = params['renew']
       @gateway = params['gateway'] == 'true' || params['gateway'] == '1'
 
@@ -334,7 +340,7 @@ module CASServer
           elsif tgt && !tgt_error
             $LOG.debug("Valid ticket granting ticket detected.")
             st = generate_service_ticket(@service, tgt.username, tgt)
-            service_with_ticket = service_uri_with_ticket(@service, st)
+            service_with_ticket = service_uri_with_ticket(@return_url, st)
             $LOG.info("User '#{tgt.username}' authenticated based on ticket granting cookie. Redirecting to service '#{@service}'.")
             redirect service_with_ticket, 303 # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
           elsif @gateway
@@ -396,6 +402,12 @@ module CASServer
 
       # 2.2.1 (optional)
       @service = clean_service_url(params['service'])
+      @from = clean_service_url(params['from'])
+      @return_url = if @from.blank?
+                      @service
+                    else
+                      @service + @from
+                    end
 
       # 2.2.2 (required)
       @username = params['username']
@@ -470,7 +482,7 @@ module CASServer
             @st = generate_service_ticket(@service, @username, tgt)
 
             begin
-              service_with_ticket = service_uri_with_ticket(@service, @st)
+              service_with_ticket = service_uri_with_ticket(@return_url, @st)
 
               $LOG.info("Redirecting authenticated user '#{@username}' at '#{@st.client_hostname}' to service '#{@service}'")
               redirect service_with_ticket, 303 # response code 303 means "See Other" (see Appendix B in CAS Protocol spec)
