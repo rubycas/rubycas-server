@@ -189,35 +189,22 @@ module CASServer
         exit 1
       end
 
-      begin
-        # attempt to instantiate the authenticator
-        config[:authenticator] = [config[:authenticator]] unless config[:authenticator].instance_of? Array
-        config[:authenticator].each { |authenticator| auth << authenticator[:class].constantize}
-      rescue NameError
-        if config[:authenticator].instance_of? Array
-          config[:authenticator].each do |authenticator|
-            if !authenticator[:source].nil?
-              # config.yml explicitly names source file
-              require authenticator[:source]
-            else
-              # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
-              auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
-              require 'casserver/'+auth_rb
-            end
-            auth << authenticator[:class].constantize
-          end
-        else
-          if config[:authenticator][:source]
+      config[:authenticator] = [config[:authenticator]] unless config[:authenticator].instance_of? Array
+      config[:authenticator].each do |authenticator|
+        begin
+          # attempt to instantiate the authenticator
+          auth << authenticator[:class].constantize
+        rescue NameError
+          if authenticator[:source]
             # config.yml explicitly names source file
-            require config[:authenticator][:source]
+            require authenticator[:source]
           else
             # the authenticator class hasn't yet been loaded, so lets try to load it from the casserver/authenticators directory
-            auth_rb = config[:authenticator][:class].underscore.gsub('cas_server/', '')
+            auth_rb = authenticator[:class].underscore.gsub('cas_server/', '')
             require 'casserver/'+auth_rb
           end
 
-          auth << config[:authenticator][:class].constantize
-          config[:authenticator] = [config[:authenticator]]
+          auth << authenticator[:class].constantize
         end
       end
 
