@@ -7,7 +7,7 @@ Other portions are copyright of their respective authors.
 
 ## Authors
 
-See https://github.com/rubycas/rubycas-server/commits
+See https://github.com/rubycas/rubycas-server/graphs/contributors
 
 ## Installation
 
