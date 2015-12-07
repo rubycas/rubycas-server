@@ -11,7 +11,7 @@ error:
   no_service_parameter_given: "Этот сервер не может выполнить этот запрос, поскольку не были указаны праметры сервиса."
 
 notice:
-  logged_in_as: "Вы авторизированы как '%s'."
+  logged_in_as: "Вы авторизированы как '%1'."
   click_to_continue: "Перейдите по ссылке чтобы продолжить:"
   success_logged_out: "Вы успешно вышли."
   success_logged_in: "Вы успешно вошли."
